@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ircserv.hpp                                        :+:      :+:    :+:   */
+/*   user.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/11 11:24:33 by dsaada           ###   ########.fr       */
+/*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
+/*   Updated: 2023/01/11 09:53:32 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRCSERV_HPP
-# define IRCSERV_HPP
+#ifndef USER_HPP
+# define USER_HPP
+# include "ircserv.hpp"
 
-# include <cstdlib>
-# include <iostream>
+class user{
+    private:
+        int         _role;
+        std::string _nick;
+        std::string _fullname;
+};
 
 #endif

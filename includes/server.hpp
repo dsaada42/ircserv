@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ircserv.hpp                                        :+:      :+:    :+:   */
+/*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/11 11:24:33 by dsaada           ###   ########.fr       */
+/*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
+/*   Updated: 2023/01/11 09:53:35 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRCSERV_HPP
-# define IRCSERV_HPP
+#ifndef SERVER_HPP
+# define SERVER_HPP
+# include "ircserv.hpp"
 
-# include <cstdlib>
-# include <iostream>
+class server{
+    private:
+        std::string _servername;
+        int         _port;
+        
+    
+};
 
 #endif

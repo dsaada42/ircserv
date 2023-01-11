@@ -1,17 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/08 08:54:42 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/08 09:06:44 by dylan            ###   ########.fr       */
+/*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
+/*   Updated: 2023/01/11 09:53:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ircserv.hpp"
+#ifndef CHANNEL_HPP
+# define CHANNEL_HPP
+# include "ircserv.hpp"
 
-int main (void){
-    std::cout << "Hello World" << std::endl;
-}
+class channel{
+    
+};
+
+#endif

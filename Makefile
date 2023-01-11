@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dylan <dylan@student.42.fr>                +#+  +:+       +#+         #
+#    By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/08 08:53:39 by dylan             #+#    #+#              #
-#    Updated: 2023/01/08 09:09:39 by dylan            ###   ########.fr        #
+#    Updated: 2023/01/11 12:38:30 by dsaada           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRCS 		= $(wildcard ./srcs/*.cpp)
 
 INCLUDES 	=  $(wildcard ./includes/*.hpp)
 
-INCPATH 	= -I./includes -I,
+INCPATH 	= -I./includes -I.
 
 NAME 		= ircserv
 
@@ -33,7 +33,7 @@ $(NAME) : $(OBJS) $(INCLUDES)
 all : $(NAME)
 
 clean : 
-	rm -f $(OBJ)
+	rm -f $(OBJS)
 
 fclean : clean
 	rm -f $(NAME)

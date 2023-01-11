@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ircserv.hpp                                        :+:      :+:    :+:   */
+/*   message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/11 11:24:33 by dsaada           ###   ########.fr       */
+/*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
+/*   Updated: 2023/01/11 09:53:36 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRCSERV_HPP
-# define IRCSERV_HPP
+#ifndef MESSAGE_HPP
+# define MESSAGE_HPP
+# include "ircserv.hpp"
 
-# include <cstdlib>
-# include <iostream>
+class message{
+  
+};
 
-#endif
+#endif;
