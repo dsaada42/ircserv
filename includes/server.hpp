@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/11 09:53:35 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/12 10:27:04 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 # include "ircserv.hpp"
 
 class server{
-    private:
-        std::string _servername;
-        int         _port;
         
     
 };

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/11 09:53:32 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/12 10:27:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 # include "ircserv.hpp"
 
 class user{
-    private:
-        int         _role;
-        std::string _nick;
-        std::string _fullname;
+
 };
 
 #endif

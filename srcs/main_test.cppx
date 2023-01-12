@@ -64,6 +64,4 @@ int main(void){
         std::cout << "[Message] " << result << " [End of Message]" << std::endl;
         result.clear();
     }
-
-
 }
