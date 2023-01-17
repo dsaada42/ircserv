@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 09:19:38 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:24:14 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:09:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ irc::connectingSocket::connectingSocket(int domain, int service, int protocol, i
     : baseSocket(domain, service, protocol, port, interface){
     //Connecting socket
     _connection = network_connect(_sock, _address);
-    test_connection(_connection);
+    if (_connection < 0){
+        perror("Failed to connect socket");
+        exit(1);
+    }
 }
 
 //----- Destructor -----

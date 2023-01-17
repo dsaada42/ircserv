@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 09:03:16 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:44:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:03:37 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ irc::bindingSocket::bindingSocket(int domain, int service, int protocol, int por
     //Binding socket
     _connection = network_connect(_sock, _address);
     //test binding success
-    test_connection(_connection);
+    if (_connection < 0){
+        perror("Failed to bind socket");
+        exit(1);
+    }
 }
 
 //----- Destructor -----

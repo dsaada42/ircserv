@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:04:32 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:46:12 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:08:52 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ irc::listeningSocket::listeningSocket(int domain, int service, int protocol, int
     // Start listening
     start_listening();
     // check listening status
-    test_connection(_listening);
+    if (_listening < 0){
+        perror("Failed to listen on socket");
+        exit(1);
+    }
 }
 
 //----- Destructor -----

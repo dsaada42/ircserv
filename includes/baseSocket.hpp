@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 08:12:04 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:19:04 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:02:16 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <iostream>
+# include <cstdlib>
+# include <stdio.h>
+# include <errno.h>
 
 namespace irc{
     
@@ -34,7 +37,6 @@ namespace irc{
         
         //----- Connections -----
             virtual int network_connect(int sock, SA address) = 0;
-            void test_connection(int);
             
         //----- Getters -----
             int get_sock();

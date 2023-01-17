@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:47:49 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 11:23:53 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:12:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,33 @@
 #define SA struct sockaddr
 #include <unistd.h>
 #include <strings.h>
+
+int accept_new_connection(irc::listeningSocket sock){
+    int connfd;
+    
+    //Accept will block until incoming connexion 
+    connfd = accept(sock.get_sock(), (SA *) NULL, NULL);
+    if (connfd < 0){
+        std::cerr << "Error accepting connection" << std::endl;
+        exit(1);
+    }
+    return (connfd);
+}
+
+int handle_connection(int connfd){
+    std::string result;
+    //BUFF_SIZE = maximum length of an IRC message (512 max for prefix, 512 max for message + commands) (defined 1024)
+    char        buffer[BUFF_SIZE];
+    
+    read(connfd, buffer, sizeof(buffer) - 1); // blocking 
+    result += buffer;
+    bzero(&buffer, sizeof(buffer));
+    std::cout << "[Message] " << result << " [End of Message]" << std::endl;
+    close(connfd);
+    result.clear();
+
+    return (0);
+}
 
 int main (void){
 
@@ -24,29 +51,51 @@ int main (void){
     //SERVER_PORT = port open to listen (defined 6667)
     //INADDR_ANY = bind to any address   
     //BACKLOG = max number of queued connections (defined 10 but is architecture dependant and could be limited to 5)
-    irc::listeningSocket sock(AF_INET, SOCK_STREAM, TCP, SERVER_PORT, INADDR_ANY, BACKLOG);
-    int connfd;
-    std::string         result;
-    //BUFF_SIZE = maximum length of an IRC message (512 max for prefix, 512 max for message + commands) (defined 1024)
-    char                buffer[BUFF_SIZE];
-    
-    while (1){
-        int n = 0;
+    irc::listeningSocket    sock(AF_INET, SOCK_STREAM, TCP, SERVER_PORT, INADDR_ANY, BACKLOG);
+    int                     connfd;
+    fd_set                  current_sockets;
+    fd_set                  ready_sockets;
 
-        std::cout << "Waiting for a connection on port " << SERVER_PORT << std::endl;
-        //Accept will block until incoming connexion 
-        connfd = accept(sock.get_sock(), (SA *) NULL, NULL);
-        if (connfd < 0){
-            std::cerr << "Error accepting connection" << std::endl;
-            return(-1);
+    //init set of fd to 0
+    FD_ZERO(&current_sockets);
+    //add first socket (server socket) to the set of sockets
+    FD_SET(sock.get_sock(), &current_sockets);
+
+    while (true){
+        //tmp copy because select is destructive 
+        ready_sockets = current_sockets;
+
+        // 0: number of sockets , 1: sockets ready to read, 2: sockets ready to write, 3: socket errors, 4: optional timeout
+        if (select(FD_SETSIZE, &ready_sockets, NULL, NULL, NULL) < 0 ) {
+            perror("select returned an error");
+            shutdown(sock.get_sock(), 2);
+            close(sock.get_sock());
+            exit(1);     
         }
-        std::cout << "received message" << std::endl;
-        while ((n = read(connfd, buffer, sizeof(buffer) - 1)) > 0){
-            result += buffer;
+
+        //now the fdset is modified and we get only the ones ready:
+        for (int i = 0; i < FD_SETSIZE; i++){
+            if (FD_ISSET(i, &ready_sockets)){
+                if (i == sock.get_sock()){
+                    //new connection incoming
+                    std::cout << "New connection incoming" << std::endl;
+                    connfd = accept_new_connection(sock);
+                    FD_SET(connfd, &current_sockets);
+                }
+                else {
+                    std::cout << "Received message from established connection" << std::endl;
+                    handle_connection(i);
+                    FD_CLR(i, &current_sockets);  //used to remove socket from list of file descriptors we are watching
+                }
+            }
         }
-        bzero(&buffer, sizeof(buffer));
-        std::cout << "[Message] " << result << " [End of Message]" << std::endl;
-        close(connfd);
-        result.clear();
+        // //Wait for connection an accept
+        // connfd = accept_new_connection(sock);
+        
+        // //handle connection
+        // handle_connection(connfd);
+        
     }
+    shutdown(sock.get_sock(), 2);
+    close(sock.get_sock());
 }

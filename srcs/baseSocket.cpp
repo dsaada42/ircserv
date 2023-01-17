@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 08:25:37 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:44:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 09:08:31 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,14 @@ irc::baseSocket::baseSocket(int domain, int service, int protocol, int port, u_l
     //Establish connection
     _sock = socket(domain, service, protocol);
     //Test socket
-    test_connection(_sock);
+    if (_sock < 0){
+        perror("Failed to create socket...");
+        exit(1);
+    }
 }
 
 //----- Destructor -----
 irc::baseSocket::~baseSocket(void){}
-
-void irc::baseSocket::test_connection(int to_test ){
-    if (to_test < 0){
-        std::cerr << "Failed to connect..."  << std::endl;
-    }
-}
 
 //-----  Getters -----
 struct sockaddr_in  irc::baseSocket::get_addr()     { return(_address);    }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/12 10:58:50 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/17 08:43:27 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include "bindingSocket.hpp"
 # include "listeningSocket.hpp"
 # include "connectingSocket.hpp"
+// ----- Select -----
+# include <sys/select.h>
 // ----- IRC Objects -----
 # include "server.hpp"
 # include "channel.hpp"
