@@ -6,7 +6,7 @@
 #    By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/08 08:53:39 by dylan             #+#    #+#              #
-#    Updated: 2023/01/18 08:44:26 by dsaada           ###   ########.fr        #
+#    Updated: 2023/01/18 15:23:04 by dsaada           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,15 +33,15 @@ $(NAME) : $(OBJS) $(INCLUDES)
 all : $(NAME)
 
 proxy : 
-	cd proxy && make
+	@cd proxy && make
 
 clean : 
-	rm -f $(OBJS)
-	cd proxy && make clean
+	@rm -f $(OBJS)
+	@cd proxy && make clean
 
 fclean : clean
-	rm -f $(NAME)
-	cd proxy && make fclean
+	@rm -f $(NAME)
+	@cd proxy && make fclean
 
 
 re: fclean all

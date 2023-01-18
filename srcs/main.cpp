@@ -6,14 +6,12 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:47:49 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 14:43:19 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 15:23:53 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ircserv.hpp"
 #define SA struct sockaddr
-#include <unistd.h>
-#include <strings.h>
 
 int accept_new_connection(int sock){
     int connfd;
@@ -103,15 +101,12 @@ int main(void){
         // 0: number of sockets , 1: sockets ready to read, 2: sockets ready to write, 3: socket errors, 4: optional timeout
         if (select(FD_SETSIZE, &ready_sockets, NULL, NULL, NULL) < 0 ) {
             perror("select returned an error");
-            // shutdown(serv.get_sock_fd(), 2);
-            // close(serv.get_sock_fd());
             exit(1);     
         }
         //now the fdset is modified and we get only the ones ready:
         for (int i = 0; i < FD_SETSIZE; i++){
             if (FD_ISSET(i, &ready_sockets)){
                 if (i == serv.get_sock_fd()){
-                    //new connection incoming
                     std::cout << "New connection incoming" << std::endl;
                     connfd = accept_new_connection(serv.get_sock_fd());
                     FD_SET(connfd, &current_sockets);
@@ -124,6 +119,4 @@ int main(void){
             }
         }
     }
-    // shutdown(serv.get_sock_fd(), 2);
-    // close(serv.get_sock_fd());
 }

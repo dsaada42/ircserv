@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 14:54:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 15:21:11 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "ircserv.hpp"
 
 namespace irc{
-        
+            
     class user{
         private:
             std::string _username;
@@ -34,14 +34,14 @@ namespace irc{
             std::string & get_username( void );
             std::string & get_nickname( void );
             std::string & get_fullname( void );
-            bool        & get_oper( void );
-            int         & get_fd( void );
+            bool        & get_oper    ( void );
+            int         & get_fd      ( void );
             // ----- Setters -----
             void set_username( const std::string & username );
             void set_nickname( const std::string & nickname );
             void set_fullname( const std::string & fullname );
-            void set_oper( const bool & oper );
-            void set_fd( )
+            void set_oper    ( const bool & oper );
+            void set_fd      ( const int & fd );
     };
 
 }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/18 14:48:56 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 15:11:25 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <iostream>
 # include <vector>
 # include <unistd.h>
+# include <strings.h>
 // ---- Sockets -----
 # include "baseSocket.hpp"
 # include "bindingSocket.hpp"
