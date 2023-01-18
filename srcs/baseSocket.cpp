@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 08:25:37 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 14:49:44 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 16:57:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ irc::baseSocket::baseSocket(int domain, int service, int protocol, int port, u_l
 irc::baseSocket::~baseSocket(void){}
 
 //-----  Getters -----
-struct sockaddr_in  irc::baseSocket::get_addr()     { return(_address);    }
-int & irc::baseSocket::get_sock()                     { return(_sock);       }
-int & irc::baseSocket::get_connection()               { return(_connection); }
+struct      sockaddr_in  irc::baseSocket::get_addr() const  { return(_address);    }
+const int & irc::baseSocket::get_sock() const               { return(_sock);       }
+const int & irc::baseSocket::get_connection() const         { return(_connection); }
