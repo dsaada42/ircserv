@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/17 11:44:21 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 14:53:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ std::string & irc::user::get_username ( void )        { return(_username);}
 std::string & irc::user::get_fullname ( void )        { return(_fullname);}
 std::string & irc::user::get_nickname ( void )        { return(_nickname);}
 bool        & irc::user::get_oper     ( void )        { return(_oper);}
-
+int         & irc::user::get_fd       ( void )        { return(_fd);}
 // ----- Setters -----
 void irc::user::set_username(const std::string & username)  { _username = username; }
 void irc::user::set_fullname(const std::string & fullname)  { _fullname = fullname; }
 void irc::user::set_nickname(const std::string & nickname)  { _nickname = nickname; }
 void irc::user::set_oper    (const bool & oper)             { _oper = oper; }
-
+void irc::user::set_fd      (const int & fd)                { _fd = fd; }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 08:12:04 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/17 09:02:16 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 14:50:20 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ namespace irc{
             virtual int network_connect(int sock, SA address) = 0;
             
         //----- Getters -----
-            int get_sock();
+            int & get_sock();
             SA  get_addr();
-            int get_connection();
+            int & get_connection();
             
                
     };

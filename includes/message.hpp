@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/12 10:26:48 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 14:38:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,12 @@
 # define MESSAGE_HPP
 # include "ircserv.hpp"
 
-class message{
-  
-};
+namespace irc{
+    
+    class message{
+    
+    };
+
+}
 
 #endif

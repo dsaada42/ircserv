@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/17 08:43:27 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/18 14:48:56 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include <cstdlib>
 # include <iostream>
+# include <vector>
+# include <unistd.h>
 // ---- Sockets -----
 # include "baseSocket.hpp"
 # include "bindingSocket.hpp"
@@ -23,10 +25,11 @@
 // ----- Select -----
 # include <sys/select.h>
 // ----- IRC Objects -----
-# include "server.hpp"
 # include "channel.hpp"
 # include "user.hpp"
 # include "message.hpp"
+# include "server.hpp"
+
 
 #define SERVER_PORT 6667
 #define TCP 0
