@@ -12,11 +12,11 @@ $(PROG).static: $(PROG).o
 	strip $@
 
 clean:
-	rm -f $(PROG).o
-	rm -f $(PROG).core
+	@rm -f $(PROG).o
+	@rm -f $(PROG).core
 
 fclean: clean
-	rm -f $(PROG)
+	@rm -f $(PROG)
 
 re: fclean all
 

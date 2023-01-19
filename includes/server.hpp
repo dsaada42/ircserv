@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 16:59:23 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 09:33:04 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 namespace irc{
     
     class user;
+    class message;
     class server{
         private:
             int                          _port;
@@ -40,7 +41,9 @@ namespace irc{
             
         // ----- Network -----
             void        accept_connection(void);
-            void        clear_fd(const int & fd);    
+            void        clear_fd(const int & fd);
+            void        read_connection(const int & fd);
+            void        send_message(const int & fd, irc::message msg);
     };
 }
 

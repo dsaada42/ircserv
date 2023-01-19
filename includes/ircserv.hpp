@@ -6,12 +6,16 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/18 15:11:25 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 09:32:47 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRCSERV_HPP
 # define IRCSERV_HPP
+#define SERVER_PORT 6667
+#define TCP 0
+#define BACKLOG 10
+#define BUFF_SIZE 1024
 
 # include <cstdlib>
 # include <iostream>
@@ -32,8 +36,6 @@
 # include "server.hpp"
 
 
-#define SERVER_PORT 6667
-#define TCP 0
-#define BACKLOG 10
-#define BUFF_SIZE 1024
+
+
 #endif

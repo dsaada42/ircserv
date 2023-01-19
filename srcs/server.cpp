@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 17:01:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 09:34:18 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ irc::server::~server( void ){
 const std::string   & irc::server::get_pass( void ) const               { return(_pass); }
 const int           & irc::server::get_port( void ) const               { return(_port); }
 const int           & irc::server::get_sock_fd( void ) const            { return(_sock.get_sock()); }
-fd_set              irc::server::get_current_sockets( void ) const    { return(_current_sockets); }
+fd_set              irc::server::get_current_sockets( void ) const      { return(_current_sockets); }
 
 // ----- Network -----
 void        irc::server::clear_fd(const int & fd)       { FD_CLR(fd, &_current_sockets); }
@@ -42,4 +42,22 @@ void        irc::server::accept_connection( void )      {
         exit(1);
     }
     FD_SET(connfd, &_current_sockets);
+}
+void        irc::server::read_connection(const int & fd){
+    std::string result;
+    char        buffer[BUFF_SIZE];
+    
+    read(fd, buffer, sizeof(buffer) - 1); // blocking 
+    result += buffer;
+    bzero(&buffer, sizeof(buffer));
+    std::cout << "[Message]\n" << result << "[End of Message]" << std::endl;
+    //close(fd);
+    result.clear();
+}
+
+void        irc::server::send_message(const int & fd, irc::message msg){
+    std::string result;
+    
+    result = msg.get_message();
+    write(fd, result.c_str(), result.size());
 }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/18 15:21:11 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 09:34:35 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ namespace irc{
             std::string _nickname;
             std::string _fullname;
             bool        _oper;
+            // char        _buffer[BUFF_SIZE];
             int         _fd;
         
         public:

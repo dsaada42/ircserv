@@ -6,7 +6,7 @@
 #    By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/08 08:53:39 by dylan             #+#    #+#              #
-#    Updated: 2023/01/18 15:23:04 by dsaada           ###   ########.fr        #
+#    Updated: 2023/01/19 07:35:55 by dsaada           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,8 @@ NAME 		= ircserv
 
 OBJS 		= $(SRCS:.cpp=.o)
 
+CHUT		= --no-print-directory
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCPATH) -o $@ -c $<
 
@@ -33,18 +35,20 @@ $(NAME) : $(OBJS) $(INCLUDES)
 all : $(NAME)
 
 proxy : 
-	@cd proxy && make
+	@cd proxy && make $(CHUT)
 
 clean : 
 	@rm -f $(OBJS)
-	@cd proxy && make clean
+	@cd proxy && make clean $(CHUT)
 
 fclean : clean
 	@rm -f $(NAME)
-	@cd proxy && make fclean
+	@cd proxy && make fclean $(CHUT)
 
 
 re: fclean all
 
-.PHONY: all clean fclean re proxy
+cleaner: re clean
+
+.PHONY: all clean cleaner fclean re proxy
 	
