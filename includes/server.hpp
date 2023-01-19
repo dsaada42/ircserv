@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 15:52:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 16:36:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,13 @@ namespace irc{
     class message;
     class server{
         private:
-            int                         _port;
-            std::string                 _pass;
-            std::vector<irc::user>      _users;
-            std::vector<irc::channel>   _channels;
-            irc::listeningSocket        _sock;
-            fd_set                      _current_sockets;
-            fd_set                     *read_sockets;
-            fd_set                     *write_sockets;
+            int                                     _port;
+            std::string                             _pass;
+            std::map<int, user*>                    _users;
+            std::map<std::string, channel*>         _channels;
+            irc::listeningSocket                    _sock;
+            fd_set                                  *read_sockets;
+            fd_set                                  *write_sockets;
             
         public:
             server(int port = 6667, std::string password = "");
@@ -37,12 +36,10 @@ namespace irc{
             const std::string & get_pass(void) const;
             const int   & get_port(void) const;
             const int   & get_sock_fd(void) const;
-            fd_set        get_current_sockets(void) const;
             fd_set      * get_fd_set(void);
             
         // ----- Network -----
             void        accept_connection(void);
-            void        clear_fd(const int & fd);
             void        read_connection(const int & fd);
             void        send_message(const int & fd, irc::message msg);
 
