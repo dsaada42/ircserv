@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 11:33:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 12:31:05 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ namespace irc{
             const int   & get_port(void) const;
             const int   & get_sock_fd(void) const;
             fd_set        get_current_sockets(void) const;
+            fd_set      * get_fd_set(void);
             
         // ----- Network -----
             void        accept_connection(void);

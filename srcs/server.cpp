@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 11:33:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 13:08:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,20 @@ const std::string   & irc::server::get_pass( void ) const               { return
 const int           & irc::server::get_port( void ) const               { return(_port); }
 const int           & irc::server::get_sock_fd( void ) const            { return(_sock.get_sock()); }
 fd_set              irc::server::get_current_sockets( void ) const      { return(_current_sockets); }
+
+// ----- new FD_SET -----
+ fd_set              *irc::server::get_fd_set( void )               {
+    fd_set                          *new_set;
+    std::vector<irc::user>::iterator it = _users.begin();
+    
+    new_set = new fd_set;
+    FD_ZERO(new_set);
+    FD_SET(get_sock_fd(), new_set);
+    for (; it != _users.end(); it++){
+        FD_SET((*it).get_fd(), new_set);
+    }
+    return (new_set);
+}
 
 // ----- Network -----
 void        irc::server::clear_fd(const int & fd)       { FD_CLR(fd, &_current_sockets); }
