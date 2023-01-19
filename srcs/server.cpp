@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 13:08:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 15:56:03 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,21 @@ void        irc::server::accept_connection( void )      {
         std::cerr << "Error accepting connection" << std::endl;
         exit(1);
     }
-    //create user and store fd in class
+    // create new user 
     irc::user new_user;
     new_user.set_fd(newfd);
     _users.push_back(new_user);
     FD_SET(newfd, &_current_sockets);
+    //faire en sorte de verifier la bonne reception des 3 trames PASS NICK USER puis update le user
 }
 void        irc::server::read_connection(const int & fd){
     std::string result;
     char        buffer[BUFF_SIZE];
     
-    read(fd, buffer, sizeof(buffer) - 1); // blocking 
+    read(fd, buffer, sizeof(buffer) - 1);
     result += buffer;
     bzero(&buffer, sizeof(buffer));
     std::cout << "[Message]\n" << result << "[End of Message]" << std::endl;
-    //close(fd);
-    result.clear();
 }
 
 void        irc::server::send_message(const int & fd, irc::message msg){
@@ -78,6 +77,46 @@ void        irc::server::send_message(const int & fd, irc::message msg){
     
     result = msg.get_message();
     write(fd, result.c_str(), result.size());
+}
+
+// ----- Run main loop -----
+int         irc::server::run( void ){
+    int testons = 0;
+    while( true ){
+        read_sockets = get_fd_set();
+        write_sockets = get_fd_set();
+
+        if (select(FD_SETSIZE, read_sockets, write_sockets, NULL, NULL) < 0 ) {
+            perror("select returned an error");
+            exit(1);
+        }
+        for (int i = 0; i < FD_SETSIZE; i++){
+            if (FD_ISSET(i, read_sockets)){
+                if (i == get_sock_fd()){
+                    std::cout << "New connection incoming" << std::endl;
+                    accept_connection();
+                }
+                else {
+                    std::cout << "Received message from established connection" << std::endl;
+                    read_connection(i);
+                    clear_fd(i);
+                }
+            }
+            else if (FD_ISSET(i, write_sockets)){
+                if (testons == 5)
+                    exit(1);
+                std::cout << "Sending message to established connection " << i << std::endl;
+                irc::message test("\r\nNOTICE * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet varius tortor, at molestie turpis. Phasellus eget quam ac erat venenatis ornare. Vestibulum a metus ac nulla lacinia sollicitudin eget at risus. Morbi volutpat porttitor turpis, ac faucibus lacus faucibus quis. Morbi nec elementum massa. Quisque malesuada aliquet dui, sit amet auctor dui lacinia nec. In hac habitasse platea dictumst. Quisque egestas dictum ante vel pellentesque. Nulla consequat malesuada tortor, sed posuere diam ornare ut. Donec pellentesque tortor nulla, id aliquet orci iaculis ac. Morbi tempus justo at eros ornare, in posuere leo consectetur. Sed eget eros sed neque tristique egestas sagittis a erat. Aenean eget mauris vel purus ultricies pulvinar sed sit amet tellus. In at blandit dui. Mauris lacinia ipsum eget mauris dictum, dictum congue nunc blandit. Sed scelerisque vulputate eros, in vulputate augue porttitor non. Praesent laoreet quam vel eleifend consequat. Phasellus vitae fermentum ac.\r\n");
+                send_message(i, test);
+                clear_fd(i);
+                testons++;
+            }
+        }
+        print_users();
+        std::cout << "======================" << std::endl;
+        delete read_sockets;
+        delete write_sockets;
+    }
 }
 
 // ----- Debug / Print -----

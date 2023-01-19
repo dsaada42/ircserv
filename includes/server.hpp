@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 12:31:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 15:52:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ namespace irc{
             std::vector<irc::channel>   _channels;
             irc::listeningSocket        _sock;
             fd_set                      _current_sockets;
+            fd_set                     *read_sockets;
+            fd_set                     *write_sockets;
             
         public:
             server(int port = 6667, std::string password = "");
@@ -47,6 +49,9 @@ namespace irc{
         // ----- Debug / Print -----
             void        print_channel_users( irc::channel chan );
             void        print_users( void );
+
+        // ----- Run main loop -----
+            int         run( void );
     };
 }
 
