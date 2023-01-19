@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:47:49 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 10:45:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 11:34:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,7 @@ int main(void){
                 serv.clear_fd(i);  //used to remove socket from list of file descriptors we are watching
             }
         }
+        serv.print_users();
+        std::cout << "======================" << std::endl;
     }
 }

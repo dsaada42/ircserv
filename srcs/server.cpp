@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 09:34:18 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 11:33:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,18 @@ fd_set              irc::server::get_current_sockets( void ) const      { return
 // ----- Network -----
 void        irc::server::clear_fd(const int & fd)       { FD_CLR(fd, &_current_sockets); }
 void        irc::server::accept_connection( void )      {
-    int connfd;
+    int newfd;
 
-    connfd = accept(get_sock_fd(), (struct sockaddr *)NULL, NULL );
-    if (connfd < 0){
+    newfd = accept(get_sock_fd(), (struct sockaddr *)NULL, NULL );
+    if (newfd < 0){
         std::cerr << "Error accepting connection" << std::endl;
         exit(1);
     }
-    FD_SET(connfd, &_current_sockets);
+    //create user and store fd in class
+    irc::user new_user;
+    new_user.set_fd(newfd);
+    _users.push_back(new_user);
+    FD_SET(newfd, &_current_sockets);
 }
 void        irc::server::read_connection(const int & fd){
     std::string result;
@@ -60,4 +64,17 @@ void        irc::server::send_message(const int & fd, irc::message msg){
     
     result = msg.get_message();
     write(fd, result.c_str(), result.size());
+}
+
+// ----- Debug / Print -----
+
+void        irc::server::print_channel_users( irc::channel chan ){ (void)chan; }
+void        irc::server::print_users( void ){
+    std::vector<irc::user>::iterator it;
+    int                              nb = 0;
+    
+    for (it = _users.begin(); it != _users.end(); it++){
+        std::cout << "User No: " << nb << " has fd = " << (*it).get_fd() << std::endl;
+        nb++;
+    }
 }

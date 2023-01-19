@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 09:33:04 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/19 11:33:43 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@ namespace irc{
     class message;
     class server{
         private:
-            int                          _port;
-            std::string                  _pass;
-            //replace by map <user.username, user>
-            //map<channel.name , channel>
+            int                         _port;
+            std::string                 _pass;
             std::vector<irc::user>      _users;
             std::vector<irc::channel>   _channels;
             irc::listeningSocket        _sock;
@@ -44,6 +42,10 @@ namespace irc{
             void        clear_fd(const int & fd);
             void        read_connection(const int & fd);
             void        send_message(const int & fd, irc::message msg);
+
+        // ----- Debug / Print -----
+            void        print_channel_users( irc::channel chan );
+            void        print_users( void );
     };
 }
 
