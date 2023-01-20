@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/20 11:25:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/20 14:34:21 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,17 @@ void        irc::server::accept_connection( void )              {
         std::cerr << "Error accepting connection" << std::endl;
         exit(1);
     }
-    // create new user (default)
-    irc::user * new_user = new irc::user;
-    // set new user fd
-    new_user->set_fd(newfd);
-    // add pair<fd, user> to map of users 
-    _users.insert(std::make_pair(newfd, new_user));
+    irc::user * new_user = new irc::user(newfd);
     //faire en sorte de verifier la bonne reception des 3 trames PASS NICK USER puis update le user
-    //...
-    // sending notice meanwhile
-    irc::message test("\r\nNOTICE * Checking identity...\r\n");
+    //sending notice meanwhile
+    irc::message test("NOTICE * Checking identity...\r\n");
     send_message(newfd, test);
     //after verification
-    irc::message reply("\r\n:my_server 001 dsaada :Welcome to our shitty IRC server\r\n");
+    _users.insert(std::make_pair(newfd, new_user));
+    irc::message reply(":my_server 001 dsaada :Welcome to our shitty IRC server\r\n");
     send_message(newfd, reply);
-    //les envois de message devront se faire avec FD_ISSET(fd, write_sockets) , pour le moment on le fait a l'arrache et le client y croit
 }
- 
+
 void        irc::server::read_connection(const int & fd)        {
     std::string result;
     char        buffer[BUFF_SIZE];
