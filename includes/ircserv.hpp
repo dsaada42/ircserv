@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/19 16:34:27 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/20 10:17:52 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <iostream>
 # include <vector>
 # include <map>
+# include <queue>
 # include <unistd.h>
 # include <strings.h>
 // ---- Sockets -----

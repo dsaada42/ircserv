@@ -30,6 +30,7 @@
 #include <arpa/telnet.h>
 
 #define BUF_SIZE 4096
+#define LOCALHOST "127.0.0.1"
 
 char client_hostname[64];
 
@@ -264,15 +265,15 @@ int main(int argc, char *argv[]){
     int server = -1;
     int master_sock = -1;
 
-    if (5 != argc) {
-        fprintf(stderr, "usage: %s <client_ip> <client_port> <server_ip> <server_port>\n", argv[0]);
+    if (3 != argc) {
+        fprintf(stderr, "usage: %s <client_port> <server_port>\n", argv[0]);
         exit(1);
     }
 
-    localaddr = strdup(argv[1]);
-    localport = atoi(argv[2]);
-    remoteaddr = strdup(argv[3]);
-    remoteport = atoi(argv[4]);
+    localaddr = strdup("127.0.0.1");
+    localport = atoi(argv[1]);
+    remoteaddr = strdup("127.0.0.1");
+    remoteport = atoi(argv[2]);
 
     assert(localaddr);
     assert(localport > 0);

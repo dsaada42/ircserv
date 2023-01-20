@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 16:36:38 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/20 11:23:15 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,43 @@ namespace irc{
     class message;
     class server{
         private:
+            std::string                             _server_name;
             int                                     _port;
             std::string                             _pass;
             std::map<int, user*>                    _users;
             std::map<std::string, channel*>         _channels;
+            std::queue<message*>                    _messages;
             irc::listeningSocket                    _sock;
-            fd_set                                  *read_sockets;
-            fd_set                                  *write_sockets;
+            fd_set                                  read_sockets;
+            fd_set                                  write_sockets;
+            fd_set                                  except_sockets;
             
         public:
             server(int port = 6667, std::string password = "");
             ~server( void );
 
         //----- Getters -----
-            const std::string & get_pass(void) const;
-            const int   & get_port(void) const;
-            const int   & get_sock_fd(void) const;
-            fd_set      * get_fd_set(void);
+            const int   & port(void) const;
+            const int   & sock_fd(void) const;
             
+        // ----- Debug / Print -----
+            void        print_users( void );
+
+        // ----- Main loop -----
+            int         run( void );
+
+        private:
         // ----- Network -----
             void        accept_connection(void);
             void        read_connection(const int & fd);
             void        send_message(const int & fd, irc::message msg);
+            void        handle_read_set(void);
+            void        handle_except_set(void);
+            void        handle_write_set(void);
+        // ----- Select helper -----
+            void        update_sets(void);
 
-        // ----- Debug / Print -----
-            void        print_channel_users( irc::channel chan );
-            void        print_users( void );
-
-        // ----- Run main loop -----
-            int         run( void );
+           
     };
 }
 
