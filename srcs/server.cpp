@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/20 14:34:21 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/20 17:04:07 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,11 @@ irc::server::server(int port, std::string password) :
     
 }
 
-irc::server::~server( void ){
-    shutdown(_sock.get_sock(), 2);
-    close(_sock.get_sock());
-}
+irc::server::~server( void ){}
 
 // ----- Getters -----
 const int           & irc::server::port( void ) const           { return(_port); }
-const int           & irc::server::sock_fd( void ) const        { return(_sock.get_sock()); }
+const int           & irc::server::sock_fd( void ) const        { return(_sock.fd()); }
 
 // ----- Network -----
 void        irc::server::accept_connection( void )              {

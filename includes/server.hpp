@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/20 11:23:15 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/20 17:05:41 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ namespace irc{
     
     class user;
     class message;
+    class serverSocket;
+    
     class server{
         private:
             std::string                             _server_name;
@@ -26,7 +28,7 @@ namespace irc{
             std::map<int, user*>                    _users;
             std::map<std::string, channel*>         _channels;
             std::queue<message*>                    _messages;
-            irc::listeningSocket                    _sock;
+            irc::serverSocket                       _sock;
             fd_set                                  read_sockets;
             fd_set                                  write_sockets;
             fd_set                                  except_sockets;
