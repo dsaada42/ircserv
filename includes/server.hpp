@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/20 17:05:41 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/21 12:14:35 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 # include "ircserv.hpp"
+# include "serverSocket.hpp"
+# include "user.hpp"
+# include "channel.hpp"
+# include "message.hpp"
 
 namespace irc{
-    
-    class user;
-    class message;
-    class serverSocket;
     
     class server{
         private:
@@ -50,7 +50,6 @@ namespace irc{
         private:
         // ----- Network -----
             void        accept_connection(void);
-            void        read_connection(const int & fd);
             void        send_message(const int & fd, irc::message msg);
             void        handle_read_set(void);
             void        handle_except_set(void);

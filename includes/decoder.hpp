@@ -1,41 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   serverSocket.hpp                                   :+:      :+:    :+:   */
+/*   decoder.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/20 16:22:44 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/21 12:03:45 by dsaada           ###   ########.fr       */
+/*   Created: 2023/01/21 10:58:48 by dsaada            #+#    #+#             */
+/*   Updated: 2023/01/21 11:01:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_SOCKET_HPP
-# define SERVER_SOCKET_HPP
+#ifndef DECODER_HPP
+# define DECODER_HPP
 # include "ircserv.hpp"
+# include "message.hpp"
 
 namespace irc{
-
-    class serverSocket{
+    
+    class decoder{
         private:
-            int _backlog;
-            int _fd;
-            struct sockaddr_in  _address;
-        
+            char                    _buff[BUFF_SIZE];
+            int                     _fd;
+            std::queue<message*>    _messages;
+
         public:
         // ----- Constructor -----
-            serverSocket(int domain, int service, int protocol , int port, u_long interface, int backlog);
+            decoder(int socket_fd);
         // ----- Destructor -----
-            virtual ~serverSocket(void);
-        // ----- fd -----
-            const int & fd( void ) const;
-        private:
-        // ----- Bind -----
-            void bind_socket( void );
+            ~decoder(void);
 
-        // ----- Listen -----
-            void start_listening( void );   
-    
+        // ----- Run -----
+            int run(void);
+        private:
+        // ----- Extract all available messages -----
+            int extract_messages(void);
+            
+        
     };
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/20 17:13:49 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/21 12:03:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,13 @@
 # include <queue>
 # include <unistd.h>
 # include <strings.h>
-// ---- Sockets -----
-# include "serverSocket.hpp"
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <unistd.h>
+# include <cstdlib>
+# include <stdio.h>
 // ----- Select -----
 # include <sys/select.h>
-// ----- IRC Objects -----
-# include "channel.hpp"
-# include "user.hpp"
-# include "message.hpp"
-# include "server.hpp"
+
 
 #endif

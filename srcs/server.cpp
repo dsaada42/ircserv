@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/20 17:04:07 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/21 12:14:37 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,24 +34,9 @@ void        irc::server::accept_connection( void )              {
         exit(1);
     }
     irc::user * new_user = new irc::user(newfd);
-    //faire en sorte de verifier la bonne reception des 3 trames PASS NICK USER puis update le user
-    //sending notice meanwhile
-    irc::message test("NOTICE * Checking identity...\r\n");
-    send_message(newfd, test);
-    //after verification
     _users.insert(std::make_pair(newfd, new_user));
     irc::message reply(":my_server 001 dsaada :Welcome to our shitty IRC server\r\n");
     send_message(newfd, reply);
-}
-
-void        irc::server::read_connection(const int & fd)        {
-    std::string result;
-    char        buffer[BUFF_SIZE];
-    
-    read(fd, buffer, sizeof(buffer) - 1);
-    result = buffer;
-    bzero(&buffer, sizeof(buffer));
-    std::cout << "-> " << result << std::endl;
 }
 
 void        irc::server::send_message(const int & fd, irc::message msg){
@@ -62,39 +47,30 @@ void        irc::server::send_message(const int & fd, irc::message msg){
 }
 
 // ----- Exception handler -----
-void        irc::server::handle_except_set(void){
-    // cette fonction devra gerer les exceptions recues par select (disconnect? error?)
-    // man select pour savoir 
-}
+void        irc::server::handle_except_set(void){}
 
 // ----- Read Handler -----
 void        irc::server::handle_read_set( void ){
-    // cette fonction a pour buts:
-    //    - de gerer la connexion de nouveaux users
-    //    - de lire tous les messages recus de chaque user 
-    // elle appelera la fonction de parsing, interpretation des messages 
-    // et entrainera la generation des messages dans un container queue (FIFO)  
-    for (int i = 0; i < FD_SETSIZE; i++){
-            if (FD_ISSET(i, &read_sockets)){
-                if (i == sock_fd()){
-                    std::cout << "New connection incoming" << std::endl;
-                    accept_connection();
-                }
-                else {
-                    std::cout << "Received message from established connection" << std::endl;
-                    read_connection(i);
-                }
-            }
+    std::map<int, irc::user*>::iterator it;
+    irc::user                           *user;
+    
+    //cas 1 : readable server socket
+    if (FD_ISSET(sock_fd(), &read_sockets)){
+        std::cout << "New connection incoming" << std::endl;
+        accept_connection();
+    }
+    //cas 2 : la socket d'un des users est readable
+    for (it = _users.begin(); it != _users.end(); it++){
+        user = (*it).second;
+        if (FD_ISSET(user->fd(), &read_sockets)){
+            std::cout << "Received message from established connection" << std::endl;
+            user->read_connection();
         }
+    }
 }
 
 // ----- Write Handler -----
-void        irc::server::handle_write_set(void){
-    // cette fonction devra gerer l'envoi de la queue de messages 
-    // mettre en attente les messages ne poouvant pas etre envoyes
-    // calculer les problemes de trop longue attente pour l'envoi d'un message ? 
-    // clean les messages dedies a des users deconnectes ?
-}
+void        irc::server::handle_write_set(void){}
 
 // ----- Main loop -----
 int         irc::server::run( void ){
@@ -114,7 +90,6 @@ int         irc::server::run( void ){
 
 // ----- Select helper -----
  void              irc::server::update_sets( void )           {
-    // genere les sets a passer en parametre a select a chaque debut de la main loop
     std::map<int, irc::user*>::iterator it = _users.begin();
     
     FD_ZERO(&read_sockets);
@@ -131,7 +106,6 @@ int         irc::server::run( void ){
 }
 
 // ----- Debug / Print -----
-
 void        irc::server::print_users( void ){
     std::map<int, irc::user*>::iterator it;
     int                              nb = 0;

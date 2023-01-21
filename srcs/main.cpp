@@ -6,11 +6,12 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:47:49 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/19 15:38:32 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/21 12:04:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ircserv.hpp"
+#include "server.hpp"
 
 int main(void){
     
