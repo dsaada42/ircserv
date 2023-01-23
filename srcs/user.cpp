@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:08:31 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:10:39 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@ irc::user & irc::user::operator= (const irc::user & x){
 const str & irc::user::username     ( void ) const  { return(_username);}
 const str & irc::user::fullname     ( void ) const  { return(_fullname);}
 const str & irc::user::nickname     ( void ) const  { return(_nickname);}
-const bool        & irc::user::oper         ( void ) const  { return(_oper);}
-const int         & irc::user::fd           ( void ) const  { return(_fd);}
+const bool        & irc::user::oper ( void ) const  { return(_oper);}
+const int         & irc::user::fd   ( void ) const  { return(_fd);}
 
 // ----- Setters -----
 void irc::user::set_username(const str & username)  { _username = username; }
 void irc::user::set_fullname(const str & fullname)  { _fullname = fullname; }
 void irc::user::set_nickname(const str & nickname)  { _nickname = nickname; }
-void irc::user::set_oper    (const bool & oper)             { _oper = oper; }
+void irc::user::set_oper    (const bool & oper)     { _oper = oper; }
 
 // ----- Read Connexion -----
-int irc::user::read_connection(void)                       { 
+int irc::user::read_connection(void)                { 
     // on lit depuis le fd
     // attention a check le cas ou on recupere 0 -> signifie une deconnexion 
     if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) <= 0){
@@ -58,7 +58,7 @@ int irc::user::read_connection(void)                       {
 }
 
 // ----- Extract all available messages -----
-void irc::user::extract_messages(void){
+void irc::user::extract_messages(void)              {
     str buff = _buff;
     str delim = "\r\n";
     str::size_type    i;

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:08:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:11:42 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ namespace irc{
     
     class user{
         private:
-            str             _username;
-            str             _nickname;
-            str             _fullname;
+            str                     _username;
+            str                     _nickname;
+            str                     _fullname;
             std::queue<message*>    _messages;
             bool                    _oper;
             int                     _fd;

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:08:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:15:09 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void        irc::server::accept_connection( void )              {
 
 int        irc::server::send_message(const int & fd, irc::message msg){
     str result;
-    
+
     result = msg.get_message();
     return (write(fd, result.c_str(), result.size()));
 }
@@ -63,7 +63,6 @@ void        irc::server::handle_read_set( void ){
     it = _users.begin();
     while ( it != _users.end() ){
         user = (*it).second;
-        // this allows deletion of user in the middle of the loop
         it++; 
         //cas 2 : la socket d'un des users est readable
         if (FD_ISSET(user->fd(), &read_sockets)){
@@ -109,7 +108,7 @@ int         irc::server::run( void ){
         
         if (select(FD_SETSIZE, &read_sockets, &write_sockets, &except_sockets, NULL) < 0 ) {
             perror("select returned an error");
-            exit(1);
+            exit(FAILURE);
         }
         handle_read_set();
         //interprete messages
@@ -123,9 +122,9 @@ int         irc::server::run( void ){
 void       irc::server::handle_users_timeout(void){}
 
 // ----- Select helper -----
- void       irc::server::update_sets( void )           {
+void       irc::server::update_sets( void )       {
     std::map<int, irc::user*>::iterator it = _users.begin();
-    
+
     FD_ZERO(&read_sockets);
     FD_ZERO(&write_sockets);
     FD_ZERO(&except_sockets);
