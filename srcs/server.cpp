@@ -6,14 +6,14 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 11:36:19 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:08:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
 
 // ----- Constructor / Destructor ------
-irc::server::server(int port, std::string password) : 
+irc::server::server(int port, str password) : 
     _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){
         // init_cmd_map();
     }
@@ -44,7 +44,7 @@ void        irc::server::accept_connection( void )              {
 }
 
 int        irc::server::send_message(const int & fd, irc::message msg){
-    std::string result;
+    str result;
     
     result = msg.get_message();
     return (write(fd, result.c_str(), result.size()));
@@ -153,7 +153,7 @@ void        irc::server::delete_all_users( void ){
     _users.clear();
 }
 void        irc::server::delete_all_channels( void ){
-    std::map<std::string, channel*>::iterator it = _channels.begin();
+    std::map<str, channel*>::iterator it = _channels.begin();
     for (; it != _channels.end(); it++){
         delete it->second;
     }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 12:37:45 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:08:57 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ namespace irc{
     
     class user{
         private:
-            std::string             _username;
-            std::string             _nickname;
-            std::string             _fullname;
+            str             _username;
+            str             _nickname;
+            str             _fullname;
             std::queue<message*>    _messages;
             bool                    _oper;
             int                     _fd;
@@ -32,7 +32,7 @@ namespace irc{
         public:
         // ----- Constructors -----
             user(int fd);
-            user(std::string nickname, std::string username, std::string fullname, bool oper, int fd);
+            user(str nickname, str username, str fullname, bool oper, int fd);
             user(const user & x);
         // ----- Destructor -----
             ~user( void );
@@ -40,16 +40,16 @@ namespace irc{
             user& operator= (const user & x);
 
         // ----- Getters ------
-            const std::string & username ( void ) const;
-            const std::string & nickname ( void ) const;
-            const std::string & fullname ( void ) const;
+            const str & username ( void ) const;
+            const str & nickname ( void ) const;
+            const str & fullname ( void ) const;
             const bool        & oper     ( void ) const;
             const int         & fd       ( void ) const;
 
         // ----- Setters -----
-            void set_username( const std::string & username );
-            void set_nickname( const std::string & nickname );
-            void set_fullname( const std::string & fullname );
+            void set_username( const str & username );
+            void set_nickname( const str & nickname );
+            void set_fullname( const str & fullname );
             void set_oper    ( const bool & oper );
 
         // ----- Read Connexion -----

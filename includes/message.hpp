@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 09:44:13 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:07:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@
 namespace irc{
     
     class message{
-        
-        public:
-            typedef std::string     str;
-            
+
         private:
             str _message;
             str _params;

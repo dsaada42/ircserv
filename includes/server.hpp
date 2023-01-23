@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 10:41:55 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 15:09:23 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,20 @@ namespace irc{
     
     class server{
         private:
-            std::string                             _server_name;
-            int                                     _port;
-            std::string                             _pass;
-            std::map<std::string, void (*)()>       _cmds;
-            std::map<int, user*>                    _users;
-            std::map<std::string, channel*>         _channels;
-            std::queue<message*>                    _messages;
-            irc::serverSocket                       _sock;
-            fd_set                                  read_sockets;
-            fd_set                                  write_sockets;
-            fd_set                                  except_sockets;
+            str                             _server_name;
+            int                             _port;
+            str                             _pass;
+            std::map<str, void (*)()>       _cmds;
+            std::map<int, user*>            _users;
+            std::map<str, channel*>         _channels;
+            std::queue<message*>            _messages;
+            irc::serverSocket               _sock;
+            fd_set                          read_sockets;
+            fd_set                          write_sockets;
+            fd_set                          except_sockets;
             
         public:
-            server(int port = 6667, std::string password = "");
+            server(int port = 6667, str password = "");
             ~server( void );
 
         //----- Getters -----
@@ -62,9 +62,9 @@ namespace irc{
 
         // ----- Memory handler ----- --> to a class?
             void        delete_user(user * el);
-            void        delete_user(const std::string & nick);
+            void        delete_user(const str & nick);
             void        delete_all_users(void);
-            void        delete_channel(const std::string & name);
+            void        delete_channel(const str & name);
             void        delete_all_channels(void);
             void        delete_all_messages(void);
 

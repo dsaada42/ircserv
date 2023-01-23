@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 16:23:24 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/20 17:10:03 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/23 15:05:53 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ irc::serverSocket::serverSocket( int domain, int service, int protocol , int por
     _fd = socket(domain, service, protocol);
     if (_fd < 0){
         perror("Failed to create socket...");
-        exit(1);
+        exit(FAILURE);
     }
     bind_socket();
     start_listening();
@@ -41,13 +41,13 @@ const int & irc::serverSocket::fd() const { return(_fd);    }
 void irc::serverSocket::bind_socket(){
     if (bind(_fd, (struct sockaddr *)&_address, sizeof(_address)) < 0){
         perror("Failed to bind socket");
-        exit(1);
+        exit(FAILURE);
     }
 }
 
 void irc::serverSocket::start_listening(){
     if (listen(_fd, _backlog) < 0){
         perror("Failed to listen on socket");
-        exit(1);
+        exit(FAILURE);
     }
 }
