@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 08:59:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 10:41:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 // ----- Constructor / Destructor ------
 irc::server::server(int port, std::string password) : 
-    _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){}
+    _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){
+        // init_cmd_map();
+    }
 
 irc::server::~server( void ){
     delete_all_channels();
@@ -81,7 +83,22 @@ void        irc::server::handle_read_set( void ){
 
 // ----- Write Handler -----
 void        irc::server::handle_write_set(void){
-    //parcourir la 
+    message                 *current;
+    std::queue<message*>    tmp_messages;
+
+    while (_messages.size() > 0){        
+        current = _messages.front();
+        _messages.pop();
+        if (FD_ISSET(current->to(), &write_sockets)){
+            if (current->send() == SUCCESS)
+                delete current;            
+            else
+                tmp_messages.push(current);
+        }
+        else
+            tmp_messages.push(current);
+    }
+    _messages = tmp_messages;
 }
 
 // ----- Main loop -----
@@ -101,8 +118,11 @@ int         irc::server::run( void ){
     }
 }
 
+// ----- Timeout / load handler -----
+void       irc::server::handle_users_timeout(void){}
+
 // ----- Select helper -----
- void              irc::server::update_sets( void )           {
+ void       irc::server::update_sets( void )           {
     std::map<int, irc::user*>::iterator it = _users.begin();
     
     FD_ZERO(&read_sockets);
@@ -155,3 +175,12 @@ void        irc::server::print_users( void ){
         nb++;
     }
 }
+
+// // ----- Init cmd map -----
+// void       irc::server::init_cmd_map(){
+//     int i;
+//     for (i = 0; i < sizeof(cmd_list)/sizeof(s_cmd); i++) {
+//         func_map[cmd_list[i].name] = cmd_list[i].func;
+//     }
+//     std::cout << "initialized " << i << " commands" << std::endl;
+// }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 08:56:54 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 10:41:55 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "user.hpp"
 # include "channel.hpp"
 # include "message.hpp"
+// # include "command_list.hpp"
 
 namespace irc{
     
@@ -25,6 +26,7 @@ namespace irc{
             std::string                             _server_name;
             int                                     _port;
             std::string                             _pass;
+            std::map<std::string, void (*)()>       _cmds;
             std::map<int, user*>                    _users;
             std::map<std::string, channel*>         _channels;
             std::queue<message*>                    _messages;
@@ -66,6 +68,8 @@ namespace irc{
             void        delete_all_channels(void);
             void        delete_all_messages(void);
 
+        // ----- Init cmd map -----
+            // void        init_cmd_map(void);
            
     };
 }
