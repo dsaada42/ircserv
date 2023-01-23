@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:15:09 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 16:43:50 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void        irc::server::accept_connection( void )              {
     newfd = accept(sock_fd(), (struct sockaddr *)NULL, NULL );
     if (newfd < 0){
         std::cerr << "Error accepting connection" << std::endl;
-        exit(1);
+        exit(FAILURE);
     }
     irc::user * new_user = new irc::user(newfd);
     _users.insert(std::make_pair(newfd, new_user));
@@ -132,9 +132,9 @@ void       irc::server::update_sets( void )       {
     FD_SET(sock_fd(), &write_sockets);
     FD_SET(sock_fd(), &except_sockets);
     for (; it != _users.end(); it++){
-        FD_SET((*it).first, &read_sockets);
-        FD_SET((*it).first, &write_sockets);
-        FD_SET((*it).first, &except_sockets);
+        FD_SET((*it).first->fd(), &read_sockets);
+        FD_SET((*it).first->fd(), &write_sockets);
+        FD_SET((*it).first->fd(), &except_sockets);
     }
 }
 

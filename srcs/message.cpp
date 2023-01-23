@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:11:15 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 17:32:58 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,18 @@ void irc::message::set_to(const int & to)               { _to = to; }
 // ----- Decoder -----
 int irc::message::parse_message( void ){
     //all the parsing stuff for said cmd
+    
+    if (_message.at(0) == ':'){
+        _prefix = _message.substr(0, _message.find(" "));
+        _message = _message.substr(_message.find(" ")+1, _message.size());   
+    }
+    _cmd = _message.substr(0, _message.find(" "));
+    if (_message.find(" ") != str::npos){
+        _message = _message.substr(_message.find(" ")+1, _message.size())    
+    }
+    else 
+        return(0);
+    
     return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:11:42 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 16:44:09 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ namespace irc{
             user& operator= (const user & x);
 
         // ----- Getters ------
-            const str & username ( void ) const;
-            const str & nickname ( void ) const;
-            const str & fullname ( void ) const;
-            const bool        & oper     ( void ) const;
-            const int         & fd       ( void ) const;
+            const str   & username ( void ) const;
+            const str   & nickname ( void ) const;
+            const str   & fullname ( void ) const;
+            const bool  & oper     ( void ) const;
+            const int   & fd       ( void ) const;
 
         // ----- Setters -----
             void set_username( const str & username );

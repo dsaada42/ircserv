@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 15:21:01 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 16:15:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 16:41:23 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,7 @@ namespace Error
 	const Numeric toomanychannels(const str &channelname)							{ return (Numeric(ERR_TOOMANYCHANNELS, channelname + " :You have joined too many channels"));}
 	const Numeric wasnosuchnick(const str &nickname)								{ return (Numeric(ERR_WASNOSUCHNICK, nickname + " :There was no such nickname"));}
 	const Numeric toomanytargets(const str &target)									{ return (Numeric(ERR_TOOMANYTARGETS, target + " :Duplicate recipients. No message delivered"));}
-	// const Numeric nosuchservice(const str &servicename)								{ return (Numeric(ERR_NOSUCHSERVICE, servicename + " :No such service"));}
+	const Numeric nosuchservice(const str &servicename)								{ return (Numeric(ERR_NOSUCHSERVICE, servicename + " :No such service"));}
 	const Numeric noorigin()														{ return (Numeric(ERR_NOORIGIN, ":No origin specified"));}
 	const Numeric norecipient(const str &command)									{ return (Numeric(ERR_NORECIPIENT, ":No recipient given " + command));}
 	const Numeric notexttosend()													{ return (Numeric(ERR_NOTEXTTOSEND, ":No text to send"));}
