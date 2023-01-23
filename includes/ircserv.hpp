@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/23 10:14:18 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 12:27:00 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@
 # include <stdio.h>
 // ----- Select -----
 # include <sys/select.h>
+
+typedef std::string str;
 
 #endif

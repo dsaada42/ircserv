@@ -6,20 +6,20 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 08:29:59 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 12:39:18 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "user.hpp"
 
 // ----- Constructor default -----
-irc::user::user( int fd ): _fd(fd){}
+irc::user::user( int fd ): _fd(fd), _remain(0){}
 irc::user::user( std::string nickname, std::string username, std::string fullname, bool oper, int fd)
-    : _username(username), _nickname(nickname), _fullname(fullname), _oper(oper), _fd(fd){}
+    : _username(username), _nickname(nickname), _fullname(fullname), _oper(oper), _fd(fd), _remain(0){}
 
 // ----- Copy Constructor -----
 irc::user::user( const irc::user & x)
-    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()){}
+    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0){}
 irc::user::~user( void ){
     while( _messages.size() != 0){
         delete _messages.front();
@@ -50,7 +50,7 @@ void irc::user::set_oper    (const bool & oper)             { _oper = oper; }
 int irc::user::read_connection(void)                       { 
     // on lit depuis le fd
     // attention a check le cas ou on recupere 0 -> signifie une deconnexion 
-    if (read(_fd, _buff, sizeof(_buff) - 1) <= 0){
+    if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) <= 0){
         return (1);
         //delete / disconnect user if fail on reading socket
     }
@@ -68,10 +68,12 @@ void irc::user::extract_messages(void){
     while ((i = buff.find(delim)) != std::string::npos){
         std::cout << "found cmd : " << buff.substr(0, i) << std::endl;
         _messages.push(new message(buff.substr(0, i)));
-        buff = buff.substr(i + 2, buff.size()); 
+        buff = buff.substr(i + 2, buff.size());
     }
     // on reinitialise le buffer et laisse la data restante a l'interieur 
     bzero(_buff, BUFF_SIZE);
-    for (i = 0; i < buff.size(); i++)
+    std::cout << "current buffer content :\n" << buff << std::endl;
+    _remain = buff.size();
+    for (i = 0; i < _remain; i++)
         _buff[i] = buff[i];
 }

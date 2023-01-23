@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 10:41:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 11:36:19 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ int         irc::server::run( void ){
             exit(1);
         }
         handle_read_set();
+        //interprete messages
         handle_write_set();
 
         handle_users_timeout();

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 08:30:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 12:37:45 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ namespace irc{
             bool                    _oper;
             int                     _fd;
             char                    _buff[BUFF_SIZE];
+            unsigned long           _remain;
 
         
         public:
