@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/21 12:14:35 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 08:56:54 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,21 @@ namespace irc{
         private:
         // ----- Network -----
             void        accept_connection(void);
-            void        send_message(const int & fd, irc::message msg);
+            int         send_message(const int & fd, irc::message msg);
             void        handle_read_set(void);
-            void        handle_except_set(void);
             void        handle_write_set(void);
+        // ----- Timeout / load handler -----
+            void        handle_users_timeout(void);
         // ----- Select helper -----
             void        update_sets(void);
+
+        // ----- Memory handler ----- --> to a class?
+            void        delete_user(user * el);
+            void        delete_user(const std::string & nick);
+            void        delete_all_users(void);
+            void        delete_channel(const std::string & name);
+            void        delete_all_channels(void);
+            void        delete_all_messages(void);
 
            
     };

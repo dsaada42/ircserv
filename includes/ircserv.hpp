@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/21 12:03:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 07:52:03 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #define TCP 0
 #define BACKLOG 10
 #define BUFF_SIZE 1024
+#define SUCCESS 0
+#define FAILURE 1
 
 # include <cstdlib>
 # include <iostream>

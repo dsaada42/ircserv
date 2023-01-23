@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/21 12:14:37 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 08:59:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 // ----- Constructor / Destructor ------
 irc::server::server(int port, std::string password) : 
-    _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){
-    
-}
+    _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){}
 
-irc::server::~server( void ){}
+irc::server::~server( void ){
+    delete_all_channels();
+    delete_all_users();
+    delete_all_messages();
+}
 
 // ----- Getters -----
 const int           & irc::server::port( void ) const           { return(_port); }
@@ -39,15 +41,12 @@ void        irc::server::accept_connection( void )              {
     send_message(newfd, reply);
 }
 
-void        irc::server::send_message(const int & fd, irc::message msg){
+int        irc::server::send_message(const int & fd, irc::message msg){
     std::string result;
     
     result = msg.get_message();
-    write(fd, result.c_str(), result.size());
+    return (write(fd, result.c_str(), result.size()));
 }
-
-// ----- Exception handler -----
-void        irc::server::handle_except_set(void){}
 
 // ----- Read Handler -----
 void        irc::server::handle_read_set( void ){
@@ -59,18 +58,31 @@ void        irc::server::handle_read_set( void ){
         std::cout << "New connection incoming" << std::endl;
         accept_connection();
     }
-    //cas 2 : la socket d'un des users est readable
-    for (it = _users.begin(); it != _users.end(); it++){
+    it = _users.begin();
+    while ( it != _users.end() ){
         user = (*it).second;
+        // this allows deletion of user in the middle of the loop
+        it++; 
+        //cas 2 : la socket d'un des users est readable
         if (FD_ISSET(user->fd(), &read_sockets)){
             std::cout << "Received message from established connection" << std::endl;
-            user->read_connection();
+            if (user->read_connection() == FAILURE){
+                std::cout << "deleting user because connection lost" << std::endl;   
+                delete_user(user);
+            }
+        }
+        //cas 3 : exception sur la connexion , on ferme 
+        else if (FD_ISSET(user->fd(), &except_sockets)){
+            std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
+            delete_user(user);
         }
     }
 }
 
 // ----- Write Handler -----
-void        irc::server::handle_write_set(void){}
+void        irc::server::handle_write_set(void){
+    //parcourir la 
+}
 
 // ----- Main loop -----
 int         irc::server::run( void ){
@@ -82,9 +94,10 @@ int         irc::server::run( void ){
             perror("select returned an error");
             exit(1);
         }
-        handle_except_set(); // mysterieux
         handle_read_set();
         handle_write_set();
+
+        handle_users_timeout();
     }
 }
 
@@ -102,6 +115,33 @@ int         irc::server::run( void ){
         FD_SET((*it).first, &read_sockets);
         FD_SET((*it).first, &write_sockets);
         FD_SET((*it).first, &except_sockets);
+    }
+}
+
+// ----- Memory Handling -----
+
+void        irc::server::delete_user(user *el){
+    _users.erase(el->fd());
+    delete el;
+}
+void        irc::server::delete_all_users( void ){
+    std::map<int, user*>::iterator it = _users.begin();
+    for (; it != _users.end(); it++){
+        delete it->second;
+    }
+    _users.clear();
+}
+void        irc::server::delete_all_channels( void ){
+    std::map<std::string, channel*>::iterator it = _channels.begin();
+    for (; it != _channels.end(); it++){
+        delete it->second;
+    }
+    _channels.clear();
+}
+void        irc::server::delete_all_messages(void){
+    while( _messages.size() != 0){
+        delete _messages.front();
+        _messages.pop();
     }
 }
 

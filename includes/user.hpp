@@ -6,25 +6,27 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/21 12:09:56 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/23 08:30:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef USER_HPP
 # define USER_HPP
 # include "ircserv.hpp"
-# include "decoder.hpp"
+# include "message.hpp"
 
 namespace irc{
     
     class user{
         private:
-            std::string     _username;
-            std::string     _nickname;
-            std::string     _fullname;
-            irc::decoder    _decoder;
-            bool            _oper;
-            int             _fd;
+            std::string             _username;
+            std::string             _nickname;
+            std::string             _fullname;
+            std::queue<message*>    _messages;
+            bool                    _oper;
+            int                     _fd;
+            char                    _buff[BUFF_SIZE];
+
         
         public:
         // ----- Constructors -----
@@ -42,7 +44,6 @@ namespace irc{
             const std::string & fullname ( void ) const;
             const bool        & oper     ( void ) const;
             const int         & fd       ( void ) const;
-            const irc::decoder & decoder ( void ) const;      
 
         // ----- Setters -----
             void set_username( const std::string & username );
@@ -51,7 +52,9 @@ namespace irc{
             void set_oper    ( const bool & oper );
 
         // ----- Read Connexion -----
-            void read_connection( void );
+            int read_connection( void );
+            void extract_messages(void);
+
 
             
     };
