@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 10:31:19 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:25:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // ----- Constructor / Destructor ------
 irc::server::server(int port, str password) : 
     _port(port), _pass(password), _sock(AF_INET, SOCK_STREAM, TCP, port, INADDR_ANY, BACKLOG){
-        // init_cmd_map();
+        init_cmd_map();
     }
 
 irc::server::~server( void ){
@@ -190,11 +190,35 @@ int         irc::server::manual_entry( void ){
     return (SUCCESS);
 }
 
-// // ----- Init cmd map -----
-// void       irc::server::init_cmd_map(){
-//     int i;
-//     for (i = 0; i < sizeof(cmd_list)/sizeof(s_cmd); i++) {
-//         func_map[cmd_list[i].name] = cmd_list[i].func;
-//     }
-//     std::cout << "initialized " << i << " commands" << std::endl;
-// }
+// ----- Init cmd map -----
+void       irc::server::init_cmd_map(){
+    _cmds.insert(std::make_pair("ADMIN", ft_admin));
+    _cmds.insert(std::make_pair("CAP", ft_cap));
+    _cmds.insert(std::make_pair("ERROR", ft_error));
+    _cmds.insert(std::make_pair("INFO", ft_info));
+    _cmds.insert(std::make_pair("INVITE", ft_invite));
+    _cmds.insert(std::make_pair("JOIN", ft_join));
+    _cmds.insert(std::make_pair("KICK", ft_kick));
+    _cmds.insert(std::make_pair("KILL", ft_kill));
+    _cmds.insert(std::make_pair("LIST", ft_list));
+    _cmds.insert(std::make_pair("MODE", ft_mode));
+    _cmds.insert(std::make_pair("NAMES", ft_names));
+    _cmds.insert(std::make_pair("NICK", ft_nick));
+    _cmds.insert(std::make_pair("NOTICE", ft_notice));
+    _cmds.insert(std::make_pair("OPER", ft_oper));
+    _cmds.insert(std::make_pair("PASS", ft_pass));
+    _cmds.insert(std::make_pair("PART", ft_part));
+    _cmds.insert(std::make_pair("PING", ft_ping));
+    _cmds.insert(std::make_pair("PONG", ft_pong));
+    _cmds.insert(std::make_pair("PRIVMSG", ft_privmsg));
+    _cmds.insert(std::make_pair("QUIT", ft_quit));
+    _cmds.insert(std::make_pair("STATS", ft_stats));
+    _cmds.insert(std::make_pair("TIME", ft_time));
+    _cmds.insert(std::make_pair("TOPIC", ft_topic));
+    _cmds.insert(std::make_pair("USER", ft_user));
+    _cmds.insert(std::make_pair("VERSION", ft_version));
+    _cmds.insert(std::make_pair("WHO", ft_who));
+    _cmds.insert(std::make_pair("WHOIS", ft_whois));
+    _cmds.insert(std::make_pair("WHOWAS", ft_whowas));
+
+}

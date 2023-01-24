@@ -6,93 +6,93 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 11:08:52 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 11:47:53 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:24:27 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "commands.hpp"
 
-int admin( irc::message * ){
+int ft_admin( irc::message * ){
     return (SUCCESS);    
 }
-int cap( irc::message * ){
+int ft_cap( irc::message * ){
     return (SUCCESS);    
 }
-int error( irc::message * ){
+int ft_error( irc::message * ){
     return (SUCCESS);    
 }
-int info( irc::message * ){
+int ft_info( irc::message * ){
     return (SUCCESS);    
 }
-int invite( irc::message * ){
+int ft_invite( irc::message * ){
     return (SUCCESS);    
 }
-int join( irc::message * ){
+int ft_join( irc::message * ){
     return (SUCCESS);    
 }
-int kick( irc::message * ){
+int ft_kick( irc::message * ){
     return (SUCCESS);    
 }
-int kill( irc::message * ){
+int ft_kill( irc::message * ){
     return (SUCCESS);    
 }
-int list( irc::message * ){
+int ft_list( irc::message * ){
     return (SUCCESS);    
 }
-int mode(irc::message *){
+int ft_mode(irc::message *){
     return (SUCCESS);    
 }
-int names(irc::message *){
+int ft_names(irc::message *){
     return (SUCCESS);    
 }
-int nick(irc::message *){
+int ft_nick(irc::message *){
     return (SUCCESS);    
 }
-int notice(irc::message *){
+int ft_notice(irc::message *){
     return (SUCCESS);    
 }
-int oper(irc::message *){
+int ft_oper(irc::message *){
     return (SUCCESS);    
 }
-int pass(irc::message *){
+int ft_pass(irc::message *){
     return (SUCCESS);    
 }
-int part(irc::message *){
+int ft_part(irc::message *){
     return (SUCCESS);    
 }
-int ping(irc::message *){
+int ft_ping(irc::message *){
     return (SUCCESS);    
 }
-int pong(irc::message *){
+int ft_pong(irc::message *){
     return (SUCCESS);    
 }
-int privmsg(irc::message *){
+int ft_privmsg(irc::message *){
     return (SUCCESS);    
 }
-int quit(irc::message *){
+int ft_quit(irc::message *){
     return (SUCCESS);    
 }
-int stats(irc::message *){
+int ft_stats(irc::message *){
     return (SUCCESS);    
 }
-int time(irc::message *){
+int ft_time(irc::message *){
     return (SUCCESS);    
 }
-int topic(irc::message *){
+int ft_topic(irc::message *){
     return (SUCCESS);    
 }
-int user(irc::message *){
+int ft_user(irc::message *){
     return (SUCCESS);    
 }
-int version(irc::message *){
+int ft_version(irc::message *){
     return (SUCCESS);    
 }
-int who(irc::message *){
+int ft_who(irc::message *){
     return (SUCCESS);    
 }
-int whois(irc::message *){
+int ft_whois(irc::message *){
     return (SUCCESS);    
 }
-int whowas(irc::message *){
-    return (SUCCESS);    
+int ft_whowas(irc::message *){
+    return (SUCCESS);
 }

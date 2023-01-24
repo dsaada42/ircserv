@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   admin.cpp                                          :+:      :+:    :+:   */
+/*   adminUser.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 08:47:52 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 10:19:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:18:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "admin.hpp"
+#include "adminUser.hpp"
 
 // ----- Constructor default -----
-irc::admin::admin( void ): user( "adminick", "useradmin", "Admin D. Ballec", true, 0){}
+irc::adminUser::adminUser( void ): user( "adminick", "useradmin", "Admin D. Ballec", true, 0){}
 
 // ----- Destructor -----
-irc::admin::~admin( void ){}
+irc::adminUser::~adminUser( void ){}
 
 // ----- Read Connexion -----
-int irc::admin::read_connection(void){ 
+int irc::adminUser::read_connection(void){ 
     str msg;
     // on lit depuis le fd
     if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) < 0){

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 08:49:59 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:36:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@
 # include "user.hpp"
 # include "channel.hpp"
 # include "message.hpp"
-# include "admin.hpp"
-// # include "command_list.hpp"
+# include "adminUser.hpp"
+# include "commands.hpp"
 
 namespace irc{
     
     class server{
         private:
-            str                             _server_name;
-            int                             _port;
-            str                             _pass;
-            std::map<str, void (*)()>       _cmds;
-            std::map<int, user*>            _users;
-            std::map<str, channel*>         _channels;
-            std::queue<message*>            _messages;
-            irc::serverSocket               _sock;
-            fd_set                          read_sockets;
-            fd_set                          write_sockets;
-            fd_set                          except_sockets;
-            irc::admin                      _admin;
+            str                                 _server_name;
+            int                                 _port;
+            str                                 _pass;
+            std::map<str, int (*)(message *)>   _cmds;
+            std::map<int, user*>                _users;
+            std::map<str, channel*>             _channels;
+            std::queue<message*>                _messages;
+            irc::serverSocket                   _sock;
+            fd_set                              read_sockets;
+            fd_set                              write_sockets;
+            fd_set                              except_sockets;
+            irc::adminUser                      _admin;
             
         public:
             server(int port = 6667, str password = "");
@@ -71,7 +71,7 @@ namespace irc{
             void        delete_all_messages(void);
 
         // ----- Init cmd map -----
-            // void        init_cmd_map(void);
+            void        init_cmd_map(void);
 
         // ----- Manual entry (stdin) handler -----
             int manual_entry( void );     
