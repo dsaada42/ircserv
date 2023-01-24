@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 16:44:09 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 08:57:36 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace irc{
     
     class user{
-        private:
+        protected:
             str                     _username;
             str                     _nickname;
             str                     _fullname;
@@ -35,7 +35,7 @@ namespace irc{
             user(str nickname, str username, str fullname, bool oper, int fd);
             user(const user & x);
         // ----- Destructor -----
-            ~user( void );
+            virtual ~user( void );
         // ----- Operator= -----
             user& operator= (const user & x);
 
@@ -54,7 +54,7 @@ namespace irc{
 
         // ----- Read Connexion -----
             int read_connection( void );
-            void extract_messages(void);
+            void extract_messages(str delim);
 
 
             

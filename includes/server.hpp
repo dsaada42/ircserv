@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:09:23 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 08:49:59 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "user.hpp"
 # include "channel.hpp"
 # include "message.hpp"
+# include "admin.hpp"
 // # include "command_list.hpp"
 
 namespace irc{
@@ -34,6 +35,7 @@ namespace irc{
             fd_set                          read_sockets;
             fd_set                          write_sockets;
             fd_set                          except_sockets;
+            irc::admin                      _admin;
             
         public:
             server(int port = 6667, str password = "");
@@ -70,7 +72,9 @@ namespace irc{
 
         // ----- Init cmd map -----
             // void        init_cmd_map(void);
-           
+
+        // ----- Manual entry (stdin) handler -----
+            int manual_entry( void );     
     };
 }
 

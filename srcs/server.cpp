@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 16:43:50 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:21:21 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void        irc::server::accept_connection( void )              {
     newfd = accept(sock_fd(), (struct sockaddr *)NULL, NULL );
     if (newfd < 0){
         std::cerr << "Error accepting connection" << std::endl;
-        exit(FAILURE);
+        throw(exitException());
     }
     irc::user * new_user = new irc::user(newfd);
     _users.insert(std::make_pair(newfd, new_user));
@@ -108,8 +108,11 @@ int         irc::server::run( void ){
         
         if (select(FD_SETSIZE, &read_sockets, &write_sockets, &except_sockets, NULL) < 0 ) {
             perror("select returned an error");
-            exit(FAILURE);
+            throw(exitException());
         }
+
+        manual_entry();
+        
         handle_read_set();
         //interprete messages
         handle_write_set();
@@ -132,10 +135,13 @@ void       irc::server::update_sets( void )       {
     FD_SET(sock_fd(), &write_sockets);
     FD_SET(sock_fd(), &except_sockets);
     for (; it != _users.end(); it++){
-        FD_SET((*it).first->fd(), &read_sockets);
-        FD_SET((*it).first->fd(), &write_sockets);
-        FD_SET((*it).first->fd(), &except_sockets);
+        FD_SET((*it).second->fd(), &read_sockets);
+        FD_SET((*it).second->fd(), &write_sockets);
+        FD_SET((*it).second->fd(), &except_sockets);
     }
+    // testing
+    FD_SET(0, &read_sockets);
+    FD_SET(0, &write_sockets);
 }
 
 // ----- Memory Handling -----
@@ -174,6 +180,15 @@ void        irc::server::print_users( void ){
         std::cout << "User No: " << nb << " has fd = " << (*it).first << std::endl;
         nb++;
     }
+}
+
+// ----- Manual entry (stdin) handler -----
+int         irc::server::manual_entry( void ){
+    if (FD_ISSET(0, &read_sockets)){
+        std::cout << "received message from stdin" << std::endl;
+        _admin.read_connection();
+    }
+    return (SUCCESS);
 }
 
 // // ----- Init cmd map -----

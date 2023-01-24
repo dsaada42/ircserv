@@ -6,20 +6,25 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/23 15:10:39 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 09:02:17 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "user.hpp"
 
 // ----- Constructor default -----
-irc::user::user( int fd ): _fd(fd), _remain(0){}
+irc::user::user( int fd ): _fd(fd), _remain(0){
+    bzero(_buff, BUFF_SIZE);
+}
 irc::user::user( str nickname, str username, str fullname, bool oper, int fd)
-    : _username(username), _nickname(nickname), _fullname(fullname), _oper(oper), _fd(fd), _remain(0){}
+    : _username(username), _nickname(nickname), _fullname(fullname), _oper(oper), _fd(fd), _remain(0){
+    bzero(_buff, BUFF_SIZE);
+}
 
 // ----- Copy Constructor -----
 irc::user::user( const irc::user & x)
     : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0){}
+// ----- Destructor -----
 irc::user::~user( void ){
     while( _messages.size() != 0){
         delete _messages.front();
@@ -53,21 +58,20 @@ int irc::user::read_connection(void)                {
     if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) <= 0){
         return (FAILURE);
     }
-    extract_messages();
+    extract_messages("\r\n");
     return (SUCCESS);
 }
 
 // ----- Extract all available messages -----
-void irc::user::extract_messages(void)              {
+void irc::user::extract_messages(str delim)              {
     str buff = _buff;
-    str delim = "\r\n";
     str::size_type    i;
     
     // tant qu'on trouve un delimiteur, on recupere la commande et passe a la suivante 
     while ((i = buff.find(delim)) != str::npos){
         std::cout << "found cmd : " << buff.substr(0, i) << std::endl;
         _messages.push(new message(buff.substr(0, i)));
-        buff = buff.substr(i + 2, buff.size());
+        buff = buff.substr(i + delim.size(), buff.size());
     }
     // on reinitialise le buffer et laisse la data restante a l'interieur 
     bzero(_buff, BUFF_SIZE);

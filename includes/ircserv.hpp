@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/23 12:27:00 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:18:14 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,20 @@
 # include <unistd.h>
 # include <cstdlib>
 # include <stdio.h>
+# include <csignal>
+# include <exception>
 // ----- Select -----
 # include <sys/select.h>
 
+// ----- Typedefs -----
 typedef std::string str;
+
+// ----- Exceptions -----
+class exitException : public std::exception {
+    public:
+        virtual const char* what() const throw(){
+            return ("");
+        };
+};
 
 #endif
