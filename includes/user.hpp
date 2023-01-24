@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 08:57:36 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:55:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ namespace irc{
             const str   & fullname ( void ) const;
             const bool  & oper     ( void ) const;
             const int   & fd       ( void ) const;
+            std::queue<message*> & messages( void );
 
         // ----- Setters -----
             void set_username( const str & username );
