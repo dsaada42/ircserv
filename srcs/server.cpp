@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 12:25:10 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:15:55 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,9 @@ int         irc::server::run( void ){
         manual_entry();
         
         handle_read_set();
-        //interprete messages
+
+        interprete_and_reply();
+        
         handle_write_set();
 
         handle_users_timeout();
@@ -171,6 +173,17 @@ void        irc::server::delete_all_messages(void){
     }
 }
 
+// ----- Message Interpreter + Reply generator -----
+void        irc::server::interprete_and_reply( void ){
+    std::map<int, irc::user*>::iterator it;
+    irc::user                           *current;
+    
+    for (it = _users.begin(); it != _users.end(); it++){
+        user = it->second;
+        ++it;
+        if (user._messages())
+    }
+}
 // ----- Debug / Print -----
 void        irc::server::print_users( void ){
     std::map<int, irc::user*>::iterator it;

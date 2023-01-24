@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 12:36:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:13:18 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ namespace irc{
         // ----- Select helper -----
             void        update_sets(void);
 
+        // ----- Message Interpreter + Reply generator -----
+            void        interprete_and_reply(void);
+            
         // ----- Memory handler ----- --> to a class?
             void        delete_user(user * el);
             void        delete_user(const str & nick);

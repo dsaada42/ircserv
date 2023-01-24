@@ -6,13 +6,14 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/24 12:19:45 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:04:24 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRCSERV_HPP
 # define IRCSERV_HPP
 #define SERVER_PORT 6667
+#define SERVER_NAME "shittyIRC"
 #define TCP 0
 #define BACKLOG 10
 #define BUFF_SIZE 1024
