@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 10:21:21 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:31:19 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,6 @@ void        irc::server::print_users( void ){
 // ----- Manual entry (stdin) handler -----
 int         irc::server::manual_entry( void ){
     if (FD_ISSET(0, &read_sockets)){
-        std::cout << "received message from stdin" << std::endl;
         _admin.read_connection();
     }
     return (SUCCESS);

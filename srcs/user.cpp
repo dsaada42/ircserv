@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 09:02:17 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:31:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void irc::user::extract_messages(str delim)              {
     
     // tant qu'on trouve un delimiteur, on recupere la commande et passe a la suivante 
     while ((i = buff.find(delim)) != str::npos){
-        std::cout << "found cmd : " << buff.substr(0, i) << std::endl;
         _messages.push(new message(buff.substr(0, i)));
         buff = buff.substr(i + delim.size(), buff.size());
     }

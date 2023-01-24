@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 09:23:01 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:37:46 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 irc::message::message( void ){}
 
 irc::message::message( str message ): _message(message){}
-
 
 // ----- Destructor -----
 irc::message::~message( void ){}
