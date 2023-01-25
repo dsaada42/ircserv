@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 08:44:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 09:58:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int irc::message::parse_message( void ){
     str::size_type  pos;
     str             msg = _message;
     
-    //if prefix detected
+    if (msg.size() == 0)
+        return(FAILURE);
     if (msg.at(0) == ':'){
         std::cout << "detected prefix" << std::endl;
         pos = msg.find(" ");
@@ -77,4 +78,12 @@ str irc::message::create_message( void ){
 // ----- Send -----
 int irc::message::send( void ){
     return (write(_to, _message.c_str(), _message.size()));
+}
+
+void irc::message::print( void ){
+    std::cout << "=> Message  ==> " << _message << std::endl;
+    std::cout << "-> Prefix   ==> " << _prefix << std::endl;
+    std::cout << "-> Cmd      ==> " << _cmd << std::endl;
+    std::cout << "-> Params   ==> " << _params << std::endl;
+    std::cout << "-> Trailing ==> " << _trailing << std::endl;
 }

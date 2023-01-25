@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:09:04 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:02:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ namespace irc{
     
     class user{
         protected:
-            str                     _username;
-            str                     _nickname;
-            str                     _fullname;
-            bool                    _oper;
-            int                     _fd;
-            char                    _buff[BUFF_SIZE];
-            unsigned long           _remain;
+            str             _username;
+            str             _nickname;
+            str             _fullname;
+            bool            _oper;
+            int             _fd;
+            char            _buff[BUFF_SIZE];
+            unsigned long   _remain;
 
         
         public:

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 09:22:58 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:00:37 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ namespace irc{
         // ----- Send message -----
             int send( void );
 
+        // ----- Debug -----
+            void print( void );
 
     };
 

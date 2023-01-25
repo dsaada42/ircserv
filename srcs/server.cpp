@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:08:31 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 09:54:58 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,17 +185,20 @@ void        irc::server::interprete_and_reply( void ){
 
     while (_received.size() != 0 ){
         msg = _received.front();
-        itmap = _cmds.find( msg->get_message() ); // a remplacer par get_cmd post parsing
+        if (msg->parse_message() == SUCCESS){
+            msg->print();
+            itmap = _cmds.find( msg->get_cmd() );
             if (itmap != _cmds.end()){
                 std::cout << "found cmd " << itmap->first << std::endl;
                 funcp = itmap->second;
                 funcp(msg);
             }
+        }
         delete msg;
         _received.pop();    
     }
-  
 }
+
 // ----- Debug / Print -----
 void        irc::server::print_users( void ){
     std::map<int, irc::user*>::iterator it;
