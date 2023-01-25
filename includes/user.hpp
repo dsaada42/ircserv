@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 17:55:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 09:09:04 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ namespace irc{
             str                     _username;
             str                     _nickname;
             str                     _fullname;
-            std::queue<message*>    _messages;
             bool                    _oper;
             int                     _fd;
             char                    _buff[BUFF_SIZE];
@@ -45,7 +44,6 @@ namespace irc{
             const str   & fullname ( void ) const;
             const bool  & oper     ( void ) const;
             const int   & fd       ( void ) const;
-            std::queue<message*> & messages( void );
 
         // ----- Setters -----
             void set_username( const str & username );
@@ -55,9 +53,7 @@ namespace irc{
 
         // ----- Read Connexion -----
             int read_connection( void );
-            void extract_messages(str delim);
-
-
+            message *extract_message(str delim);
             
     };
 

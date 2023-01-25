@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 10:37:46 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 08:44:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,34 @@ void irc::message::set_to(const int & to)               { _to = to; }
 
 // ----- Decoder -----
 int irc::message::parse_message( void ){
-    //all the parsing stuff for said cmd
-    return(1);
+    str::size_type  pos;
+    str             msg = _message;
+    
+    //if prefix detected
+    if (msg.at(0) == ':'){
+        std::cout << "detected prefix" << std::endl;
+        pos = msg.find(" ");
+        if (pos == str::npos){
+            std::cout << "no cmd detected, failed parsing message" << std::endl;  
+            return (FAILURE);
+        } //cas ou rien derriere le prefixe -> cmd not valid
+        _prefix = msg.substr( 0, pos );
+        msg = msg.substr(pos + 1, msg.size());
+    }
+    pos = msg.find(" ");
+    _cmd = msg.substr( 0 , pos ); 
+    if ( pos == str::npos ) //cas ou uniquement commande sans arguments 
+        return (SUCCESS);
+    msg = msg.substr( pos + 1, msg.size());
+    pos = msg.find(":");
+    if (pos == str::npos){ // no trailing found, the rest is args
+        _params = msg;
+    }
+    else{ //found trailing 
+        _params = msg.substr(0, pos);
+        _trailing = msg.substr(pos + 1, msg.size());
+    }
+    return(SUCCESS);
 }
 
 // ----- Encoder -----

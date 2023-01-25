@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 08:47:52 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 18:10:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 09:08:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,6 @@ int irc::adminUser::read_connection(void){
     if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) < 0){
         return (FAILURE);
     }
-    extract_messages("\n");
-    
-    msg = _messages.front()->get_message();
-    if (msg == "exit")
-        throw (exitException());
-    // while (_messages.size()){
-    //     msg = _messages.front()->get_message();
-    //     if (msg == "exit")
-    //         throw (exitException());
-    //     delete _messages.front();
-    //     _messages.pop();
-    // }
-    
+
     return (SUCCESS);
 }

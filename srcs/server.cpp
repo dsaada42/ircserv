@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 18:16:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 09:08:31 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int        irc::server::send_message(const int & fd, irc::message msg){
 void        irc::server::handle_read_set( void ){
     std::map<int, irc::user*>::iterator it;
     irc::user                           *user;
+    irc::message                        *msg;
     
     //cas 1 : readable server socket
     if (FD_ISSET(sock_fd(), &read_sockets)){
@@ -71,6 +72,8 @@ void        irc::server::handle_read_set( void ){
                 std::cout << "deleting user because connection lost" << std::endl;   
                 delete_user(user);
             }
+            while ((msg = user->extract_message("\r\n")) != NULL)
+                _received.push(msg);  
         }
         //cas 3 : exception sur la connexion , on ferme 
         else if (FD_ISSET(user->fd(), &except_sockets)){
@@ -176,33 +179,22 @@ void        irc::server::delete_all_messages(void){
 // ----- Message Interpreter + Reply generator -----
 void        irc::server::interprete_and_reply( void ){
     std::map<int, irc::user*>::iterator it;
-    irc::user                           *current;
     irc::message                        *msg;
     int (*funcp)(irc::message *);
     std::map<str, int (*)(irc::message *)>::iterator itmap;
 
-    if (_admin.messages().size() != 0){
-        while (_admin.messages().size()){
-            msg = _admin.messages().front();
-            itmap = _cmds.find( msg->get_message() ); // a remplacer par get_cmd post parsing
+    while (_received.size() != 0 ){
+        msg = _received.front();
+        itmap = _cmds.find( msg->get_message() ); // a remplacer par get_cmd post parsing
             if (itmap != _cmds.end()){
                 std::cout << "found cmd " << itmap->first << std::endl;
                 funcp = itmap->second;
                 funcp(msg);
             }
-            delete _admin.messages().front();
-            _admin.messages().pop();
-        }
+        delete msg;
+        _received.pop();    
     }
-    for (it = _users.begin(); it != _users.end(); it++){
-        current = it->second;
-        ++it;
-        if (current->messages().size() != 0){
-            //treat each message
-            std::cout << "Treating messages of user connected on fd " << current->fd() << std::endl;
-        }
-    }
-    
+  
 }
 // ----- Debug / Print -----
 void        irc::server::print_users( void ){
@@ -217,8 +209,15 @@ void        irc::server::print_users( void ){
 
 // ----- Manual entry (stdin) handler -----
 int         irc::server::manual_entry( void ){
+    irc::message *msg;
+    
     if (FD_ISSET(0, &read_sockets)){
         _admin.read_connection();
+    }
+    while ((msg = _admin.extract_message("\n")) != NULL){
+        _received.push(msg);
+        if (msg->get_message() == "exit")
+            throw (exitException());
     }
     return (SUCCESS);
 }

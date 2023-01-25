@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 17:13:18 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 08:55:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ namespace irc{
             std::map<str, int (*)(message *)>   _cmds;
             std::map<int, user*>                _users;
             std::map<str, channel*>             _channels;
+            std::queue<message*>                _received;
             std::queue<message*>                _messages;
             irc::serverSocket                   _sock;
             fd_set                              read_sockets;
