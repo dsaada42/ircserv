@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 12:47:38 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 18:17:16 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,14 +100,15 @@ void        irc::server::handle_write_set(void){
     while (_messages.size() > 0){        
         current = _messages.front();
         _messages.pop();
-        if (FD_ISSET(current->to(), &write_sockets)){
+        if (FD_ISSET(current->get_to(), &write_sockets)){
             if (current->send() == SUCCESS)
-                delete current;            
+                delete current;
             else
-                tmp_messages.push(current);
+                tmp_messages.push(current);//attention gestion probleme
         }
-        else
+        else{
             tmp_messages.push(current);
+        }
     }
     _messages = tmp_messages;
 }
@@ -129,7 +130,7 @@ int         irc::server::run( void ){
 
         interprete_and_reply();
         
-        handle_write_set();
+        handle_write_set();//gerer les messages perdus
 
         handle_users_timeout();
     }
@@ -145,6 +146,7 @@ void       irc::server::handle_users_timeout(void){
     std::map<int, irc::user*>::iterator it = _users.begin();
     irc::user                           *current;
     unsigned long                       inactive_time = 0;
+    irc::message                        *msg;
     
     while (it != _users.end()){
         current = it->second;
@@ -157,6 +159,9 @@ void       irc::server::handle_users_timeout(void){
         else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
             std::cout << "Sending ping to inactive user" << std::endl;
             //send ping
+            msg = cmd::cmd_ping( current->fd() );
+            msg->create_message();
+            std::cout << "Ping message:\n" << msg->get_message() << std::endl;
             current->set_ping(true);
         }
     }

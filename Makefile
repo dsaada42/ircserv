@@ -6,7 +6,7 @@
 #    By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/08 08:53:39 by dylan             #+#    #+#              #
-#    Updated: 2023/01/19 07:35:55 by dsaada           ###   ########.fr        #
+#    Updated: 2023/01/25 15:13:38 by dsaada           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ CHUT		= --no-print-directory
 $(NAME) : $(OBJS) $(INCLUDES)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
-all : $(NAME)
+all : $(NAME) proxy
 
 proxy : 
 	@cd proxy && make $(CHUT)

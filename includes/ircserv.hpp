@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/25 12:07:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 17:33:59 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 #define FAILURE 1
 #define PING_TRIGGER_TIME 5000
 #define DISCONNECT_TRIGGER_TIME 10000
+#define SERVER_PREFIX "shittyIrc"
+#include <sstream>
+
+//macro to convert int to string
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
 
 # include <cstdlib>
 # include <iostream>
@@ -38,6 +44,8 @@
 # include <exception>
 # include <utility>
 # include <sys/time.h>
+# include <iomanip>
+
 // ----- Select -----
 # include <sys/select.h>
 

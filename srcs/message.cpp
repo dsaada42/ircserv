@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:58:13 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 18:09:30 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ irc::message::message( void ){}
 
 irc::message::message( str message ): _message(message){}
 
+irc::message::message( str prefix, str cmd, str params, str trailing, int to )
+    : _params(params), _prefix(prefix), _cmd(cmd), _trailing(trailing), _to(to){}
 // ----- Destructor -----
 irc::message::~message( void ){}
 
@@ -26,7 +28,7 @@ str irc::message::get_prefix( void )   const { return (_prefix); }
 str irc::message::get_cmd( void )      const { return (_cmd); }
 str irc::message::get_params( void )   const { return (_params); }
 str irc::message::get_trailing( void ) const { return (_trailing); }
-const int & irc::message::to( void )   const { return (_to); }
+const int & irc::message::get_to( void )   const { return (_to); }
 
 // ----- Setters -----
 void irc::message::set_message(const str & message)     { _message = message; }
@@ -71,7 +73,11 @@ int irc::message::parse_message( void ){
 
 // ----- Encoder -----
 str irc::message::create_message( void ){
-    _message = _prefix + _cmd + _params + _trailing;
+    if (_prefix.size() > 0)
+        _message = ":" + _prefix + " ";
+    _message += _cmd + " " + _params;
+    if (_trailing.size() > 0)
+        _message += " :" + _trailing;
     return (_message);
 }
 

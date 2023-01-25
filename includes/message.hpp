@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 10:00:37 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 16:29:12 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ namespace irc{
         public:
         // ----- Constructors -----
             message( void );
+            message( str prefix, str cmd, str params, str trailing, int to );
             message( str message );
             
         // ----- Destructor -----
@@ -40,7 +41,7 @@ namespace irc{
             str get_params( void ) const;
             str get_cmd( void ) const;
             str get_trailing( void ) const;
-            const int & to(void) const;
+            const int & get_to(void) const;
             
         // ----- Setters -----
             void set_message(const str & message);

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 12:46:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 17:49:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "message.hpp"
 # include "adminUser.hpp"
 # include "commands.hpp"
+# include "send.hpp"
 
 namespace irc{
     
