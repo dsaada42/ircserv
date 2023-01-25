@@ -6,14 +6,19 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 08:47:52 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:08:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 11:27:20 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "adminUser.hpp"
 
 // ----- Constructor default -----
-irc::adminUser::adminUser( void ): user( "adminick", "useradmin", "Admin D. Ballec", true, 0){}
+irc::adminUser::adminUser( void ): user( 0 , 0 ){
+    set_nickname("adminNick");
+    set_fullname("adminNick");
+    set_username("adminNick");
+    set_connected(true);
+}
 
 // ----- Destructor -----
 irc::adminUser::~adminUser( void ){}

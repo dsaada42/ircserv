@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/24 17:04:24 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:07:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #define BUFF_SIZE 1024
 #define SUCCESS 0
 #define FAILURE 1
+#define PING_TRIGGER_TIME 5000
+#define DISCONNECT_TRIGGER_TIME 10000
 
 # include <cstdlib>
 # include <iostream>
@@ -35,6 +37,7 @@
 # include <csignal>
 # include <exception>
 # include <utility>
+# include <sys/time.h>
 // ----- Select -----
 # include <sys/select.h>
 

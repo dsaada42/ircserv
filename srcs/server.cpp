@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 10:07:48 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:05:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void        irc::server::accept_connection( void )              {
         std::cerr << "Error accepting connection" << std::endl;
         throw(exitException());
     }
-    irc::user * new_user = new irc::user(newfd);
+    irc::user * new_user = new irc::user(newfd, get_time_ms());
     _users.insert(std::make_pair(newfd, new_user));
     irc::message reply(":my_server 001 dsaada :Welcome to our shitty IRC server\r\n");
     send_message(newfd, reply);
@@ -128,7 +128,31 @@ int         irc::server::run( void ){
 }
 
 // ----- Timeout / load handler -----
-void       irc::server::handle_users_timeout(void){}
+unsigned long   irc::server::get_time_ms( void ){
+    struct timeval  time_now;
+    gettimeofday(&time_now, NULL);
+    return ((time_now.tv_sec * 1000) + (time_now.tv_usec / 1000));
+}
+void       irc::server::handle_users_timeout(void){
+    std::map<int, irc::user*>::iterator it = _users.begin();
+    irc::user                           *current;
+    unsigned long                       inactive_time = 0;
+    
+    while (it != _users.end()){
+        current = it->second;
+        it++;
+        inactive_time = get_time_ms() - current->timestamp();
+        if (inactive_time > DISCONNECT_TRIGGER_TIME){
+            std::cout << "Closing connection with user inactive for too long" << std::endl;
+            delete_user(current);
+        }
+        else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
+            std::cout << "Sending ping to inactive user" << std::endl;
+            //send ping
+            current->set_ping(true);
+        }
+    }
+}
 
 // ----- Select helper -----
 void       irc::server::update_sets( void )       {
@@ -145,9 +169,8 @@ void       irc::server::update_sets( void )       {
         FD_SET((*it).second->fd(), &write_sockets);
         FD_SET((*it).second->fd(), &except_sockets);
     }
-    // testing
     FD_SET(0, &read_sockets);
-    FD_SET(0, &write_sockets);
+    FD_SET(1, &write_sockets);
 }
 
 // ----- Memory Handling -----

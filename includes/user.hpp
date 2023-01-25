@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 10:02:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:02:05 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,15 @@ namespace irc{
             bool            _oper;
             int             _fd;
             char            _buff[BUFF_SIZE];
+            bool            _connected;
+            bool            _ping;
             unsigned long   _remain;
-
+            unsigned long   _timestamp; //time in ms set at creation
+            
         
         public:
         // ----- Constructors -----
-            user(int fd);
-            user(str nickname, str username, str fullname, bool oper, int fd);
+            user(int fd, unsigned long timestamp);
             user(const user & x);
         // ----- Destructor -----
             virtual ~user( void );
@@ -44,12 +46,17 @@ namespace irc{
             const str   & fullname ( void ) const;
             const bool  & oper     ( void ) const;
             const int   & fd       ( void ) const;
+            const unsigned long & timestamp( void ) const;
+            const bool  & connected( void ) const;
+            const bool  & ping( void ) const;
 
         // ----- Setters -----
             void set_username( const str & username );
             void set_nickname( const str & nickname );
             void set_fullname( const str & fullname );
             void set_oper    ( const bool & oper );
+            void set_connected( const bool & connected);
+            void set_ping( const bool & ping);
 
         // ----- Read Connexion -----
             int read_connection( void );

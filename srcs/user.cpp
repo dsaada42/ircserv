@@ -6,26 +6,25 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:45:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:08:43 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "user.hpp"
 
 // ----- Constructor default -----
-irc::user::user( int fd ): _fd(fd), _remain(0){
-    bzero(_buff, BUFF_SIZE);
-}
-irc::user::user( str nickname, str username, str fullname, bool oper, int fd)
-    : _username(username), _nickname(nickname), _fullname(fullname), _oper(oper), _fd(fd), _remain(0){
+irc::user::user( int fd , unsigned long timestamp )
+    : _fd(fd), _connected(false), _remain(0), _timestamp(timestamp){ 
     bzero(_buff, BUFF_SIZE);
 }
 
 // ----- Copy Constructor -----
 irc::user::user( const irc::user & x)
-    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0){}
+    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0), _timestamp(x.timestamp()){}
 // ----- Destructor -----
-irc::user::~user( void ){}
+irc::user::~user( void ){
+    close(_fd);
+}
 
 // ----- Operator= -----
 irc::user & irc::user::operator= (const irc::user & x){
@@ -39,12 +38,17 @@ const str   & irc::user::fullname   ( void ) const  { return(_fullname);}
 const str   & irc::user::nickname   ( void ) const  { return(_nickname);}
 const bool  & irc::user::oper       ( void ) const  { return(_oper);}
 const int   & irc::user::fd         ( void ) const  { return(_fd);}
+const unsigned long & irc::user::timestamp( void ) const { return(_timestamp);}
+const bool  & irc::user::connected  ( void ) const  { return(_connected);}
+const bool  & irc::user::ping       ( void ) const  { return(_ping);}
 
 // ----- Setters -----
 void irc::user::set_username(const str & username)  { _username = username; }
 void irc::user::set_fullname(const str & fullname)  { _fullname = fullname; }
 void irc::user::set_nickname(const str & nickname)  { _nickname = nickname; }
 void irc::user::set_oper    (const bool & oper)     { _oper = oper; }
+void irc::user::set_connected(const bool & connected){ _connected = connected; }
+void irc::user::set_ping(const bool & ping)         { _ping = ping; }
 
 // ----- Read Connexion -----
 int irc::user::read_connection(void)                { 
