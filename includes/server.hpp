@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 11:45:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:46:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ namespace irc{
             void        accept_connection(void);
             int         send_message(const int & fd, irc::message msg);
             void        handle_read_set(void);
+            void        handle_user_connection(user * current);
             void        handle_write_set(void);
         // ----- Timeout / load handler -----
             unsigned long get_time_ms(void);

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 12:05:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 12:47:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,34 +54,42 @@ int        irc::server::send_message(const int & fd, irc::message msg){
 // ----- Read Handler -----
 void        irc::server::handle_read_set( void ){
     std::map<int, irc::user*>::iterator it;
-    irc::user                           *user;
+    irc::user                           *current;
     irc::message                        *msg;
     
-    //cas 1 : readable server socket
     if (FD_ISSET(sock_fd(), &read_sockets)){
         std::cout << "New connection incoming" << std::endl;
         accept_connection();
     }
     it = _users.begin();
     while ( it != _users.end() ){
-        user = (*it).second;
+        current = (*it).second;
         it++; 
-        //cas 2 : la socket d'un des users est readable
-        if (FD_ISSET(user->fd(), &read_sockets)){
-            std::cout << "Received message from established connection" << std::endl;
-            if (user->read_connection() == FAILURE){
-                std::cout << "deleting user because connection lost" << std::endl;   
-                delete_user(user);
+        if (FD_ISSET(current->fd(), &read_sockets)){
+            if (current->connected()){    
+                std::cout << "Received message from established connection" << std::endl;
+                if (current->read_connection() == FAILURE){
+                    std::cout << "deleting user because connection lost" << std::endl;   
+                    delete_user(current);
+                }
+                else{
+                    while ((msg = current->extract_message("\r\n")) != NULL)
+                        _received.push(msg);  
+                }
             }
-            while ((msg = user->extract_message("\r\n")) != NULL)
-                _received.push(msg);  
+            else
+                handle_user_connection(current);
         }
-        //cas 3 : exception sur la connexion , on ferme 
-        else if (FD_ISSET(user->fd(), &except_sockets)){
+        else if (FD_ISSET(current->fd(), &except_sockets)){
             std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
-            delete_user(user);
+            delete_user(current);
         }
     }
+}
+
+void        irc::server::handle_user_connection(irc::user *current){
+    (void)current;
+    //gerer la procedure de connection de l'user
 }
 
 // ----- Write Handler -----
