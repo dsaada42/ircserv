@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 08:55:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:06:47 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ namespace irc{
             void        delete_channel(const str & name);
             void        delete_all_channels(void);
             void        delete_all_messages(void);
+            void        delete_all_received(void);
 
         // ----- Init cmd map -----
             void        init_cmd_map(void);

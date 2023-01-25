@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 09:54:58 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:07:48 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ irc::server::server(int port, str password) :
 irc::server::~server( void ){
     delete_all_channels();
     delete_all_users();
+    delete_all_received();
     delete_all_messages();
 }
 
@@ -173,6 +174,12 @@ void        irc::server::delete_all_messages(void){
     while( _messages.size() != 0){
         delete _messages.front();
         _messages.pop();
+    }
+}
+void        irc::server::delete_all_received( void ){
+    while( _received.size() != 0){
+        delete _received.front();
+        _received.pop();
     }
 }
 
