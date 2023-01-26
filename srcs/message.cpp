@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 08:05:12 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 09:43:42 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 // ----- Constructor -----
 irc::message::message( void ){}
 
-irc::message::message( str message ): _message(message){}
+irc::message::message( str message, int fd ): _message(message), _fd(fd){}
 
-irc::message::message( str prefix, str cmd, str params, str trailing, int to )
-    : _params(params), _prefix(prefix), _cmd(cmd), _trailing(trailing), _to(to){}
+irc::message::message( str prefix, str cmd, str params, str trailing, int fd )
+    : _params(params), _prefix(prefix), _cmd(cmd), _trailing(trailing), _fd(fd){}
 // ----- Destructor -----
 irc::message::~message( void ){}
 
@@ -28,7 +28,7 @@ str irc::message::get_prefix( void )   const { return (_prefix); }
 str irc::message::get_cmd( void )      const { return (_cmd); }
 str irc::message::get_params( void )   const { return (_params); }
 str irc::message::get_trailing( void ) const { return (_trailing); }
-const int & irc::message::get_to( void )   const { return (_to); }
+const int & irc::message::get_fd( void )   const { return (_fd); }
 
 // ----- Setters -----
 void irc::message::set_message(const str & message)     { _message = message; }
@@ -36,7 +36,7 @@ void irc::message::set_params(const str & params)       { _params = params; }
 void irc::message::set_prefix(const str & prefix)       { _prefix = prefix; }
 void irc::message::set_cmd(const str & cmd)             { _cmd = cmd; }
 void irc::message::set_trailing(const str & trailing)   { _trailing = trailing; }
-void irc::message::set_to(const int & to)               { _to = to; }
+void irc::message::set_fd(const int & fd)               { _fd = fd; }
 
 // ----- Decoder -----
 int irc::message::parse_message( void ){
@@ -65,7 +65,7 @@ int irc::message::parse_message( void ){
         _params = msg;
     }
     else{ //found trailing 
-        _params = msg.substr(0, pos);
+        _params = msg.substr(0, pos - 1);
         _trailing = msg.substr(pos + 1, msg.size());
     }
     return(SUCCESS);
@@ -84,15 +84,16 @@ str irc::message::create_message( void ){
 
 // ----- Send -----
 int irc::message::send( void ){
-    if (write(_to, _message.c_str(), _message.size()) < 0)
+    if (write(_fd, _message.c_str(), _message.size()) < 0)
         return (FAILURE);
     return (SUCCESS);
 }
 
 void irc::message::print( void ){
-    std::cout << "=> Message  ==> " << _message << std::endl;
-    std::cout << "-> Prefix   ==> " << _prefix << std::endl;
-    std::cout << "-> Cmd      ==> " << _cmd << std::endl;
-    std::cout << "-> Params   ==> " << _params << std::endl;
-    std::cout << "-> Trailing ==> " << _trailing << std::endl;
+    std::cout << "========> Message <========= " << _message << std::endl;
+    std::cout << "-> Prefix   : " << _prefix << std::endl;
+    std::cout << "-> Cmd      : " << _cmd << std::endl;
+    std::cout << "-> Params   : " << _params << std::endl;
+    std::cout << "-> Trailing : " << _trailing << std::endl;
+    std::cout << "-> Fd       : " << _fd << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 11:08:52 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/24 17:09:35 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 09:40:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int ft_pong(irc::message * msg){
         //reply no origin giver ERR_NOORIGIN
     }
     else if (msg->get_params() != SERVER_NAME){
-        std::cout << "PONG: no such server" << std::endl;
+        std::cout << "PONG: no such server " << msg->get_params() << std::endl;
         //reply no such server ERR_NOSUCHSERVER
     }
     else{

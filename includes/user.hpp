@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 12:02:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 09:01:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,9 @@ namespace irc{
         // ----- Read Connexion -----
             int read_connection( void );
             message *extract_message(str delim);
-            
+            void new_timestamp(void);
+        // ----- Debug -----
+            void print(void);
     };
 
 }

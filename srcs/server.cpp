@@ -6,11 +6,17 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 08:11:48 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 09:25:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
+
+//===========================================================================================
+//=                                                                                         =
+//=                  CONSTRUCTOR / DESTRUCTOR / PUBLIC FUNCTIONS                            =
+//=                                                                                         =
+//===========================================================================================
 
 // ----- Constructor / Destructor ------
 irc::server::server(int port, str password) : 
@@ -28,90 +34,6 @@ irc::server::~server( void ){
 // ----- Getters -----
 const int           & irc::server::port( void ) const           { return(_port); }
 const int           & irc::server::sock_fd( void ) const        { return(_sock.fd()); }
-
-// ----- Network -----
-void        irc::server::accept_connection( void )              {
-    int newfd;
-
-    newfd = accept(sock_fd(), (struct sockaddr *)NULL, NULL );
-    if (newfd < 0){
-        std::cerr << "Error accepting connection" << std::endl;
-        throw(exitException());
-    }
-    irc::user * new_user = new irc::user(newfd, get_time_ms());
-    _users.insert(std::make_pair(newfd, new_user));
-    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n");
-    send_message(newfd, reply);
-}
-
-int        irc::server::send_message(const int & fd, irc::message msg){
-    str result;
-
-    result = msg.get_message();
-    return (write(fd, result.c_str(), result.size()));
-}
-
-// ----- Read Handler -----
-void        irc::server::handle_read_set( void ){
-    std::map<int, irc::user*>::iterator it;
-    irc::user                           *current;
-    irc::message                        *msg;
-    
-    if (FD_ISSET(sock_fd(), &read_sockets)){
-        std::cout << "New connection incoming" << std::endl;
-        accept_connection();
-    }
-    it = _users.begin();
-    while ( it != _users.end() ){
-        current = (*it).second;
-        it++; 
-        if (FD_ISSET(current->fd(), &read_sockets)){
-            if (current->connected()){    
-                std::cout << "Received message from established connection" << std::endl;
-                if (current->read_connection() == FAILURE){
-                    std::cout << "deleting user because connection lost" << std::endl;   
-                    delete_user(current);
-                }
-                else{
-                    while ((msg = current->extract_message("\r\n")) != NULL)
-                        _received.push(msg);  
-                }
-            }
-            else
-                handle_user_connection(current);
-        }
-        else if (FD_ISSET(current->fd(), &except_sockets)){
-            std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
-            delete_user(current);
-        }
-    }
-}
-
-void        irc::server::handle_user_connection(irc::user *current){
-    (void)current;
-    //gerer la procedure de connection de l'user
-}
-
-// ----- Write Handler -----
-void        irc::server::handle_write_set(void){
-    message                 *current;
-    std::queue<message*>    tmp_messages;
-
-    while (_messages.size() > 0){        
-        current = _messages.front();
-        _messages.pop();
-        if (FD_ISSET(current->get_to(), &write_sockets)){
-            if (current->send() == SUCCESS)
-                delete current;
-            else
-                std::cerr << "failed sending message" << std::endl;
-        }
-        else{
-            tmp_messages.push(current);
-        }
-    }
-    _messages = tmp_messages;
-}
 
 // ----- Main loop -----
 int         irc::server::run( void ){
@@ -136,12 +58,43 @@ int         irc::server::run( void ){
     }
 }
 
-// ----- Timeout / load handler -----
+//===========================================================================================
+//=                                                                                         =
+//=                CONNECTION ACCEPT / IDENTITY CHECKING / TIMEOUT                          =
+//=                                                                                         =
+//===========================================================================================
+
+// ----- Connection Accept -----
+void        irc::server::accept_connection( void )              {
+    int newfd;
+
+    newfd = accept(sock_fd(), (struct sockaddr *)NULL, NULL );
+    if (newfd < 0){
+        std::cerr << "Error accepting connection" << std::endl;
+        throw(exitException());
+    }
+    irc::user * new_user = new irc::user(newfd, get_time_ms());
+    new_user->set_connected(true);
+    _users.insert(std::make_pair(newfd, new_user));
+    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n", newfd);
+    reply.send();
+    print_users();
+}
+
+// ----- Identity checker -----
+void        irc::server::handle_user_connection(irc::user *current){
+    (void)current;
+    //gerer la procedure de connection de l'user
+}
+
+// ----- Timestamp -----
 unsigned long   irc::server::get_time_ms( void ){
     struct timeval  time_now;
     gettimeofday(&time_now, NULL);
     return ((time_now.tv_sec * 1000) + (time_now.tv_usec / 1000));
 }
+
+// ----- Timeout Handler -----
 void       irc::server::handle_users_timeout(void){
     std::map<int, irc::user*>::iterator it = _users.begin();
     irc::user                           *current;
@@ -158,14 +111,97 @@ void       irc::server::handle_users_timeout(void){
         }
         else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
             std::cout << "Sending ping to inactive user" << std::endl;
-            //send ping
             msg = cmd::cmd_ping( "dsaada" , current->fd() );
             msg->create_message();
-            // std::cout << "Ping message:\n" << msg->get_message() << std::endl;
             _messages.push(msg);
             current->set_ping(true);
         }
     }
+}
+
+//===========================================================================================
+//=                                                                                         =
+//=                         READ / INTERPRETE / REPLY                                       =
+//=                                                                                         =
+//===========================================================================================
+
+// ----- Read Handler -----
+void        irc::server::handle_read_set( void ){
+    std::map<int, irc::user*>::iterator it;
+    irc::user                           *current;
+    irc::message                        *msg;
+    
+    if (FD_ISSET(sock_fd(), &read_sockets)){
+        std::cout << "New connection incoming" << std::endl;
+        accept_connection();
+    }
+    it = _users.begin();
+    while ( it != _users.end() ){
+        current = (*it).second;
+        it++; 
+        if (FD_ISSET(current->fd(), &read_sockets)){
+            if (current->connected()){    
+                std::cout << "Received message from established connection" << std::endl;
+                if (current->read_connection() == FAILURE){
+                    std::cout << "deleting user because connection lost" << std::endl;   
+                    delete_user(current);
+                }
+                else{
+                    while ((msg = current->extract_message("\r\n")) != NULL){
+                        _received.push(msg);
+                    }
+                }
+            }
+            else
+                handle_user_connection(current);
+        }
+        else if (FD_ISSET(current->fd(), &except_sockets)){
+            std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
+            delete_user(current);
+        }
+    }
+}
+
+// ----- Message Interpreter + Reply generator -----
+void        irc::server::interprete_and_reply( void ){
+    std::map<int, irc::user*>::iterator it;
+    irc::message                        *msg;
+    int (*funcp)(irc::message *);
+    std::map<str, int (*)(irc::message *)>::iterator itmap;
+
+    while (_received.size() != 0 ){
+        msg = _received.front();
+        if (msg->parse_message() == SUCCESS){
+            itmap = _cmds.find( msg->get_cmd() );
+            if (itmap != _cmds.end()){
+                funcp = itmap->second;
+                funcp(msg);
+            }
+        }
+        delete msg;
+        _received.pop();    
+    }
+}
+
+// ----- Write Handler -----
+void        irc::server::handle_write_set(void){
+    message                 *current;
+    std::queue<message*>    tmp_messages;
+
+    while (_messages.size() > 0){        
+        current = _messages.front();
+        _messages.pop();
+        if (FD_ISSET(current->get_fd(), &write_sockets)){
+            if (current->send() == SUCCESS)
+                delete current;
+            else
+                std::cerr << "failed sending message" << std::endl;
+        }
+        else{
+            tmp_messages.push(current);
+        }
+    }
+    _messages = tmp_messages;
 }
 
 // ----- Select helper -----
@@ -187,8 +223,13 @@ void       irc::server::update_sets( void )       {
     FD_SET(1, &write_sockets);
 }
 
-// ----- Memory Handling -----
+//===========================================================================================
+//=                                                                                         =
+//=                         INIT FUNCTIONS AND MEMORY MANAGEMENT                            =
+//=                                                                                         =
+//===========================================================================================
 
+// ----- Memory Handling -----
 void        irc::server::delete_user(user *el){
     _users.erase(el->fd());
     delete el;
@@ -218,54 +259,6 @@ void        irc::server::delete_all_received( void ){
         delete _received.front();
         _received.pop();
     }
-}
-
-// ----- Message Interpreter + Reply generator -----
-void        irc::server::interprete_and_reply( void ){
-    std::map<int, irc::user*>::iterator it;
-    irc::message                        *msg;
-    int (*funcp)(irc::message *);
-    std::map<str, int (*)(irc::message *)>::iterator itmap;
-
-    while (_received.size() != 0 ){
-        msg = _received.front();
-        if (msg->parse_message() == SUCCESS){
-            msg->print();
-            itmap = _cmds.find( msg->get_cmd() );
-            if (itmap != _cmds.end()){
-                funcp = itmap->second;
-                funcp(msg);
-            }
-        }
-        delete msg;
-        _received.pop();    
-    }
-}
-
-// ----- Debug / Print -----
-void        irc::server::print_users( void ){
-    std::map<int, irc::user*>::iterator it;
-    int                              nb = 0;
-    
-    for (it = _users.begin(); it != _users.end(); it++){
-        std::cout << "User No: " << nb << " has fd = " << (*it).first << std::endl;
-        nb++;
-    }
-}
-
-// ----- Manual entry (stdin) handler -----
-int         irc::server::manual_entry( void ){
-    irc::message *msg;
-    
-    if (FD_ISSET(0, &read_sockets)){
-        _admin.read_connection();
-    }
-    while ((msg = _admin.extract_message("\n")) != NULL){
-        _received.push(msg);
-        if (msg->get_message() == "exit")
-            throw (exitException());
-    }
-    return (SUCCESS);
 }
 
 // ----- Init cmd map -----
@@ -299,4 +292,42 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("WHOIS", ft_whois));
     _cmds.insert(std::make_pair("WHOWAS", ft_whowas));
 
+}
+
+//===========================================================================================
+//=                                                                                         =
+//=                  TESTING FUNCTIONS -> NOT FOR FINAL VERSION                             =
+//=                                                                                         =
+//===========================================================================================
+
+
+// ----- Debug / Print -----
+void        irc::server::print_users( void ){
+    std::map<int, irc::user*>::iterator it;
+    
+    for (it = _users.begin(); it != _users.end(); it++){
+        it->second->print();
+    }
+}
+
+int        irc::server::send_message(const int & fd, irc::message msg){
+    str result;
+
+    result = msg.get_message();
+    return (write(fd, result.c_str(), result.size()));
+}
+
+// ----- Manual entry (stdin) handler -----
+int         irc::server::manual_entry( void ){
+    irc::message *msg;
+    
+    if (FD_ISSET(0, &read_sockets)){
+        _admin.read_connection();
+    }
+    while ((msg = _admin.extract_message("\n")) != NULL){
+        _received.push(msg);
+        if (msg->get_message() == "exit")
+            throw (exitException());
+    }
+    return (SUCCESS);
 }

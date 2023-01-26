@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 17:49:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 09:29:32 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,36 +40,41 @@ namespace irc{
             irc::adminUser                      _admin;
             
         public:
+        // ----- Constructor / Destructor -----
             server(int port = 6667, str password = "");
             ~server( void );
 
         //----- Getters -----
             const int   & port(void) const;
             const int   & sock_fd(void) const;
-            
-        // ----- Debug / Print -----
-            void        print_users( void );
-
+    
         // ----- Main loop -----
             int         run( void );
+
 
         private:
         // ----- Network -----
             void        accept_connection(void);
-            int         send_message(const int & fd, irc::message msg);
-            void        handle_read_set(void);
+            
             void        handle_user_connection(user * current);
-            void        handle_write_set(void);
         // ----- Timeout / load handler -----
             unsigned long get_time_ms(void);
             void        handle_users_timeout(void);
         // ----- Select helper -----
             void        update_sets(void);
 
+        //====== READ / INTERPRETE / REPLY ======
+        
+        // ----- Read Handler -----
+            void        handle_read_set(void);
         // ----- Message Interpreter + Reply generator -----
             void        interprete_and_reply(void);
+        // ----- Write Handler
+            void        handle_write_set(void);
+
+        //====== INIT / MEMORY MANAGEMENT ======
             
-        // ----- Memory handler ----- --> to a class?
+        // ----- Memory handler ----- 
             void        delete_user(user * el);
             void        delete_user(const str & nick);
             void        delete_all_users(void);
@@ -77,12 +82,14 @@ namespace irc{
             void        delete_all_channels(void);
             void        delete_all_messages(void);
             void        delete_all_received(void);
-
         // ----- Init cmd map -----
             void        init_cmd_map(void);
 
-        // ----- Manual entry (stdin) handler -----
+
+        //====== TESTING FUNCTIONS ======
             int         manual_entry( void );     
+            int         send_message(const int & fd, irc::message msg);
+            void        print_users( void );
     };
 }
 
