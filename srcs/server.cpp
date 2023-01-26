@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 16:55:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 17:03:27 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ bool        irc::server::check_nickname_rules(const str & nick){
 bool        irc::server::check_channel_rules(const str & chan){
     if (chan.size() > 200 || chan.size() < 2)
         return (false);
-    if (chan.find(',') != str::npos || chan.find(7) != str::npos)
+    if (chan.find(',') != str::npos || chan.find(0x7) != str::npos)
         return (false);
     if (chan.at(0) != '#' && chan.at(0) != '&')
         return (false);

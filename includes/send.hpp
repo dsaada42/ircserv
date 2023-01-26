@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 15:58:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 17:56:46 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,11 @@ namespace irc{
         ERR_TOOMANYCHANNELS = 405,
         ERR_WASNOSUCHNICK = 406,
         ERR_TOOMANYTARGETS = 407,
-        // ERR_NOSUCHSERVICE = 408,
         ERR_NOORIGIN = 409,
         ERR_NORECIPIENT = 411,
         ERR_NOTEXTTOSEND = 412,
         ERR_NOTOPLEVEL = 413,
         ERR_WILDTOPLEVEL = 414,
-        // ERR_BADMASK = 415,
         ERR_UNKNOWNCOMMAND = 421,
         ERR_NOMOTD = 422,
         ERR_NOADMINFO = 423,
@@ -40,7 +38,6 @@ namespace irc{
         ERR_ERRONEUSNICKNAME = 432,
         ERR_NICKNAMEINUSE = 433,
         ERR_NICKCOLLISION = 436,
-        // ERR_UNAVAILABLE_RESOURCE = 437,
         ERR_USERNOTINCHANNEL = 441,
         ERR_NOTONCHANNEL = 442,
         ERR_USERONCHANNEL = 443,
@@ -53,21 +50,15 @@ namespace irc{
         ERR_NOPERMFORHOST = 463,
         ERR_PASSWDMISSMATCH = 464,
         ERR_YOUREBANNEDCREEP = 465,
-        // ERR_YOUWILLBEBANNED = 466,
         ERR_KEYSET = 467,
         ERR_CHANNELISFULL = 471,
         ERR_UNKNOWNMODE = 472,
         ERR_INVITEONLYCHAN = 473,
         ERR_BANNEDFROMCHAN = 474,
         ERR_BADCHANNELKEY = 475,
-        // ERR_BADCHANMASK = 476,
-        // ERR_NOCHANMODES = 477,
-        // ERR_BANNLISTFULL = 478,
         ERR_NOPRIVILEGES = 481,
         ERR_CHANOPRIVISNEED = 482,
         ERR_CANTKILLSERVER = 483,
-        // ERR_RESTRICTED = 484,
-        // ERR_UNIQOPPRIVSNEEDED = 485,
         ERR_NOOPERHOST = 491,
         ERR_UMODEUNKNOWNFLAG = 501,
         ERR_USERSDONTMATCH = 502,
@@ -86,8 +77,6 @@ namespace irc{
         RPL_STATSYLINE = 218,//==========?
         RPL_ENDOFSTATS = 219,
         RPL_UMODEIS = 221,
-        // RPL_SERVLIST = 234,
-        // RPL_SERVLISTEND = 235,
         RPL_STATSLLINE = 241,//==========?
         RPL_STATSUPTIME = 242,
         RPL_STATSOLINE = 243,
@@ -101,7 +90,6 @@ namespace irc{
         RPL_ADMINLOC1 = 257, //==========?
         RPL_ADMINLOC2 = 258, //==========?
         RPL_ADMINEMAIL = 259, //==========?
-        // RPL_NONE = 300, 
         RPL_AWAY = 301,
         RPL_USERHOST = 302,
         RPL_UNAWAY = 305,
@@ -121,10 +109,6 @@ namespace irc{
         RPL_NOTOPIC = 331,
         RPL_TOPIC = 332,
         RPL_INVITING = 341,
-        // RPL_INVITELIST = 346,
-        // RPL_ENDOFINVITELIST =  347,
-        // RPL_EXCEPTLIST = 348,
-        // RPL_ENDOFEXCEPTLIST = 349,
         RPL_VERSION = 351,
         RPL_WHOREPLY = 352,
         RPL_NAMREPLY = 353,
@@ -153,12 +137,10 @@ namespace irc{
         irc::message * err_toomanychannels(const str &channelname, int to);
         irc::message * err_wasnosuchnick(const str &nickname, int to);
         irc::message * err_toomanytargets(const str &target, int to);
-        irc::message * err_nosuchservice(const str &servicename, int to);
         irc::message * err_noorigin(int to);
         irc::message * err_norecipient(const str &command, int to);
         irc::message * err_notexttosend(int to);
         irc::message * err_notoplevel(const str &mask, int to);
-        irc::message * err_badmask(const str &mask, int to);
         irc::message * err_wildtoplevel(const str &mask, int to);
         irc::message * err_unknowncommand(const str &command, int to);
         irc::message * err_nomotd(int to);
@@ -185,11 +167,9 @@ namespace irc{
         irc::message * err_inviteonlychan(const str &channel, int to);
         irc::message * err_bannedfromchan(const str &channel, int to);
         irc::message * err_badchannelkey(const str &channel, int to);
-        irc::message * err_nochanmodes(const str &channel, int to);
         irc::message * err_noprivileges(int to);
         irc::message * err_chanoprisneeded(const str &channel, int to);
         irc::message * err_cantkillserver(int to);
-        irc::message * err_restricted(int to);
         irc::message * err_nooperhost(int to);
         irc::message * err_umodeunknownflag(int to);
         irc::message * err_usersdontmatch(int to);
@@ -206,23 +186,17 @@ namespace irc{
         irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
         irc::message * rpl_endofstats(const str &letter, int to);
         irc::message * rpl_umodeis(const str &modes, int to);
-        irc::message * rpl_servlist(const str &name, const str &server, const str &mask, const str &type, size_t hopcount, const str &info, int to);
-        irc::message * rpl_servlistend(const str &mask, const str &type, int to);
         // irc::message * rpl_statuptime(time_t uptime, int to);
         irc::message * rpl_statoline(const str &hostmask, const str &name, int to);
         irc::message * rpl_away(const str &nickname, const str &reason, int to);
         irc::message * rpl_unaway(int to);
         irc::message * rpl_nowaway(int to);
-        irc::message * rpl_list(const str &channel, size_t visible, const str &topic, int to);
+        // irc::message * rpl_list(const str &channel, size_t visible, const str &topic, int to);
         irc::message * rpl_listend(int to);
         irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to);
         irc::message * rpl_notopic(const str &channel, int to);
         irc::message * rpl_topic(const str &channel, const str &topic, int to);
         irc::message * rpl_inviting(const str &channel, const str &nickname, int to);
-        irc::message * rpl_invitelist(const str &channel, const str &invitemask, int to);
-        irc::message * rpl_endofinvitelist(const str &channel, int to);
-        irc::message * rpl_exceptlist(const str &channel, const str &exceptionmask, int to);
-        irc::message * rpl_endofexceptlist(const str &channel, int to);
         irc::message * rpl_version(const str &version, const str debuglevel, const str &server, const str &comments, int to);
         irc::message * rpl_namreply(const str &names, int to);
         irc::message * rpl_endofnames(const str &name, int to);
@@ -235,14 +209,12 @@ namespace irc{
         irc::message * rpl_endofinfo(int to);
         irc::message * rpl_youreoper(int to);
         irc::message * rpl_youreservice(const str &servicename, int to);
-        irc::message * rpl_time(const str &servername, int to);
+        // irc::message * rpl_time(const str &servername, int to);
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to);
         irc::message * rpl_lusersop(size_t nb, int to);
         irc::message * rpl_lusersunknown(size_t nb, int to);
         irc::message * rpl_luserschannels(size_t nb, int to);
         irc::message * rpl_lusersme(size_t nb, int to);
-        irc::message * rpl_whoreply(const str &msg, int to);
-        irc::message * rpl_endofwho(const str &target, int to);
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to);
         irc::message * rpl_whoisserver(const str &nick, const str &servername, const str shortinfo, int to);
         irc::message * rpl_whoisoperator(const str &nick, int to);

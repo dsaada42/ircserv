@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 15:59:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 17:51:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,11 @@ namespace irc{
         irc::message * err_toomanychannels(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_TOOMANYCHANNELS), 	channelname, 	"You have joined too many channels", to));}
         irc::message * err_wasnosuchnick(const str &nickname, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_WASNOSUCHNICK), 	    nickname, 		"There was no such nickname", to));}
         irc::message * err_toomanytargets(const str &target, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_TOOMANYTARGETS), 	target, 		"Duplicate recipients. No message delivered", to));}
-        // irc::message * err_nosuchservice(const str &servicename, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHSERVICE), 	servicename, 	"No such service", to));}
         irc::message * err_noorigin(int to)														    { return (new irc::message(SERVER_NAME, SSTR(ERR_NOORIGIN), 		    "", 			"No origin specified", to));}
         irc::message * err_norecipient(const str &command, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NORECIPIENT), 		"", 			"No recipient given " + command, to));}
         irc::message * err_notexttosend(int to) 													{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOTEXTTOSEND), 	    "", 			"No text to send", to));}
         irc::message * err_notoplevel(const str &mask, int to)										{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOTOPLEVEL), 		mask, 			"No top level domain specified", to));}
         irc::message * err_wildtoplevel(const str &mask, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_WILDTOPLEVEL), 	    mask, 			"Wildcard in top level domain", to));}
-        // irc::message * err_badmask(const str &mask, int to)											{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADMASK), 			mask, 			"Bad Server/host mask", to));}
         irc::message * err_unknowncommand(const str &command, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_UNKNOWNCOMMAND), 	command, 		"Unknown command", to));}
         irc::message * err_nomotd(int to)   														{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOMOTD), 			"", 			"MOTD file is missing", to));}
         irc::message * err_noadmininfo(int to)  													{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOADMINFO), 		    "", 			"No administrative info available", to));}
@@ -55,11 +53,9 @@ namespace irc{
         irc::message * err_inviteonlychan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_INVITEONLYCHAN), 	channel, 		"Cannot join channel (+i)", to));}
         irc::message * err_bannedfromchan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BANNEDFROMCHAN), 	channel, 		"Cannot join channel (+b)", to));}
         irc::message * err_badchannelkey(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADCHANNELKEY), 	    channel, 		"Cannot join channel (+k)", to));}
-        // irc::message * err_nochanmodes(const str &channel, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOCHANMODES), 		channel, 		"Channel doesn't support modes", to));}
         irc::message * err_noprivileges(int to)						    							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOPRIVILEGES), 	    "", 			"Permission Denied- You're not an IRC operator", to));}
         irc::message * err_chanoprisneeded(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_CHANOPRIVISNEED), 	channel, 		"You're not channel operator", to));}
         irc::message * err_cantkillserver(int to) 						    						{ return (new irc::message(SERVER_NAME, SSTR(ERR_CANTKILLSERVER), 	"", 			"You can't kill a server", to));}
-        // irc::message * err_restricted(int to)														{ return (new irc::message(SERVER_NAME, SSTR(ERR_RESTRICTED), 		"", 			"Your connection is restricted!", to));}
         irc::message * err_nooperhost(int to)														{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOOPERHOST), 		"", 			"No O-lines for your host", to));}
         irc::message * err_umodeunknownflag(int to)							    					{ return (new irc::message(SERVER_NAME, SSTR(ERR_UMODEUNKNOWNFLAG),   "", 			"Unknown MODE flag", to));}
         irc::message * err_usersdontmatch(int to)													{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERSDONTMATCH), 	"", 			"Can't change mode for other users", to));}
@@ -86,9 +82,6 @@ namespace irc{
     // }
         irc::message * rpl_endofstats(const str &letter, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		letter, 		"End of STATS report", to));}
         irc::message * rpl_umodeis(const str &modes, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 			'+' + modes, 	"", to));}
-        // irc::message * rpl_servlist(const str &name, const str &server, const str &mask, const str &type, size_t hopcount, const str &info, int to)
-                                                                                                    // { return (new irc::message(SERVER_NAME, SSTR(RPL_SERVLIST), 		    name + ' ' + server + ' ' + mask + ' ' + type + ' ' + SSTR(hopcount), info, to));}
-        // irc::message * rpl_servlistend(const str &mask, const str &type, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_SERVLISTEND), 		mask + ' ' + type, "End of service listing", to));}
         // irc::message * rpl_statuptime(time_t uptime, int to){
         //     strstream ss;
         //     time_t m = 60, h = 60 * m, d = 24 * h;
@@ -110,10 +103,6 @@ namespace irc{
         irc::message * rpl_notopic(const str &channel, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			channel, 		"No topic is set", to));}
         irc::message * rpl_topic(const str &channel, const str &topic, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_TOPIC), 			    channel, 		topic, to));}
         irc::message * rpl_inviting(const str &channel, const str &nickname, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		    channel + ' ' + nickname, "", to));}
-        // irc::message * rpl_invitelist(const str &channel, const str &invitemask, int to)			{ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITELIST), 		channel + ' ' + invitemask, "", to));}
-        // irc::message * rpl_endofinvitelist(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFINVITELIST), 	channel, 		"End of channel invite list", to));}
-        // irc::message * rpl_exceptlist(const str &channel, const str &exceptionmask, int to)			{ return (new irc::message(SERVER_NAME, SSTR(RPL_EXCEPTLIST), 		channel + ' ' + exceptionmask, "", to));}
-        // irc::message * rpl_endofexceptlist(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFEXCEPTLIST), 	channel, 		"End of channel exception list", to));}
         irc::message * rpl_version(const str &version, const str debuglevel, const str &server, const str &comments, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_VERSION), 			version + '.' + debuglevel + ' ' + server, comments, to));}
         irc::message * rpl_namreply(const str &names, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NAMREPLY), 		    names, 			"", to));}
