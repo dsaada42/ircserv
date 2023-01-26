@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 08:09:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 12:58:30 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ namespace irc{
         RPL_NOUSERS = 395, //========?
     };
 
-    namespace error
+    namespace err
     {
         irc::message * err_nosuchnick(const str &nickname, int to);
         irc::message * err_nosuchserver(const str &servername, int to);
@@ -204,7 +204,7 @@ namespace irc{
         irc::message * err_usersdontmatch(int to);
     }
 
-    namespace num
+    namespace rpl
     {
         irc::message * rpl_welcome(const str &userPrefix, int to);
         irc::message * rpl_yourhost(const str &servername, const str &version, int to);

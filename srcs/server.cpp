@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 11:43:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 13:10:30 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,18 +340,13 @@ void irc::server::ft_part(irc::message * msg){(void)msg;}
 void irc::server::ft_ping(irc::message * msg){(void)msg;}
 void irc::server::ft_pong(irc::message * msg){
     if (msg->get_params().empty()){
-        std::cout << "PONG: no origin specified" << std::endl;   
-        //reply no origin giver ERR_NOORIGIN
+        _messages.push(err::err_noorigin(msg->get_fd()));
     }
     else if (msg->get_params() != SERVER_NAME){
-        std::cout << "PONG: no such server " << msg->get_params() << std::endl;
-        //reply no such server ERR_NOSUCHSERVER
+        _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
     }
-    else{
-        std::cout << "Wouhou !" << std::endl;
+    else
         find_user_by_fd(msg->get_fd())->set_ping(false);
-        //verifier la correspondance du nickname donne en param, mettre son pinged a 0
-    }
 }
 void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
 void irc::server::ft_quit(irc::message * msg){(void)msg;}

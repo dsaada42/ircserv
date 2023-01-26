@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:39:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 12:58:19 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 namespace irc{
     
-    namespace error
+    namespace err
     {
         irc::message * err_nosuchnick(const str &nickname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHNICK), 		nickname, 		"No such nick/channel", to)); } 
         irc::message * err_nosuchserver(const str &servername, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHSERVER), 	    servername, 	"No such server", to));} 
@@ -66,7 +66,7 @@ namespace irc{
         irc::message * err_usersdontmatch(int to)													{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERSDONTMATCH), 	"", 			"Can't change mode for other users", to));}
     } /* end of namespace Error */
 
-    namespace num
+    namespace rpl
     {
         irc::message * rpl_welcome(const str &userPrefix, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_WELCOME), 			"", 			"Welcome to the Internet Relay Network " + userPrefix, to));}
         irc::message * rpl_yourhost(const str &servername, const str &version, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOURHOST), 		    "", 			"Your host is " + servername + ", running version " + version, to));}
