@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:29:32 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 11:36:34 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,19 @@
 # include "channel.hpp"
 # include "message.hpp"
 # include "adminUser.hpp"
-# include "commands.hpp"
 # include "send.hpp"
+
 
 namespace irc{
     
     class server{
+        public:
+            typedef void (server::*srv_func)(message *);
         private:
             str                                 _server_name;
             int                                 _port;
             str                                 _pass;
-            std::map<str, int (*)(message *)>   _cmds;
+            std::map<str, srv_func>             _cmds;
             std::map<int, user*>                _users;
             std::map<str, channel*>             _channels;
             std::queue<message*>                _received;
@@ -63,12 +65,11 @@ namespace irc{
         // ----- Select helper -----
             void        update_sets(void);
 
-        //====== READ / INTERPRETE / REPLY ======
+        //====== READ / REPLY ======
         
         // ----- Read Handler -----
             void        handle_read_set(void);
-        // ----- Message Interpreter + Reply generator -----
-            void        interprete_and_reply(void);
+
         // ----- Write Handler
             void        handle_write_set(void);
 
@@ -85,7 +86,43 @@ namespace irc{
         // ----- Init cmd map -----
             void        init_cmd_map(void);
 
+        //====== IRC LOGIC / RECEIVED COMMANDS ======
 
+        // ----- Find user by -----
+            irc::user   *find_user_by_fd(const int & fd);
+            irc::user   *find_user_by_nick(const str & nick);
+        // ----- Message Interpreter + Reply generator -----
+            void        interprete_and_reply(void);
+        // ----- Received message treatement -----
+            void        ft_admin( irc::message * );
+            void        ft_cap( irc::message * );
+            void        ft_error( irc::message * );
+            void        ft_info( irc::message * );
+            void        ft_invite( irc::message * );
+            void        ft_join( irc::message * );
+            void        ft_kick( irc::message * );
+            void        ft_kill( irc::message * );
+            void        ft_list( irc::message * );
+            void        ft_mode(irc::message *);
+            void        ft_names(irc::message *);
+            void        ft_nick(irc::message *);
+            void        ft_notice(irc::message *);
+            void        ft_oper(irc::message *);
+            void        ft_pass(irc::message *);
+            void        ft_part(irc::message *);
+            void        ft_ping(irc::message *);
+            void        ft_pong(irc::message *);
+            void        ft_privmsg(irc::message *);
+            void        ft_quit(irc::message *);
+            void        ft_stats(irc::message *);
+            void        ft_time(irc::message *);
+            void        ft_topic(irc::message *);
+            void        ft_user(irc::message *);
+            void        ft_version(irc::message *);
+            void        ft_who(irc::message *);
+            void        ft_whois(irc::message *);
+            void        ft_whowas(irc::message *);
+            
         //====== TESTING FUNCTIONS ======
             int         manual_entry( void );     
             int         send_message(const int & fd, irc::message msg);

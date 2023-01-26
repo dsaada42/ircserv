@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:25:38 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 11:43:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void       irc::server::handle_users_timeout(void){
 
 //===========================================================================================
 //=                                                                                         =
-//=                         READ / INTERPRETE / REPLY                                       =
+//=                                 READ / REPLY                                            =
 //=                                                                                         =
 //===========================================================================================
 
@@ -162,26 +162,7 @@ void        irc::server::handle_read_set( void ){
     }
 }
 
-// ----- Message Interpreter + Reply generator -----
-void        irc::server::interprete_and_reply( void ){
-    std::map<int, irc::user*>::iterator it;
-    irc::message                        *msg;
-    int (*funcp)(irc::message *);
-    std::map<str, int (*)(irc::message *)>::iterator itmap;
 
-    while (_received.size() != 0 ){
-        msg = _received.front();
-        if (msg->parse_message() == SUCCESS){
-            itmap = _cmds.find( msg->get_cmd() );
-            if (itmap != _cmds.end()){
-                funcp = itmap->second;
-                funcp(msg);
-            }
-        }
-        delete msg;
-        _received.pop();    
-    }
-}
 
 // ----- Write Handler -----
 void        irc::server::handle_write_set(void){
@@ -263,36 +244,127 @@ void        irc::server::delete_all_received( void ){
 
 // ----- Init cmd map -----
 void       irc::server::init_cmd_map(){
-    _cmds.insert(std::make_pair("ADMIN", ft_admin));
-    _cmds.insert(std::make_pair("CAP", ft_cap));
-    _cmds.insert(std::make_pair("ERROR", ft_error));
-    _cmds.insert(std::make_pair("INFO", ft_info));
-    _cmds.insert(std::make_pair("INVITE", ft_invite));
-    _cmds.insert(std::make_pair("JOIN", ft_join));
-    _cmds.insert(std::make_pair("KICK", ft_kick));
-    _cmds.insert(std::make_pair("KILL", ft_kill));
-    _cmds.insert(std::make_pair("LIST", ft_list));
-    _cmds.insert(std::make_pair("MODE", ft_mode));
-    _cmds.insert(std::make_pair("NAMES", ft_names));
-    _cmds.insert(std::make_pair("NICK", ft_nick));
-    _cmds.insert(std::make_pair("NOTICE", ft_notice));
-    _cmds.insert(std::make_pair("OPER", ft_oper));
-    _cmds.insert(std::make_pair("PASS", ft_pass));
-    _cmds.insert(std::make_pair("PART", ft_part));
-    _cmds.insert(std::make_pair("PING", ft_ping));
-    _cmds.insert(std::make_pair("PONG", ft_pong));
-    _cmds.insert(std::make_pair("PRIVMSG", ft_privmsg));
-    _cmds.insert(std::make_pair("QUIT", ft_quit));
-    _cmds.insert(std::make_pair("STATS", ft_stats));
-    _cmds.insert(std::make_pair("TIME", ft_time));
-    _cmds.insert(std::make_pair("TOPIC", ft_topic));
-    _cmds.insert(std::make_pair("USER", ft_user));
-    _cmds.insert(std::make_pair("VERSION", ft_version));
-    _cmds.insert(std::make_pair("WHO", ft_who));
-    _cmds.insert(std::make_pair("WHOIS", ft_whois));
-    _cmds.insert(std::make_pair("WHOWAS", ft_whowas));
+    _cmds.insert(std::make_pair("ADMIN", &irc::server::ft_admin));
+    _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));
+    _cmds.insert(std::make_pair("ERROR", &irc::server::ft_error));
+    _cmds.insert(std::make_pair("INFO", &irc::server::ft_info));
+    _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));
+    _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));
+    _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));
+    _cmds.insert(std::make_pair("KILL", &irc::server::ft_kill));
+    _cmds.insert(std::make_pair("LIST", &irc::server::ft_list));
+    _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));
+    _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));
+    _cmds.insert(std::make_pair("NICK", &irc::server::ft_nick));
+    _cmds.insert(std::make_pair("NOTICE", &irc::server::ft_notice));
+    _cmds.insert(std::make_pair("OPER", &irc::server::ft_oper));
+    _cmds.insert(std::make_pair("PASS", &irc::server::ft_pass));
+    _cmds.insert(std::make_pair("PART", &irc::server::ft_part));
+    _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));
+    _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));
+    _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
+    _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));
+    _cmds.insert(std::make_pair("STATS", &irc::server::ft_stats));
+    _cmds.insert(std::make_pair("TIME", &irc::server::ft_time));
+    _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
+    _cmds.insert(std::make_pair("USER", &irc::server::ft_user));
+    _cmds.insert(std::make_pair("VERSION", &irc::server::ft_version));
+    _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));
+    _cmds.insert(std::make_pair("WHOIS", &irc::server::ft_whois));
+    _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));
 
 }
+
+//===========================================================================================
+//=                                                                                         =
+//=                         IRC LOGIC / RECEIVED COMMANDS                                   =
+//=                                                                                         =
+//===========================================================================================
+
+// ----- Find User by -----
+irc::user   *irc::server::find_user_by_fd(const int & fd){
+    std::map<int, irc::user*>::iterator it;
+    
+    it = _users.find(fd);
+    if (it != _users.end())
+        return (it->second);
+    return (NULL);
+}
+
+irc::user   *irc::server::find_user_by_nick(const str & nick){
+    std::map<int, irc::user*>::iterator it;
+
+    for (it = _users.begin(); it != _users.end(); it++){
+        if (it->second->nickname() == nick)
+            return (it->second);
+    }
+    return (NULL);
+}
+// ----- Message Interpreter + Reply generator -----
+void        irc::server::interprete_and_reply( void ){
+    std::map<int, irc::user*>::iterator it;
+    irc::message                        *msg;
+    void (irc::server::*funcp)(irc::message *);
+    std::map<str, void (irc::server::*)(irc::message *)>::iterator itmap;
+
+    while (_received.size() != 0 ){
+        msg = _received.front();
+        if (msg->parse_message() == SUCCESS){
+            itmap = _cmds.find( msg->get_cmd() );
+            if (itmap != _cmds.end()){
+                funcp = itmap->second;
+                (*this.*funcp)(msg);
+            }
+        }
+        delete msg;
+        _received.pop();
+    }
+}
+
+void irc::server::ft_admin( irc::message * msg ){(void)msg;}
+void irc::server::ft_cap( irc::message * msg ){(void)msg;}
+void irc::server::ft_error( irc::message * msg ){(void)msg;}
+void irc::server::ft_info( irc::message * msg ){(void)msg;}
+void irc::server::ft_invite( irc::message * msg ){(void)msg;}
+void irc::server::ft_join( irc::message * msg ){(void)msg;}
+void irc::server::ft_kick( irc::message * msg ){(void)msg;}
+void irc::server::ft_kill( irc::message * msg ){(void)msg;}
+void irc::server::ft_list( irc::message * msg ){(void)msg;}
+void irc::server::ft_mode(irc::message * msg){(void)msg;}
+void irc::server::ft_names(irc::message * msg){(void)msg;}
+void irc::server::ft_nick(irc::message * msg){(void)msg;}
+void irc::server::ft_notice(irc::message * msg){(void)msg;}
+void irc::server::ft_oper(irc::message * msg){(void)msg;}
+void irc::server::ft_pass(irc::message * msg){(void)msg;}
+void irc::server::ft_part(irc::message * msg){(void)msg;}
+void irc::server::ft_ping(irc::message * msg){(void)msg;}
+void irc::server::ft_pong(irc::message * msg){
+    if (msg->get_params().empty()){
+        std::cout << "PONG: no origin specified" << std::endl;   
+        //reply no origin giver ERR_NOORIGIN
+    }
+    else if (msg->get_params() != SERVER_NAME){
+        std::cout << "PONG: no such server " << msg->get_params() << std::endl;
+        //reply no such server ERR_NOSUCHSERVER
+    }
+    else{
+        std::cout << "Wouhou !" << std::endl;
+        find_user_by_fd(msg->get_fd())->set_ping(false);
+        //verifier la correspondance du nickname donne en param, mettre son pinged a 0
+    }
+}
+void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
+void irc::server::ft_quit(irc::message * msg){(void)msg;}
+void irc::server::ft_stats(irc::message * msg){(void)msg;}
+void irc::server::ft_time(irc::message * msg){(void)msg;}
+void irc::server::ft_topic(irc::message * msg){(void)msg;}
+void irc::server::ft_user(irc::message * msg){(void)msg;}
+void irc::server::ft_version(irc::message * msg){(void)msg;}
+void irc::server::ft_who(irc::message * msg){(void)msg;}
+void irc::server::ft_whois(irc::message * msg){(void)msg;}
+void irc::server::ft_whowas(irc::message * msg){(void)msg;}
+
+
 
 //===========================================================================================
 //=                                                                                         =
