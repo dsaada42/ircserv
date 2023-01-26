@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:52:47 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 08:56:58 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 15:39:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ namespace irc{
             str _cmd;
             str _trailing;
             int _fd;
-            //str from (nickname)
-            //str to (nickname)
             
         public:
         // ----- Constructors -----
@@ -64,9 +62,8 @@ namespace irc{
 
         // ----- Debug -----
             void print( void );
-
     };
-
+    
 }
 
 #endif

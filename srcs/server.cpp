@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 13:10:30 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/26 16:55:57 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int         irc::server::run( void ){
 //===========================================================================================
 
 // ----- Connection Accept -----
-void        irc::server::accept_connection( void )              {
+void        irc::server::accept_connection( void ){
     int newfd;
 
     newfd = accept(sock_fd(), (struct sockaddr *)NULL, NULL );
@@ -74,11 +74,7 @@ void        irc::server::accept_connection( void )              {
         throw(exitException());
     }
     irc::user * new_user = new irc::user(newfd, get_time_ms());
-    new_user->set_connected(true);
     _users.insert(std::make_pair(newfd, new_user));
-    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n", newfd);
-    reply.send();
-    print_users();
 }
 
 // ----- Identity checker -----
@@ -112,7 +108,6 @@ void       irc::server::handle_users_timeout(void){
         else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
             std::cout << "Sending ping to inactive user" << std::endl;
             msg = cmd::cmd_ping( "dsaada" , current->fd() );
-            msg->create_message();
             _messages.push(msg);
             current->set_ping(true);
         }
@@ -152,8 +147,13 @@ void        irc::server::handle_read_set( void ){
                     }
                 }
             }
-            else
-                handle_user_connection(current);
+            else{
+                if (current->handle_user_connection() == SUCCESS){
+                    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n", current->fd());
+                    msg = rpl::rpl_welcome("dsaada", current->fd());
+                    _messages.push(msg);
+                }
+            }
         }
         else if (FD_ISSET(current->fd(), &except_sockets)){
             std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
@@ -161,8 +161,6 @@ void        irc::server::handle_read_set( void ){
         }
     }
 }
-
-
 
 // ----- Write Handler -----
 void        irc::server::handle_write_set(void){
@@ -176,9 +174,11 @@ void        irc::server::handle_write_set(void){
             if (current->send() == SUCCESS)
                 delete current;
             else
-                std::cerr << "failed sending message" << std::endl;
+                std::cerr << "failed sending message" << std::endl; // behaviour?
         }
         else{
+            if (!find_user_by_fd(current->get_fd())) // si le message est destine a un fd inconnu 
+                delete current;
             tmp_messages.push(current);
         }
     }
@@ -300,6 +300,44 @@ irc::user   *irc::server::find_user_by_nick(const str & nick){
     }
     return (NULL);
 }
+
+// ----- Is ? ------
+bool        irc::server::check_nickname_rules(const str & nick){
+    str::size_type i = 0;
+    
+    if (nick.size() == 0 || nick.size() > 9)
+        return (false);
+    while (i < nick.size()){
+        if (isalnum(nick.at(i)) || i == '-' || i == '[' || i == ']' || i == '\\' || i == '`' || i == '^' || i == '{' || i == '}')
+            i++;
+        else
+            return (false);
+    }
+    return (true);
+}
+bool        irc::server::check_channel_rules(const str & chan){
+    if (chan.size() > 200 || chan.size() < 2)
+        return (false);
+    if (chan.find(',') != str::npos || chan.find(7) != str::npos)
+        return (false);
+    if (chan.at(0) != '#' && chan.at(0) != '&')
+        return (false);
+    return (true);
+}
+bool        irc::server::is_a_nickname(const str & nick){
+    if (!check_nickname_rules(nick))
+        return (false);
+    if (!find_user_by_nick(nick))
+        return (false);
+    return (true);
+}
+bool        irc::server::is_a_channel(const str & chan){
+    if (!check_channel_rules(chan))
+        return (false);
+    //find channel in channel list
+    //if found return true
+    return(true);    
+}
 // ----- Message Interpreter + Reply generator -----
 void        irc::server::interprete_and_reply( void ){
     std::map<int, irc::user*>::iterator it;
@@ -359,14 +397,11 @@ void irc::server::ft_who(irc::message * msg){(void)msg;}
 void irc::server::ft_whois(irc::message * msg){(void)msg;}
 void irc::server::ft_whowas(irc::message * msg){(void)msg;}
 
-
-
 //===========================================================================================
 //=                                                                                         =
 //=                  TESTING FUNCTIONS -> NOT FOR FINAL VERSION                             =
 //=                                                                                         =
 //===========================================================================================
-
 
 // ----- Debug / Print -----
 void        irc::server::print_users( void ){
@@ -375,13 +410,6 @@ void        irc::server::print_users( void ){
     for (it = _users.begin(); it != _users.end(); it++){
         it->second->print();
     }
-}
-
-int        irc::server::send_message(const int & fd, irc::message msg){
-    str result;
-
-    result = msg.get_message();
-    return (write(fd, result.c_str(), result.size()));
 }
 
 // ----- Manual entry (stdin) handler -----

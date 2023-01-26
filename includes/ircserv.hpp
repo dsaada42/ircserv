@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/26 09:38:34 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 16:29:58 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # include <utility>
 # include <sys/time.h>
 # include <iomanip>
+#include <ctype.h>
 
 // ----- Select -----
 # include <sys/select.h>

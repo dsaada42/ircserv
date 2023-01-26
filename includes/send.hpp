@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 12:58:30 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/26 15:58:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ namespace irc{
         ERR_UNKNOWNCOMMAND = 421,
         ERR_NOMOTD = 422,
         ERR_NOADMINFO = 423,
-        ERR_FILERROR = 424,
         ERR_NONICKNAMEGIVEN = 431,
         ERR_ERRONEUSNICKNAME = 432,
         ERR_NICKNAMEINUSE = 433,
@@ -47,7 +46,7 @@ namespace irc{
         ERR_USERONCHANNEL = 443,
         ERR_NOLOGIN = 444,
         ERR_SUMMONDISABLED = 445,
-        ERR_USERDISABLED = 446,
+        ERR_USERSDISABLED = 446,
         ERR_NOTREGISTERED = 451,
         ERR_NEEDMOREPARAMS = 461,
         ERR_ALREADYREGISTRED = 462,
@@ -73,11 +72,11 @@ namespace irc{
         ERR_UMODEUNKNOWNFLAG = 501,
         ERR_USERSDONTMATCH = 502,
 
-        RPL_WELCOME = 1,
-        RPL_YOURHOST = 2,
-        RPL_CREATED = 3,
-        RPL_MYINFO = 4,
-        RPL_BOUNCE = 5,
+        RPL_WELCOME = 001,
+        RPL_YOURHOST = 002,
+        RPL_CREATED = 003,
+        RPL_MYINFO = 004,
+        RPL_BOUNCE = 005,
         RPL_STATSLINKINFO = 211,
         RPL_STATSCOMMANDS = 212,
         RPL_STATSCLINE = 213,//==========?
@@ -105,7 +104,6 @@ namespace irc{
         // RPL_NONE = 300, 
         RPL_AWAY = 301,
         RPL_USERHOST = 302,
-        RPL_ISON = 303,
         RPL_UNAWAY = 305,
         RPL_NOWAWAY = 306,
         RPL_WHOISUSER = 311,
@@ -123,7 +121,6 @@ namespace irc{
         RPL_NOTOPIC = 331,
         RPL_TOPIC = 332,
         RPL_INVITING = 341,
-        RPL_SUMMONING = 342,
         // RPL_INVITELIST = 346,
         // RPL_ENDOFINVITELIST =  347,
         // RPL_EXCEPTLIST = 348,
@@ -143,13 +140,8 @@ namespace irc{
         RPL_MOTDSTART = 375,
         RPL_ENDOFMOTD = 376,
         RPL_YOUREOPER = 381,
-        RPL_REHASHING = 382,
         RPL_YOURESERVICE = 383,
         RPL_TIME = 391,
-        RPL_USERSSTART = 392, //========?
-        RPL_USERS = 393, //========?
-        RPL_ENDOFUSERS = 394, //========?
-        RPL_NOUSERS = 395, //========?
     };
 
     namespace err
@@ -171,7 +163,6 @@ namespace irc{
         irc::message * err_unknowncommand(const str &command, int to);
         irc::message * err_nomotd(int to);
         irc::message * err_noadmininfo(int to);
-        irc::message * err_fillerror(const str &file_op, const str &file, int to);
         irc::message * err_nonicknamegiven(int to);
         irc::message * err_erroneusnickname(const str &nickname, int to);
         irc::message * err_nicknameinuse(const str &nickname, int to);
@@ -262,7 +253,6 @@ namespace irc{
         irc::message * rpl_endofwho(const str &target, int to);
         irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to);
         irc::message * rpl_endofwhowas(const str &nick, int to);
-        irc::message * rpl_rehashing(const str &filename, int to);
         irc::message * rpl_userhostreply(const str &msg, int to);
     }
 

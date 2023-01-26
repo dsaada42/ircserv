@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:05:47 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 15:10:53 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,12 @@ irc::message *irc::user::extract_message(str delim){
         _remain = buff.size();
         return (NULL);
     }   
+}
+
+// ----- Handle user connection -----
+int irc::user::handle_user_connection(void){
+    _connected = true;
+    return (SUCCESS);
 }
 
 // ----- New Timestamp -----

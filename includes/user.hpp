@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:57:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 15:10:59 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ namespace irc{
             void set_oper    ( const bool & oper );
             void set_connected( const bool & connected);
             void set_ping( const bool & ping);
+
+        // ------ Handle connection -----
+            int handle_user_connection(void);
 
         // ----- Read Connexion -----
             int read_connection( void );

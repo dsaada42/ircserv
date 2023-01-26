@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 12:58:19 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/26 15:59:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ namespace irc{
         irc::message * err_unknowncommand(const str &command, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_UNKNOWNCOMMAND), 	command, 		"Unknown command", to));}
         irc::message * err_nomotd(int to)   														{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOMOTD), 			"", 			"MOTD file is missing", to));}
         irc::message * err_noadmininfo(int to)  													{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOADMINFO), 		    "", 			"No administrative info available", to));}
-        irc::message * err_fillerror(const str &file_op, const str &file, int to)					{ return (new irc::message(SERVER_NAME, SSTR(ERR_FILERROR), 		    "", 			"File error doing " + file_op + " on " + file, to));}
         irc::message * err_nonicknamegiven(int to)	    											{ return (new irc::message(SERVER_NAME, SSTR(ERR_NONICKNAMEGIVEN), 	"", 			"No nickame given", to));}
         irc::message * err_erroneusnickname(const str &nickname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_ERRONEUSNICKNAME),   nickname, 		"Erroneus nickname", to));}
         irc::message * err_nicknameinuse(const str &nickname, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NICKNAMEINUSE), 	    nickname,	 	"Nickname is already in use", to));}
@@ -43,7 +42,7 @@ namespace irc{
         irc::message * err_useronchannel(const str &nickname, const str &channel, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERONCHANNEL), 	    nickname + ' ' + channel, "is already on channel", to));}
         irc::message * err_nologin(const str &user, int to)											{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOLOGIN), 			user,	 		"User not logged in", to));}
         irc::message * err_summondisabled(int to)													{ return (new irc::message(SERVER_NAME, SSTR(ERR_SUMMONDISABLED), 	"", 			"Summon has been disabled", to));}
-        irc::message * err_usersdisabled(int to) 													{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERDISABLED), 	    "", 			"USERS has been disabled", to));}
+        irc::message * err_usersdisabled(int to) 													{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERSDISABLED), 	    "", 			"USERS has been disabled", to));}
         irc::message * err_notregistered(int to) 													{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOTREGISTERED), 	    "", 			"You have not registered", to));}
         irc::message * err_needmoreparams(const str &command, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NEEDMOREPARAMS), 	command, 		"Not enough parameters", to));}
         irc::message * err_alreadyregistred(int to)					    							{ return (new irc::message(SERVER_NAME, SSTR(ERR_ALREADYREGISTRED),	"", 			"Unauthorized command (already registered)", to));}
@@ -68,12 +67,12 @@ namespace irc{
 
     namespace rpl
     {
-        irc::message * rpl_welcome(const str &userPrefix, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_WELCOME), 			"", 			"Welcome to the Internet Relay Network " + userPrefix, to));}
-        irc::message * rpl_yourhost(const str &servername, const str &version, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOURHOST), 		    "", 			"Your host is " + servername + ", running version " + version, to));}
-        irc::message * rpl_created(const str &date, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_CREATED), 			"", 			"This server was created " + date, to));}
+        irc::message * rpl_welcome(const str &userPrefix, int to)									{ return (new irc::message(SERVER_NAME, "001", 			"", 			"Welcome to the Internet Relay Network " + userPrefix, to));}
+        irc::message * rpl_yourhost(const str &servername, const str &version, int to)				{ return (new irc::message(SERVER_NAME, "002", 		    "", 			"Your host is " + servername + ", running version " + version, to));}
+        irc::message * rpl_created(const str &date, int to)											{ return (new irc::message(SERVER_NAME, "003", 			"", 			"This server was created " + date, to));}
         irc::message * rpl_myinfo(const str &servername, const str &version, const str &availableUserModes, const str &availableChannelModes, int to) 
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_MYINFO), 			"", 			servername + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
-        irc::message * rpl_bounce(const str &servername, const str &port, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_BOUNCE), 			"", 			"Try server " + servername + ", port " + port, to));}
+                                                                                                    { return (new irc::message(SERVER_NAME, "004", 			"", 			servername + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
+        irc::message * rpl_bounce(const str &servername, const str &port, int to)					{ return (new irc::message(SERVER_NAME, "005", 			"", 			"Try server " + servername + ", port " + port, to));}
     //     irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to){
     //         strstream ss;
     //         ss << linkname << ' ' << sendq << ' ' << sentMessages << ' ' << sentKbytes
@@ -148,7 +147,6 @@ namespace irc{
         irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOWASUSER), 		nick + " " + user + " " + host + " *", realname, to));}
         irc::message * rpl_endofwhowas(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOWAS), 		nick, 			"End of WHOWAS", to));}
-        irc::message * rpl_rehashing(const str &filename, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_REHASHING), 		    filename, 		"Rehashing", to));}
         irc::message * rpl_userhostreply(const str &msg, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_USERHOST), 		    "", 			msg, to));}
     }
 

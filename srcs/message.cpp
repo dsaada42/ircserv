@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 09:43:42 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 15:23:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ irc::message::message( void ){}
 irc::message::message( str message, int fd ): _message(message), _fd(fd){}
 
 irc::message::message( str prefix, str cmd, str params, str trailing, int fd )
-    : _params(params), _prefix(prefix), _cmd(cmd), _trailing(trailing), _fd(fd){}
+    : _params(params), _prefix(prefix), _cmd(cmd), _trailing(trailing), _fd(fd){
+        create_message();
+    }
 // ----- Destructor -----
 irc::message::~message( void ){}
 
