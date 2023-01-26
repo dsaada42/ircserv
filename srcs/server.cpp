@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 18:17:16 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 08:11:48 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void        irc::server::accept_connection( void )              {
     }
     irc::user * new_user = new irc::user(newfd, get_time_ms());
     _users.insert(std::make_pair(newfd, new_user));
-    irc::message reply(":my_server 001 dsaada :Welcome to our shitty IRC server\r\n");
+    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n");
     send_message(newfd, reply);
 }
 
@@ -104,7 +104,7 @@ void        irc::server::handle_write_set(void){
             if (current->send() == SUCCESS)
                 delete current;
             else
-                tmp_messages.push(current);//attention gestion probleme
+                std::cerr << "failed sending message" << std::endl;
         }
         else{
             tmp_messages.push(current);
@@ -159,9 +159,10 @@ void       irc::server::handle_users_timeout(void){
         else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
             std::cout << "Sending ping to inactive user" << std::endl;
             //send ping
-            msg = cmd::cmd_ping( current->fd() );
+            msg = cmd::cmd_ping( "dsaada" , current->fd() );
             msg->create_message();
-            std::cout << "Ping message:\n" << msg->get_message() << std::endl;
+            // std::cout << "Ping message:\n" << msg->get_message() << std::endl;
+            _messages.push(msg);
             current->set_ping(true);
         }
     }
@@ -232,7 +233,6 @@ void        irc::server::interprete_and_reply( void ){
             msg->print();
             itmap = _cmds.find( msg->get_cmd() );
             if (itmap != _cmds.end()){
-                std::cout << "found cmd " << itmap->first << std::endl;
                 funcp = itmap->second;
                 funcp(msg);
             }

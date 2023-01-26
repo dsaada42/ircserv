@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 18:16:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 08:09:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ namespace irc{
 
     namespace cmd
     {
-        irc::message * cmd_ping(int to)                                                             { return (new irc::message(SERVER_PREFIX, "PING", "", "", to));}
+        irc::message * cmd_ping(const str &nick, int to)                                            { return (new irc::message(SERVER_PREFIX, "PING", nick, "", to));}
     } 
 
 }

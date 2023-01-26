@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/25 18:09:30 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/26 08:05:12 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,15 @@ str irc::message::create_message( void ){
     _message += _cmd + " " + _params;
     if (_trailing.size() > 0)
         _message += " :" + _trailing;
+    _message += "\r\n";
     return (_message);
 }
 
 // ----- Send -----
 int irc::message::send( void ){
-    return (write(_to, _message.c_str(), _message.size()));
+    if (write(_to, _message.c_str(), _message.size()) < 0)
+        return (FAILURE);
+    return (SUCCESS);
 }
 
 void irc::message::print( void ){
