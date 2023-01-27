@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:56:29 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 11:28:54 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ namespace irc{
         ERR_BANNEDFROMCHAN = 474,
         ERR_BADCHANNELKEY = 475,
         ERR_NOPRIVILEGES = 481,
-        ERR_CHANOPRIVISNEED = 482,
+        ERR_CHANOPRIVSNEEDED = 482,
         ERR_CANTKILLSERVER = 483,
         ERR_NOOPERHOST = 491,
         ERR_UMODEUNKNOWNFLAG = 501,
@@ -160,7 +160,7 @@ namespace irc{
         irc::message * err_bannedfromchan(const str &channel, int to);
         irc::message * err_badchannelkey(const str &channel, int to);
         irc::message * err_noprivileges(int to);
-        irc::message * err_chanoprisneeded(const str &channel, int to);
+        irc::message * err_chanoprivsneeded(const str &channel, int to);
         irc::message * err_cantkillserver(int to);
         irc::message * err_nooperhost(int to);
         irc::message * err_umodeunknownflag(int to);

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:56:15 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 11:28:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace irc{
         irc::message * err_bannedfromchan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BANNEDFROMCHAN), 	channel, 		"Cannot join channel (+b)", to));}
         irc::message * err_badchannelkey(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADCHANNELKEY), 	    channel, 		"Cannot join channel (+k)", to));}
         irc::message * err_noprivileges(int to)						    							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOPRIVILEGES), 	    "", 			"Permission Denied- You're not an IRC operator", to));}
-        irc::message * err_chanoprisneeded(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_CHANOPRIVISNEED), 	channel, 		"You're not channel operator", to));}
+        irc::message * err_chanoprivsneeded(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_CHANOPRIVSNEEDED), 	channel, 		"You're not channel operator", to));}
         irc::message * err_cantkillserver(int to) 						    						{ return (new irc::message(SERVER_NAME, SSTR(ERR_CANTKILLSERVER), 	"", 			"You can't kill a server", to));}
         irc::message * err_nooperhost(int to)														{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOOPERHOST), 		"", 			"No O-lines for your host", to));}
         irc::message * err_umodeunknownflag(int to)							    					{ return (new irc::message(SERVER_NAME, SSTR(ERR_UMODEUNKNOWNFLAG),   "", 			"Unknown MODE flag", to));}
