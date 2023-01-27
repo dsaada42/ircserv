@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 15:10:53 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 10:34:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // ----- Constructor default -----
 irc::user::user( int fd , unsigned long timestamp )
-    : _fd(fd), _connected(false), _ping(false), _remain(0), _timestamp(timestamp){ 
+    : _fd(fd), _connected(false), _ping(false), _remain(0), _timestamp(timestamp), _pass(false){ 
     bzero(_buff, BUFF_SIZE);
 }
 
@@ -23,6 +23,7 @@ irc::user::user( const irc::user & x)
     : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0), _timestamp(x.timestamp()){}
 // ----- Destructor -----
 irc::user::~user( void ){
+    shutdown(_fd, 2);
     close(_fd);
 }
 
@@ -41,6 +42,7 @@ const int   & irc::user::fd         ( void ) const  { return(_fd);}
 const unsigned long & irc::user::timestamp( void ) const { return(_timestamp);}
 const bool  & irc::user::connected  ( void ) const  { return(_connected);}
 const bool  & irc::user::ping       ( void ) const  { return(_ping);}
+const bool  & irc::user::pass       ( void ) const  { return(_pass);}
 
 // ----- Setters -----
 void irc::user::set_username(const str & username)  { _username = username; }
@@ -49,6 +51,7 @@ void irc::user::set_nickname(const str & nickname)  { _nickname = nickname; }
 void irc::user::set_oper    (const bool & oper)     { _oper = oper; }
 void irc::user::set_connected(const bool & connected){ _connected = connected; }
 void irc::user::set_ping(const bool & ping)         { _ping = ping; }
+void irc::user::set_pass(const bool & pass)         { _pass = pass; }
 
 // ----- Read Connexion -----
 int irc::user::read_connection(void)                { 
@@ -71,24 +74,18 @@ irc::message *irc::user::extract_message(str delim){
         _remain = buff.size();
         for (i = 0; i < _remain; i++)
             _buff[i] = buff[i];
-        new_timestamp();
+        if (_connected)
+            new_timestamp();
         return (newmsg);
     }
     else{
         _remain = buff.size();
         return (NULL);
-    }   
-}
-
-// ----- Handle user connection -----
-int irc::user::handle_user_connection(void){
-    _connected = true;
-    return (SUCCESS);
+    }
 }
 
 // ----- New Timestamp -----
 void irc::user::new_timestamp(void){
-    std::cout << "refreshing timestamp" << std::endl;
     struct timeval  time_now;
     gettimeofday(&time_now, NULL);
     _timestamp = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
@@ -103,4 +100,5 @@ void irc::user::print(void){
     std::cout << "-> Fd         : " << _fd << std::endl;
     std::cout << "-> Connected  : " << _connected << std::endl;
     std::cout << "-> Ping       : " << _ping << std::endl;
+    std::cout << "-> Pass       : " << _pass << std::endl;
 }

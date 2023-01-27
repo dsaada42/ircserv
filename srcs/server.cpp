@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 17:03:27 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 11:04:27 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,6 @@ void        irc::server::accept_connection( void ){
     _users.insert(std::make_pair(newfd, new_user));
 }
 
-// ----- Identity checker -----
-void        irc::server::handle_user_connection(irc::user *current){
-    (void)current;
-    //gerer la procedure de connection de l'user
-}
-
 // ----- Timestamp -----
 unsigned long   irc::server::get_time_ms( void ){
     struct timeval  time_now;
@@ -101,17 +95,56 @@ void       irc::server::handle_users_timeout(void){
         current = it->second;
         it++;
         inactive_time = get_time_ms() - current->timestamp();
-        if (inactive_time > DISCONNECT_TRIGGER_TIME){
-            std::cout << "Closing connection with user inactive for too long" << std::endl;
+        if (current->connected()){
+            if (inactive_time > DISCONNECT_TRIGGER_TIME){
+                std::cout << "Closing connection with user inactive for too long" << std::endl;
+                delete_user(current);
+            }
+            else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
+                std::cout << "Sending ping to inactive user" << std::endl;
+                msg = cmd::cmd_ping( "dsaada" , current->fd() );
+                _messages.push(msg);
+                current->set_ping(true);
+            }
+        }
+        else if (inactive_time > CONNECTION_TIMEOUT){
+            std::cout << "Deleting user: connection procedure timeout" << std::endl;
+            current->print();
             delete_user(current);
         }
-        else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
-            std::cout << "Sending ping to inactive user" << std::endl;
-            msg = cmd::cmd_ping( "dsaada" , current->fd() );
-            _messages.push(msg);
-            current->set_ping(true);
-        }
     }
+}
+
+// ----- Identity checker -----
+int         irc::server::handle_user_connection(irc::user *current){
+    irc::message            *msg;
+    
+    while ((msg = current->extract_message("\r\n")) != NULL){
+        //message received doesn't have the right format
+        if (msg->parse_message() == FAILURE)
+            return (FAILURE);
+        if (msg->get_cmd() == "CAP"){
+            ft_cap(msg);
+        }
+        else if (msg->get_cmd() == "PASS"){
+            ft_pass(msg);
+        }   
+        else if (msg->get_cmd() == "NICK"){
+            ft_nick(msg);
+        }
+        else if (msg->get_cmd() == "USER"){
+            ft_user(msg);
+        }
+        else
+            return (FAILURE); //message received is not part of connection process
+    }
+    //if everything ok 
+    if (current->pass() && current->nickname().size() > 0 && current->fullname().size() > 0 ){
+        current->set_connected(true);
+        msg = rpl::rpl_welcome("dsaada", current->fd());
+        _messages.push(msg);
+    }
+    return (SUCCESS);
 }
 
 //===========================================================================================
@@ -135,26 +168,26 @@ void        irc::server::handle_read_set( void ){
         current = (*it).second;
         it++; 
         if (FD_ISSET(current->fd(), &read_sockets)){
-            if (current->connected()){    
-                std::cout << "Received message from established connection" << std::endl;
-                if (current->read_connection() == FAILURE){
-                    std::cout << "deleting user because connection lost" << std::endl;   
-                    delete_user(current);
-                }
-                else{
-                    while ((msg = current->extract_message("\r\n")) != NULL){
-                        _received.push(msg);
-                    }
-                }
+            //case reading error
+            if (current->read_connection() == FAILURE){ 
+                std::cout << "deleting user because connection lost" << std::endl;   
+                delete_user(current);
             }
             else{
-                if (current->handle_user_connection() == SUCCESS){
-                    irc::message reply(":shittyIRC 001 dsaada :Welcome to our shitty IRC server\r\n", current->fd());
-                    msg = rpl::rpl_welcome("dsaada", current->fd());
-                    _messages.push(msg);
+                //case user already fully connected
+                if (current->connected()){
+                    std::cout << "Received message from established connection" << std::endl;
+                    while ((msg = current->extract_message("\r\n")) != NULL){
+                        _received.push(msg);
+                    }    
                 }
+                //case user still connecting
+                else{
+                    handle_user_connection(current);
+                }                
             }
         }
+        //case exception occurred on connection
         else if (FD_ISSET(current->fd(), &except_sockets)){
             std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
             delete_user(current);
@@ -272,6 +305,8 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));
     _cmds.insert(std::make_pair("WHOIS", &irc::server::ft_whois));
     _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));
+    _cmds.insert(std::make_pair("SUMMON", &irc::server::ft_summon));
+    _cmds.insert(std::make_pair("USERS", &irc::server::ft_users));
 
 }
 
@@ -353,14 +388,21 @@ void        irc::server::interprete_and_reply( void ){
                 funcp = itmap->second;
                 (*this.*funcp)(msg);
             }
+            else // en cas de commande non geree par le serveur
+                _messages.push(err::err_unknowncommand(msg->get_cmd(), msg->get_fd()));
         }
         delete msg;
         _received.pop();
     }
 }
 
-void irc::server::ft_admin( irc::message * msg ){(void)msg;}
-void irc::server::ft_cap( irc::message * msg ){(void)msg;}
+void irc::server::ft_admin( irc::message * msg ){//OK
+    if (msg->get_params().empty())
+        _messages.push(err::err_noadmininfo(msg->get_fd()));
+    else if (msg->get_params() != SERVER_NAME)
+        _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
+}
+void irc::server::ft_cap( irc::message * msg ){(void)msg;}//ignore CAP messages
 void irc::server::ft_error( irc::message * msg ){(void)msg;}
 void irc::server::ft_info( irc::message * msg ){(void)msg;}
 void irc::server::ft_invite( irc::message * msg ){(void)msg;}
@@ -370,20 +412,50 @@ void irc::server::ft_kill( irc::message * msg ){(void)msg;}
 void irc::server::ft_list( irc::message * msg ){(void)msg;}
 void irc::server::ft_mode(irc::message * msg){(void)msg;}
 void irc::server::ft_names(irc::message * msg){(void)msg;}
-void irc::server::ft_nick(irc::message * msg){(void)msg;}
+void irc::server::ft_nick(irc::message * msg){ //OK
+    irc::user       *current;
+    
+    if (msg->get_params().empty())
+        _messages.push(err::err_nonicknamegiven(msg->get_fd()));
+    else if (check_nickname_rules(msg->get_params()) == false)
+        _messages.push(err::err_erroneusnickname(msg->get_params(), msg->get_fd()));
+    else if (is_a_nickname(msg->get_params()) == false){
+        current = find_user_by_fd(msg->get_fd());
+        current->set_nickname(msg->get_params());
+    }
+    else
+        _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
+}
 void irc::server::ft_notice(irc::message * msg){(void)msg;}
 void irc::server::ft_oper(irc::message * msg){(void)msg;}
-void irc::server::ft_pass(irc::message * msg){(void)msg;}
+void irc::server::ft_pass(irc::message * msg){ //OK
+    irc::user * current;
+
+    if (msg->get_params().empty())
+        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));   
+    else{
+        current = find_user_by_fd(msg->get_fd());
+        if (current->connected()){
+            _messages.push(err::err_alreadyregistred(msg->get_fd()));
+        }
+        else{
+            if (msg->get_params() == _pass)
+                current->set_pass(true);
+            else
+                current->set_pass(false);
+        }
+    }
+}
 void irc::server::ft_part(irc::message * msg){(void)msg;}
 void irc::server::ft_ping(irc::message * msg){(void)msg;}
-void irc::server::ft_pong(irc::message * msg){
+void irc::server::ft_pong(irc::message * msg){ //OK
     if (msg->get_params().empty()){
         _messages.push(err::err_noorigin(msg->get_fd()));
     }
     else if (msg->get_params() != SERVER_NAME){
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
     }
-    else
+    else //attention au cas ou user send QUIT then PONG --> need security on find_user
         find_user_by_fd(msg->get_fd())->set_ping(false);
 }
 void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
@@ -391,11 +463,37 @@ void irc::server::ft_quit(irc::message * msg){(void)msg;}
 void irc::server::ft_stats(irc::message * msg){(void)msg;}
 void irc::server::ft_time(irc::message * msg){(void)msg;}
 void irc::server::ft_topic(irc::message * msg){(void)msg;}
-void irc::server::ft_user(irc::message * msg){(void)msg;}
+void irc::server::ft_user(irc::message * msg){//OK
+    irc::user * current;
+    std::vector<str> args;
+
+    if (msg->get_params().empty() || msg->get_trailing().empty()){
+        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));   
+        return;
+    }
+    args = ft_split(msg->get_params(), " ");
+    if (args.size() < 3){
+        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        return;
+    }
+    current = find_user_by_fd(msg->get_fd());
+    if (current->username().size() != 0){
+        _messages.push(err::err_alreadyregistred(msg->get_fd()));
+        return;
+    }
+    if (current){
+        current->set_username(args[0]);
+        current->set_fullname(msg->get_trailing());
+    }
+//extraire les 3 parametres et le trailing et set 1er param a username , trailing a fullname, ignorer les 2 du milieu 
+}
 void irc::server::ft_version(irc::message * msg){(void)msg;}
 void irc::server::ft_who(irc::message * msg){(void)msg;}
 void irc::server::ft_whois(irc::message * msg){(void)msg;}
 void irc::server::ft_whowas(irc::message * msg){(void)msg;}
+//disabled commands
+void irc::server::ft_users(irc::message * msg){ _messages.push(err::err_usersdisabled(msg->get_fd())); }
+void irc::server::ft_summon(irc::message * msg){ _messages.push(err::err_summondisabled(msg->get_fd())); }
 
 //===========================================================================================
 //=                                                                                         =

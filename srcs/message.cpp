@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 15:23:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 10:34:42 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int irc::message::parse_message( void ){
     if (msg.size() == 0)
         return(FAILURE);
     if (msg.at(0) == ':'){
-        std::cout << "detected prefix" << std::endl;
         pos = msg.find(" ");
         if (pos == str::npos){
             std::cout << "no cmd detected, failed parsing message" << std::endl;  

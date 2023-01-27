@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 17:56:46 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 10:56:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ namespace irc{
         ERR_NONICKNAMEGIVEN = 431,
         ERR_ERRONEUSNICKNAME = 432,
         ERR_NICKNAMEINUSE = 433,
-        ERR_NICKCOLLISION = 436,
         ERR_USERNOTINCHANNEL = 441,
         ERR_NOTONCHANNEL = 442,
         ERR_USERONCHANNEL = 443,
-        ERR_NOLOGIN = 444,
         ERR_SUMMONDISABLED = 445,
         ERR_USERSDISABLED = 446,
         ERR_NOTREGISTERED = 451,
@@ -86,10 +84,6 @@ namespace irc{
         RPL_LUSERUNKNOWN = 253,
         RPL_LUSERCHANNELS = 254,
         RPL_LUSERME = 255,
-        RPL_ADMINME = 256, //==========?
-        RPL_ADMINLOC1 = 257, //==========?
-        RPL_ADMINLOC2 = 258, //==========?
-        RPL_ADMINEMAIL = 259, //==========?
         RPL_AWAY = 301,
         RPL_USERHOST = 302,
         RPL_UNAWAY = 305,
@@ -148,11 +142,9 @@ namespace irc{
         irc::message * err_nonicknamegiven(int to);
         irc::message * err_erroneusnickname(const str &nickname, int to);
         irc::message * err_nicknameinuse(const str &nickname, int to);
-        irc::message * err_nickcollision(const str &nickname, int to);
         irc::message * err_usernotinchannel(const str &nickname, const str &channel, int to);
         irc::message * err_notonchannel(const str &channel, int to);
         irc::message * err_useronchannel(const str &nickname, const str &channel, int to);
-        irc::message * err_nologin(const str &user, int to);
         irc::message * err_summondisabled(int to);
         irc::message * err_usersdisabled(int to);
         irc::message * err_notregistered(int to);

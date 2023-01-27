@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/26 17:47:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 10:59:25 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "message.hpp"
 # include "adminUser.hpp"
 # include "send.hpp"
+# include "utils.hpp"
 
 
 namespace irc{
@@ -56,8 +57,7 @@ namespace irc{
         private:
         // ----- Network -----
             void        accept_connection(void);
-            
-            void        handle_user_connection(user * current);
+            int         handle_user_connection(user * current);
         // ----- Timeout / load handler -----
             unsigned long get_time_ms(void);
             void        handle_users_timeout(void);
@@ -126,6 +126,9 @@ namespace irc{
             void        ft_who(irc::message *);
             void        ft_whois(irc::message *);
             void        ft_whowas(irc::message *);
+            //disabled
+            void        ft_users(irc::message *);
+            void        ft_summon(irc::message *);
             
         //====== TESTING FUNCTIONS ======
             int         manual_entry( void );     
