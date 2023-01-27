@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 11:04:27 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 15:42:29 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,15 @@ irc::user   *irc::server::find_user_by_nick(const str & nick){
     return (NULL);
 }
 
+irc::channel    *irc::server::find_channel_by_name(const str & name){
+    std::map<str, irc::channel*>::iterator it;
+
+    it = _channels.find(name);
+    if (it != _channels.end())
+        return (it->second);
+    return (NULL);    
+}
+
 // ----- Is ? ------
 bool        irc::server::check_nickname_rules(const str & nick){
     str::size_type i = 0;
@@ -369,10 +378,11 @@ bool        irc::server::is_a_nickname(const str & nick){
 bool        irc::server::is_a_channel(const str & chan){
     if (!check_channel_rules(chan))
         return (false);
-    //find channel in channel list
-    //if found return true
+    if (!find_channel_by_name(chan))
+        return (false);
     return(true);    
 }
+
 // ----- Message Interpreter + Reply generator -----
 void        irc::server::interprete_and_reply( void ){
     std::map<int, irc::user*>::iterator it;
@@ -396,22 +406,41 @@ void        irc::server::interprete_and_reply( void ){
     }
 }
 
+// ================> ALL COMMANDS HANDLED BY SERVER <===================
+
 void irc::server::ft_admin( irc::message * msg ){//OK
     if (msg->get_params().empty())
         _messages.push(err::err_noadmininfo(msg->get_fd()));
     else if (msg->get_params() != SERVER_NAME)
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
+    else
+        _messages.push(err::err_noadmininfo(msg->get_fd()));
 }
 void irc::server::ft_cap( irc::message * msg ){(void)msg;}//ignore CAP messages
 void irc::server::ft_error( irc::message * msg ){(void)msg;}
 void irc::server::ft_info( irc::message * msg ){(void)msg;}
-void irc::server::ft_invite( irc::message * msg ){(void)msg;}
-void irc::server::ft_join( irc::message * msg ){(void)msg;}
-void irc::server::ft_kick( irc::message * msg ){(void)msg;}
-void irc::server::ft_kill( irc::message * msg ){(void)msg;}
-void irc::server::ft_list( irc::message * msg ){(void)msg;}
-void irc::server::ft_mode(irc::message * msg){(void)msg;}
-void irc::server::ft_names(irc::message * msg){(void)msg;}
+void irc::server::ft_invite( irc::message * msg ){(void)msg;} //-> invite a user to a channel
+void irc::server::ft_join( irc::message * msg ){(void)msg;} //-> join a channel
+void irc::server::ft_kick( irc::message * msg ){(void)msg;} //-> operator kicks user from channel
+void irc::server::ft_kill( irc::message * msg ){(void)msg;} //-> operator kills user (delete user)
+void irc::server::ft_list( irc::message * msg ){
+    //lists all channels + topic if param is empty
+    // if params not empty , lists the channels listed with their topics (separated by comas)
+    // there is a space in the params, it must be the last param, and this param refers to a server
+    (void)msg;
+    //ERR_NOSUCHSERVER
+    //RPL_LISTSTART
+    //RPL_LIST
+    //RPL_LISTEND
+}
+void irc::server::ft_mode(irc::message * msg){(void)msg;} // both channel and users
+void irc::server::ft_names(irc::message * msg){
+    //lists all nicknames visible on all visible channels (if a channel is private or secret, it won't appear unless the user is part of it)
+    //params can be a list of channels (will get an answer only if channel is visible)
+    //RPL_NAMREPLY
+    //RPL_ENDOFNAMES 
+    (void)msg;
+}
 void irc::server::ft_nick(irc::message * msg){ //OK
     irc::user       *current;
     
@@ -426,8 +455,29 @@ void irc::server::ft_nick(irc::message * msg){ //OK
     else
         _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
 }
-void irc::server::ft_notice(irc::message * msg){(void)msg;}
-void irc::server::ft_oper(irc::message * msg){(void)msg;}
+void irc::server::ft_notice(irc::message * msg){(void)msg;}//OK (won't trigger any reply since we are a server)
+void irc::server::ft_oper(irc::message * msg){
+    std::vector<str>    args;
+    irc::user           *current;
+
+    args = ft_split(msg->get_params(), " ");
+    if (args.size() < 2){
+        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+    }
+    //check that user exists, is the sender, and that password is correct
+    if ((current = find_user_by_nick(args[0])) != NULL && current->fd() == msg->get_fd()){
+        if (args[2] == OPER_PASSWORD){
+            _messages.push(rpl::rpl_youreoper(msg->get_fd()));
+            //change user mode to oper
+            //generate broadcast message MODE +o to inform other users of the new oper
+        }
+        else{
+            _messages.push(err::err_passwdmissmatch(msg->get_fd()));
+        }
+    }
+    else
+        _messages.push(err::err_nooperhost(msg->get_fd()));
+}
 void irc::server::ft_pass(irc::message * msg){ //OK
     irc::user * current;
 
@@ -485,9 +535,13 @@ void irc::server::ft_user(irc::message * msg){//OK
         current->set_username(args[0]);
         current->set_fullname(msg->get_trailing());
     }
-//extraire les 3 parametres et le trailing et set 1er param a username , trailing a fullname, ignorer les 2 du milieu 
 }
-void irc::server::ft_version(irc::message * msg){(void)msg;}
+void irc::server::ft_version(irc::message * msg){//OK
+    if (msg->get_params().empty() || msg->get_params() == SERVER_NAME)
+        _messages.push(rpl::rpl_version(SERVER_VERSION, "", SERVER_NAME , "The one and only", msg->get_fd()));
+    else
+        _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
+}
 void irc::server::ft_who(irc::message * msg){(void)msg;}
 void irc::server::ft_whois(irc::message * msg){(void)msg;}
 void irc::server::ft_whowas(irc::message * msg){(void)msg;}

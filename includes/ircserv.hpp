@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/27 08:18:38 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/27 15:41:45 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define IRCSERV_HPP
 #define SERVER_PORT 6667
 #define SERVER_NAME "shittyIRC"
+#define SERVER_VERSION "V1.0"
+#define OPER_PASSWORD "Metsmoioperwesh!"
 #define TCP 0
 #define BACKLOG 10
 #define BUFF_SIZE 1024
