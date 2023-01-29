@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 11:28:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/29 19:04:55 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ namespace irc{
     namespace err
     {
         irc::message * err_nosuchnick(const str &nickname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHNICK), 		nickname, 		"No such nick/channel", to)); } 
-        irc::message * err_nosuchserver(const str &servername, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHSERVER), 	    servername, 	"No such server", to));} 
+        irc::message * err_nosuchserver(const str &srvname, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHSERVER), 	    srvname, 	"No such server", to));} 
         irc::message * err_nosuchchannel(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHCHANNEL), 	    channelname, 	"No such channel", to));} 
         irc::message * err_cannotsendtochan(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_CANNOTSENDTOCHAN),   channelname, 	"Cannot send to channel", to));} 
         irc::message * err_toomanychannels(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_TOOMANYCHANNELS), 	channelname, 	"You have joined too many channels", to));}
@@ -61,12 +61,12 @@ namespace irc{
 
     namespace rpl
     {
-        irc::message * rpl_welcome(const str &userPrefix, int to)									{ return (new irc::message(SERVER_NAME, "001", 			"", 			"Welcome to the Internet Relay Network " + userPrefix, to));}
-        irc::message * rpl_yourhost(const str &servername, const str &version, int to)				{ return (new irc::message(SERVER_NAME, "002", 		    "", 			"Your host is " + servername + ", running version " + version, to));}
-        irc::message * rpl_created(const str &date, int to)											{ return (new irc::message(SERVER_NAME, "003", 			"", 			"This server was created " + date, to));}
-        irc::message * rpl_myinfo(const str &servername, const str &version, const str &availableUserModes, const str &availableChannelModes, int to) 
-                                                                                                    { return (new irc::message(SERVER_NAME, "004", 			"", 			servername + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
-        irc::message * rpl_bounce(const str &servername, const str &port, int to)					{ return (new irc::message(SERVER_NAME, "005", 			"", 			"Try server " + servername + ", port " + port, to));}
+        irc::message * rpl_welcome(const str &nick, int to)									        { return (new irc::message(SERVER_NAME, "001", 			nick, 			"Welcome to the Internet Relay Network " + nick, to));}
+        irc::message * rpl_yourhost(const str &nick, const str &srvname, const str &version, int to){ return (new irc::message(SERVER_NAME, "002", 		    nick, 			"Your host is " + srvname + ", running version " + version, to));}
+        irc::message * rpl_created(const str &nick, const str &date, int to)						{ return (new irc::message(SERVER_NAME, "003", 			nick, 			"This server was created " + date, to));}
+        irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to) 
+                                                                                                    { return (new irc::message(SERVER_NAME, "004", 			nick, 			srvname + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
+        irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to)	    { return (new irc::message(SERVER_NAME, "005", 			nick, 			"Try server " + srvname + ", port " + port, to));}
     //     irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to){
     //         strstream ss;
     //         ss << linkname << ' ' << sendq << ' ' << sentMessages << ' ' << sentKbytes
@@ -108,13 +108,13 @@ namespace irc{
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_BANLIST), 			channel + ' ' + banmask, "", to));}
         irc::message * rpl_endofbanlist(const str &channel, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFBANLIST), 	    channel, 		"End of channel ban list", to));}
         irc::message * rpl_motd(const str &text, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_MOTD), 			    "", 			"- " + text, to));}
-        irc::message * rpl_motdstart(const str &servername, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_MOTDSTART), 		    "", 			"- " + servername + " Message of the day - ", to));}
+        irc::message * rpl_motdstart(const str &srvname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_MOTDSTART), 		    "", 			"- " + srvname + " Message of the day - ", to));}
         irc::message * rpl_endofmotd(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFMOTD), 		    "", 			"End of MOTD command", to));}
         irc::message * rpl_info(const str &info, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_INFO), 			    "", 			info, to));}
         irc::message * rpl_endofinfo(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFINFO), 		    "", 			"End of INFO list", to));}
         irc::message * rpl_youreoper(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOUREOPER), 		    "", 			"You are now an IRC operator", to));}
         irc::message * rpl_youreservice(const str &servicename, int to)								{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOURESERVICE), 	    "", 			"You are service " + servicename, to));}
-        // irc::message * rpl_time(const str &servername, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			    servername, 	ft::toDate(::time(""), " :%x - %I:%M:%S %z"), to));} // formatter le time autrement
+        // irc::message * rpl_time(const str &srvname, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			    srvname, 	ft::toDate(::time(""), " :%x - %I:%M:%S %z"), to));} // formatter le time autrement
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERCLIENT), 		"", 			"There are " + SSTR(users) + " users and " + SSTR(services) + " services on " + SSTR(servers) + " server", to));	}
         irc::message * rpl_lusersop(size_t nb, int to)												{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSEROP), 			SSTR(nb), "operator(s) online", to));}
         irc::message * rpl_lusersunknown(size_t nb, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERUNKNOWN), 	    SSTR(nb), "unknown connection(s)", to));}
@@ -122,8 +122,8 @@ namespace irc{
         irc::message * rpl_lusersme(size_t nb, int to)												{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERME), 			"", 			"I have " + SSTR(nb) + " clients and 1 server", to));}
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISUSER), 		    nick + " " + user + " " + host + " *", realname, to));}
-        irc::message * rpl_whoisserver(const str &nick, const str &servername, const str shortinfo, int to)
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISSERVER), 		nick + " " + servername, shortinfo, to));}
+        irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to)
+                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISSERVER), 		nick + " " + srvname, shortinfo, to));}
         irc::message * rpl_whoisoperator(const str &nick, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISOPERATOR), 	    nick, 			"is an IRC operator", to));}
         irc::message * rpl_whoisidle(const str &nick, size_t idle, int to)							{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISIDLE), 		    nick + " " + SSTR(idle), "seconds idle", to));}
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &channel, int to)	

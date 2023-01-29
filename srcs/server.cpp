@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 15:42:29 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/29 19:15:52 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void       irc::server::handle_users_timeout(void){
             }
             else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
                 std::cout << "Sending ping to inactive user" << std::endl;
-                msg = cmd::cmd_ping( "dsaada" , current->fd() );
+                msg = cmd::cmd_ping( current->nickname() , current->fd() );
                 _messages.push(msg);
                 current->set_ping(true);
             }
@@ -115,6 +115,20 @@ void       irc::server::handle_users_timeout(void){
     }
 }
 
+void        irc::server::say_welcome(irc::user *new_user){
+    irc::message            *msg;
+
+    msg = rpl::rpl_welcome(new_user->nickname(), new_user->fd());
+    _messages.push(msg);
+    msg = rpl::rpl_yourhost(new_user->nickname(), _server_name, SERVER_VERSION , new_user->fd());
+    _messages.push(msg);
+    msg = rpl::rpl_created(new_user->nickname(), "", new_user->fd()); // remplacer le champ vide par la date
+    _messages.push(msg);
+    msg = rpl::rpl_myinfo(new_user->nickname(), _server_name, SERVER_VERSION, "", "", new_user->fd()); // remplacer les champs vides par les modes user disponibles et mode channels disponibles
+    _messages.push(msg);
+    msg = rpl::rpl_bounce(new_user->nickname(), _server_name, SSTR(_port), new_user->fd());
+    _messages.push(msg);
+}
 // ----- Identity checker -----
 int         irc::server::handle_user_connection(irc::user *current){
     irc::message            *msg;
@@ -141,8 +155,7 @@ int         irc::server::handle_user_connection(irc::user *current){
     //if everything ok 
     if (current->pass() && current->nickname().size() > 0 && current->fullname().size() > 0 ){
         current->set_connected(true);
-        msg = rpl::rpl_welcome("dsaada", current->fd());
-        _messages.push(msg);
+        say_welcome(current);
     }
     return (SUCCESS);
 }
@@ -496,8 +509,8 @@ void irc::server::ft_pass(irc::message * msg){ //OK
         }
     }
 }
-void irc::server::ft_part(irc::message * msg){(void)msg;}
-void irc::server::ft_ping(irc::message * msg){(void)msg;}
+void irc::server::ft_part(irc::message * msg){(void)msg;}// quits channel (with optionnal message sent to current users in channel)
+void irc::server::ft_ping(irc::message * msg){(void)msg;}// OK , server will ignore message but listen to the ping to refresh inactivity timestamp of sending user
 void irc::server::ft_pong(irc::message * msg){ //OK
     if (msg->get_params().empty()){
         _messages.push(err::err_noorigin(msg->get_fd()));
@@ -509,10 +522,16 @@ void irc::server::ft_pong(irc::message * msg){ //OK
         find_user_by_fd(msg->get_fd())->set_ping(false);
 }
 void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
-void irc::server::ft_quit(irc::message * msg){(void)msg;}
+void irc::server::ft_quit(irc::message * msg){
+    //last message received from a user, if Quit is received , disconnect user and send message to all
+    (void)msg;
+}
 void irc::server::ft_stats(irc::message * msg){(void)msg;}
-void irc::server::ft_time(irc::message * msg){(void)msg;}
-void irc::server::ft_topic(irc::message * msg){(void)msg;}
+void irc::server::ft_time(irc::message * msg){
+    //sends local server time 
+    (void)msg;
+}
+void irc::server::ft_topic(irc::message * msg){(void)msg;} //send topic of given channel 
 void irc::server::ft_user(irc::message * msg){//OK
     irc::user * current;
     std::vector<str> args;

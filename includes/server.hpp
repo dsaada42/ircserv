@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 14:37:43 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/29 19:14:06 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ namespace irc{
         // ----- Network -----
             void        accept_connection(void);
             int         handle_user_connection(user * current);
+            void        say_welcome(user * new_user);
         // ----- Timeout / load handler -----
             unsigned long get_time_ms(void);
             void        handle_users_timeout(void);

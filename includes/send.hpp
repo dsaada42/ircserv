@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 11:28:54 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/29 19:06:16 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ namespace irc{
     namespace err
     {
         irc::message * err_nosuchnick(const str &nickname, int to);
-        irc::message * err_nosuchserver(const str &servername, int to);
+        irc::message * err_nosuchserver(const str &srvname, int to);
         irc::message * err_nosuchchannel(const str &channelname, int to);
         irc::message * err_cannotsendtochan(const str &channelname, int to);
         irc::message * err_toomanychannels(const str &channelname, int to);
@@ -169,11 +169,11 @@ namespace irc{
 
     namespace rpl
     {
-        irc::message * rpl_welcome(const str &userPrefix, int to);
-        irc::message * rpl_yourhost(const str &servername, const str &version, int to);
-        irc::message * rpl_created(const str &date, int to);
-        irc::message * rpl_myinfo(const str &servername, const str &version, const str &availableUserModes, const str &availableChannelModes, int to);
-        irc::message * rpl_bounce(const str &servername, const str &port, int to);
+        irc::message * rpl_welcome(const str &nick, int to);
+        irc::message * rpl_yourhost(const str &nick, const str &srvname, const str &version, int to);
+        irc::message * rpl_created(const str &nick, const str &date, int to);
+        irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to);
+        irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to);
         // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to);
         irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
         irc::message * rpl_endofstats(const str &letter, int to);
@@ -195,20 +195,20 @@ namespace irc{
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to);
         irc::message * rpl_endofbanlist(const str &channel, int to);
         irc::message * rpl_motd(const str &text, int to);
-        irc::message * rpl_motdstart(const str &servername, int to);
+        irc::message * rpl_motdstart(const str &srvname, int to);
         irc::message * rpl_endofmotd(int to);
         irc::message * rpl_info(const str &info, int to);
         irc::message * rpl_endofinfo(int to);
         irc::message * rpl_youreoper(int to);
         irc::message * rpl_youreservice(const str &servicename, int to);
-        // irc::message * rpl_time(const str &servername, int to);
+        // irc::message * rpl_time(const str &srvname, int to);
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to);
         irc::message * rpl_lusersop(size_t nb, int to);
         irc::message * rpl_lusersunknown(size_t nb, int to);
         irc::message * rpl_luserschannels(size_t nb, int to);
         irc::message * rpl_lusersme(size_t nb, int to);
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to);
-        irc::message * rpl_whoisserver(const str &nick, const str &servername, const str shortinfo, int to);
+        irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to);
         irc::message * rpl_whoisoperator(const str &nick, int to);
         irc::message * rpl_whoisidle(const str &nick, size_t idle, int to);
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &chan, int to);
