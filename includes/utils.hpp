@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 09:53:33 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:06:44 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/29 21:49:33 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # include "ircserv.hpp"
 
 namespace irc{
-    std::vector<str> ft_split(str msg, str delim);
+    std::vector<str>    ft_split(str msg, str delim);
+    str                 ft_current_time(void);
 }
 
 

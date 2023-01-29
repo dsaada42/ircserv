@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 09:59:03 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:12:37 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/29 21:47:27 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,11 @@ std::vector<str> irc::ft_split(str msg, str delim){
         res.push_back(msg);
 
     return (res);
+}
+
+str irc::ft_current_time(){
+    time_t now = time(0);
+
+    str date = ctime(&now);
+    return(date);
 }

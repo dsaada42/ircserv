@@ -6,13 +6,13 @@
 #    By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/08 08:53:39 by dylan             #+#    #+#              #
-#    Updated: 2023/01/25 15:13:38 by dsaada           ###   ########.fr        #
+#    Updated: 2023/01/29 21:57:32 by dsaada           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CXX 		= c++
 
-CXXFLAGS 	= -Wall -Werror -Wextra -std=c++98
+CXXFLAGS 	= -Wall -Wextra -std=c++98
 
 SRCS 		= $(wildcard ./srcs/*.cpp)
 

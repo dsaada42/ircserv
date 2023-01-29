@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 19:15:52 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/29 22:13:41 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,6 +291,7 @@ void        irc::server::delete_all_received( void ){
 // ----- Init cmd map -----
 void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("ADMIN", &irc::server::ft_admin));
+    _cmds.insert(std::make_pair("admin", &irc::server::ft_admin));
     _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));
     _cmds.insert(std::make_pair("ERROR", &irc::server::ft_error));
     _cmds.insert(std::make_pair("INFO", &irc::server::ft_info));
@@ -312,6 +313,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));
     _cmds.insert(std::make_pair("STATS", &irc::server::ft_stats));
     _cmds.insert(std::make_pair("TIME", &irc::server::ft_time));
+    _cmds.insert(std::make_pair("time", &irc::server::ft_time));
     _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));
     _cmds.insert(std::make_pair("VERSION", &irc::server::ft_version));
@@ -523,13 +525,21 @@ void irc::server::ft_pong(irc::message * msg){ //OK
 }
 void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
 void irc::server::ft_quit(irc::message * msg){
+    irc::user   *current;
+
+    // if (!msg->get_trailing().empty())
     //last message received from a user, if Quit is received , disconnect user and send message to all
+    current = find_user_by_fd(msg->get_fd());
+    delete_user(current);
     (void)msg;
 }
 void irc::server::ft_stats(irc::message * msg){(void)msg;}
 void irc::server::ft_time(irc::message * msg){
-    //sends local server time 
-    (void)msg;
+    if (!msg->get_params().empty() && msg->get_params() != SERVER_NAME){
+        _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
+    }
+    else
+        _messages.push(rpl::rpl_time(SERVER_NAME, msg->get_fd()));
 }
 void irc::server::ft_topic(irc::message * msg){(void)msg;} //send topic of given channel 
 void irc::server::ft_user(irc::message * msg){//OK

@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 19:06:16 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/29 21:55:57 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define SEND_HPP
 # include "ircserv.hpp"
 # include "message.hpp"
+# include "utils.hpp"
 
 namespace irc{
 
@@ -201,7 +202,7 @@ namespace irc{
         irc::message * rpl_endofinfo(int to);
         irc::message * rpl_youreoper(int to);
         irc::message * rpl_youreservice(const str &servicename, int to);
-        // irc::message * rpl_time(const str &srvname, int to);
+        irc::message * rpl_time(const str &srvname, int to);
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to);
         irc::message * rpl_lusersop(size_t nb, int to);
         irc::message * rpl_lusersunknown(size_t nb, int to);

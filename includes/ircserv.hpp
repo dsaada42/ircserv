@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/27 15:41:45 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/29 21:45:10 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # include <netinet/in.h>
 # include <unistd.h>
 # include <cstdlib>
+# include <ctime>
 # include <stdio.h>
 # include <csignal>
 # include <exception>
