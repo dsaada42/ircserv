@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/30 11:10:33 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/30 13:16:52 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,7 @@ int         irc::server::handle_user_connection(irc::user *current){
     //if everything ok 
     if (current->pass() && current->nickname().size() > 0 && current->fullname().size() > 0 ){
         current->set_connected(true);
+        current->new_timestamp();
         say_welcome(current);
     }
     return (SUCCESS);
@@ -294,7 +295,7 @@ void        irc::server::delete_all_received( void ){
 void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("admin", &irc::server::ft_admin));                                      //OK
     _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));
-    _cmds.insert(std::make_pair("INFO", &irc::server::ft_info));
+    _cmds.insert(std::make_pair("info", &irc::server::ft_info));
     _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));
     _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));
     _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));
