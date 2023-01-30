@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 21:55:57 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/30 11:11:06 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ namespace irc{
         irc::message * rpl_notopic(const str &channel, int to);
         irc::message * rpl_topic(const str &channel, const str &topic, int to);
         irc::message * rpl_inviting(const str &channel, const str &nickname, int to);
-        irc::message * rpl_version(const str &version, const str debuglevel, const str &server, const str &comments, int to);
+        irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to);
         irc::message * rpl_namreply(const str &names, int to);
         irc::message * rpl_endofnames(const str &name, int to);
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to);
@@ -200,7 +200,7 @@ namespace irc{
         irc::message * rpl_endofmotd(int to);
         irc::message * rpl_info(const str &info, int to);
         irc::message * rpl_endofinfo(int to);
-        irc::message * rpl_youreoper(int to);
+        irc::message * rpl_youreoper(const str &nickname, int to);
         irc::message * rpl_youreservice(const str &servicename, int to);
         irc::message * rpl_time(const str &srvname, int to);
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to);

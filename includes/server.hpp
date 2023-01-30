@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 19:14:06 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/30 11:01:34 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ namespace irc{
             fd_set                              write_sockets;
             fd_set                              except_sockets;
             irc::adminUser                      _admin;
+            str                                 _creation_date;
             
         public:
         // ----- Constructor / Destructor -----
@@ -102,7 +103,6 @@ namespace irc{
         // ----- Received message treatement -----
             void        ft_admin( irc::message * );
             void        ft_cap( irc::message * );
-            void        ft_error( irc::message * );
             void        ft_info( irc::message * );
             void        ft_invite( irc::message * );
             void        ft_join( irc::message * );
