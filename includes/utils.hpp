@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 09:53:33 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 21:49:33 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 17:48:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 namespace irc{
     std::vector<str>    ft_split(str msg, str delim);
     str                 ft_current_time(void);
+    str                 ft_ms_to_duration(unsigned long ms);
 }
 
 

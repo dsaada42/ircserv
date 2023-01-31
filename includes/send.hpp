@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 16:39:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:10:50 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,17 +69,10 @@ namespace irc{
         RPL_BOUNCE = 005,
         RPL_STATSLINKINFO = 211,
         RPL_STATSCOMMANDS = 212,
-        RPL_STATSCLINE = 213,//==========?
-        RPL_STATSNLINE = 214,//==========?
-        RPL_STATSILINE = 215,//==========?
-        RPL_STATSKLINE = 216,//==========?
-        RPL_STATSYLINE = 218,//==========?
         RPL_ENDOFSTATS = 219,
         RPL_UMODEIS = 221,
-        RPL_STATSLLINE = 241,//==========?
+        RPL_STATSLLINE = 241, //list of all connexion. time elapsed on each connection and traffic on each in bytes and messages
         RPL_STATSUPTIME = 242,
-        RPL_STATSOLINE = 243,
-        RPL_STATSHLINE = 244, //==========?
         RPL_AWAY = 301,
         RPL_USERHOST = 302,
         RPL_UNAWAY = 305,
@@ -167,12 +160,11 @@ namespace irc{
         irc::message * rpl_created(const str &nick, const str &date, int to);
         irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to);
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to);
-        // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to);
+        irc::message * rpl_statslinkinfo(const str &nickname, const str &stats, int to);
         // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
-        irc::message * rpl_endofstats(const str &letter, int to);
+        irc::message * rpl_endofstats(const str &nickname, const str &letter, int to);
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
         // irc::message * rpl_statuptime(time_t uptime, int to);
-        irc::message * rpl_statoline(const str &hostmask, const str &name, int to);
         irc::message * rpl_away(const str &nickname, const str &reason, int to);
         irc::message * rpl_unaway(int to);
         irc::message * rpl_nowaway(int to);

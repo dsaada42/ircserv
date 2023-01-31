@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 16:44:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:11:03 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));                                        //OK
     _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
-    _cmds.insert(std::make_pair("STATS", &irc::server::ft_stats));
+    _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //DOING IT
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
     _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));                                        //OK
@@ -613,7 +613,28 @@ void irc::server::ft_quit(irc::message * msg){
 }
 //----- STATS -----
 void irc::server::ft_stats(irc::message * msg){
-    (void)msg;
+    std::map<int, irc::user*>::iterator it;
+    irc::user                           *current;
+
+    current = find_user_by_fd(msg->get_fd());
+    if (current){
+        if (msg->get_params() == "l"){
+            for (it = _users.begin(); it != _users.end(); it++){
+                _messages.push(rpl::rpl_statslinkinfo( current->nickname(), it->second->connection_stats(), msg->get_fd()));
+            }
+            _messages.push(rpl::rpl_endofstats(current->nickname(), "l", msg->get_fd()));    
+        }
+    }
+    //STATS <query> <server>
+    //if server omitted , send RPL_ENDOFSTATS
+    //if server not ours, send ERR_NOSUCHSERVER
+    //we handle m (list of commands supported (number of time each command has been called))
+    //RPL_STATSCOMMANDS
+    //we handle u (uptime)
+    //RPL_STATSUPTIME
+    //we handle l (list of connections and stats on each connection)
+    //RPL_STATSLINKINFO
+    //RPL_ENDOFSTATS
 }
 //----- TIME -----
 void irc::server::ft_time(irc::message * msg){

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:02:00 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 17:57:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define USER_HPP
 # include "ircserv.hpp"
 # include "message.hpp"
+# include "utils.hpp"
 
 namespace irc{
     
@@ -28,10 +29,14 @@ namespace irc{
             bool            _connected;
             bool            _ping;
             unsigned long   _remain;
-            unsigned long   _timestamp; //time in ms set at creation
+            unsigned long   _timestamp;
+            unsigned long   _creation_time; //time in ms set at creation
             bool            _pass;
             str             _mode;
-            
+            unsigned long   _sent;
+            unsigned long   _sentbytes;
+            unsigned long   _received;
+            unsigned long   _receivedbytes;
         
         public:
         // ----- Constructors -----
@@ -62,6 +67,7 @@ namespace irc{
             void set_ping( const bool & ping);
             void set_pass( const bool & pass);
 
+
         // ----- Mode -----
             bool is_mode(char c);
             void change_mode(char c, bool plus);
@@ -69,6 +75,10 @@ namespace irc{
             int read_connection( void );
             message *extract_message(str delim);
             void new_timestamp(void);
+        // ----- Stats -----
+            void incr_sent_cmd(void);
+            void incr_sent_bytes(int n);
+            str connection_stats(void);
         // ----- Debug -----
             void print(void);
     };

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 16:41:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:10:36 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,11 @@ namespace irc{
         irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to) 
                                                                                                     { return (new irc::message(SERVER_NAME, "004", 			nick, 			srvname + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to)	    { return (new irc::message(SERVER_NAME, "005", 			nick, 			"Try server " + srvname + ", port " + port, to));}
-        // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to){}
+        irc::message * rpl_statslinkinfo(const str &nickname, const str &stats, int to)             { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSLINKINFO), nickname, stats, to));}
         // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to){}
-        irc::message * rpl_endofstats(const str &letter, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		letter, 		"End of STATS report", to));}
+        irc::message * rpl_endofstats(const str &nickname, const str &letter, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		nickname + " " + letter, 		"End of STATS report", to));}
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		nickname,	'+' + modes, to));}
         // irc::message * rpl_statuptime(time_t uptime, int to)                                         { return (new irc::message(SERVER_NAME, "", "", to));}
-        irc::message * rpl_statoline(const str &hostmask, const str &name, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    "O " + hostmask + " * " + name, "", to));}
         irc::message * rpl_away(const str &nickname, const str &reason, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    nickname, 		reason, to));}
         irc::message * rpl_unaway(int to)															{ return (new irc::message(SERVER_NAME, SSTR(RPL_UNAWAY), 			"", 			"You are no longer marked as being away", to));}
         irc::message * rpl_nowaway(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    "", 			"You have been marked as being away", to));}

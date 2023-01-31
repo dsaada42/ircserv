@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 09:59:03 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/29 21:47:27 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 17:49:12 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,8 @@ str irc::ft_current_time(){
 
     str date = ctime(&now);
     return(date);
+}
+
+str irc::ft_ms_to_duration(unsigned long ms){
+    return ("");
 }

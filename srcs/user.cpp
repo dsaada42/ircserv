@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 15:39:43 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:13:59 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 irc::user::user( int fd , unsigned long timestamp )
     : _fd(fd), _connected(false), _ping(false), _remain(0), _timestamp(timestamp), _pass(false){ 
     bzero(_buff, BUFF_SIZE);
+    _creation_time = timestamp;
+    _sent = 0;
+    _received = 0;
 }
 
 // ----- Copy Constructor -----
@@ -67,13 +70,11 @@ void    irc::user::change_mode(char c, bool plus){
 
     if (plus){
         if (_mode.find(c) == str::npos){
-            std::cout << "Added mode " << c << " to user " << _nickname << std::endl;
             _mode += c;
         }
     }
     else{
         if ((pos = _mode.find(c)) != str::npos){
-            std::cout << "Suppressed mode " << c << " to user " << _nickname << std::endl;
            _mode.erase(pos, 1);
         }
     }
@@ -81,10 +82,13 @@ void    irc::user::change_mode(char c, bool plus){
 }
 
 // ----- Read Connexion -----
-int irc::user::read_connection(void)                { 
-    if (read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1) <= 0){
+int irc::user::read_connection(void)                {
+    int cpt;
+     
+    if ((cpt = read(_fd, _buff + _remain, sizeof(_buff) - _remain - 1)) <= 0){
         return (FAILURE);
     }
+    _receivedbytes += (unsigned long)cpt;
     return (SUCCESS);
 }
 
@@ -103,12 +107,30 @@ irc::message *irc::user::extract_message(str delim){
             _buff[i] = buff[i];
         if (_connected)
             new_timestamp();
+        _received++;
         return (newmsg);
     }
     else{
         _remain = buff.size();
         return (NULL);
     }
+}
+
+// ----- Stats -----
+void irc::user::incr_sent_cmd(void){
+    _sent++;
+}
+void irc::user::incr_sent_bytes(int n){
+    _sentbytes += (unsigned long)n;
+}
+str irc::user::connection_stats( void ){
+    unsigned long opentime;
+    struct timeval  time_now;
+    gettimeofday(&time_now, NULL);
+    opentime = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
+    opentime -= _creation_time;
+    
+    return (_nickname + " " + "0 messages in queue " + SSTR(_sent) + " messages sent " + SSTR(_sentbytes) + " bytes sent " + SSTR(_received) + " messages received " + SSTR(_receivedbytes) + " bytes received " + ft_ms_to_duration(opentime) + " elapsed time sice creation");    
 }
 
 // ----- New Timestamp -----
@@ -120,12 +142,16 @@ void irc::user::new_timestamp(void){
 // ----- Print User -----
 void irc::user::print(void){
     std::cout << "============> User <=============" << std::endl;
-    std::cout << "-> Username   : " << _username << std::endl;
-    std::cout << "-> Fullname   : " << _fullname << std::endl;
-    std::cout << "-> Nickname   : " << _nickname << std::endl;
-    std::cout << "-> Modes      : " << _mode << std::endl;
-    std::cout << "-> Fd         : " << _fd << std::endl;
-    std::cout << "-> Connected  : " << _connected << std::endl;
-    std::cout << "-> Ping       : " << _ping << std::endl;
-    std::cout << "-> Pass       : " << _pass << std::endl;
+    std::cout << "-> Username       : " << _username << std::endl;
+    std::cout << "-> Fullname       : " << _fullname << std::endl;
+    std::cout << "-> Nickname       : " << _nickname << std::endl;
+    std::cout << "-> Modes          : " << _mode << std::endl;
+    std::cout << "-> Fd             : " << _fd << std::endl;
+    std::cout << "-> Connected      : " << _connected << std::endl;
+    std::cout << "-> Ping           : " << _ping << std::endl;
+    std::cout << "-> Pass           : " << _pass << std::endl;
+    std::cout << "-> Received cmds  : " << _received << std::endl;
+    std::cout << "-> Received bytes : " << _receivedbytes << std::endl;
+    std::cout << "-> Sent cmds      : " << _sent << std::endl;
+    std::cout << "-> Sent bytes     : " << _sentbytes << std::endl;
 }
