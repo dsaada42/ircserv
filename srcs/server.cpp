@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:30:50 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 11:38:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,13 +220,16 @@ void        irc::server::handle_write_set(void){
         if (FD_ISSET(current->get_fd(), &write_sockets)){
             if (current->send() == SUCCESS)
                 delete current;
-            else
+            else{
+                delete current;
                 std::cerr << "failed sending message" << std::endl; // behaviour?
+            }
         }
         else{
             if (!find_user_by_fd(current->get_fd()))
                 delete current;
-            tmp_messages.push(current);
+            else
+                tmp_messages.push(current);
         }
     }
     _messages = tmp_messages;
@@ -292,7 +295,7 @@ void        irc::server::delete_all_received( void ){
 // ----- Init cmd map -----
 void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("admin", &irc::server::ft_admin));                                      //OK
-    _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));
+    _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));                                          //OK
     _cmds.insert(std::make_pair("info", &irc::server::ft_info));
     _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));
     _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));

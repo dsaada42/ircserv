@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:54:11 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:59:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ namespace irc{
         irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to);
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to);
         // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to);
-        irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
+        // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
         irc::message * rpl_endofstats(const str &letter, int to);
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
         // irc::message * rpl_statuptime(time_t uptime, int to);
