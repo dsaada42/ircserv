@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:29:58 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:54:11 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ namespace irc{
         RPL_VERSION = 351,
         RPL_WHOREPLY = 352,
         RPL_NAMREPLY = 353,
-        RPL_LINKS = 364, //========?
-        RPL_ENDOFLINKS = 365, //========?
         RPL_ENDOFNAMES = 366,
         RPL_BANLIST = 367,
         RPL_ENDOFBANLIST = 368,
@@ -119,7 +117,6 @@ namespace irc{
         RPL_MOTDSTART = 375,
         RPL_ENDOFMOTD = 376,
         RPL_YOUREOPER = 381,
-        RPL_YOURESERVICE = 383,
         RPL_TIME = 391,
     };
 
@@ -201,13 +198,7 @@ namespace irc{
         irc::message * rpl_info(const str &info, int to);
         irc::message * rpl_endofinfo(int to);
         irc::message * rpl_youreoper(const str &nickname, int to);
-        irc::message * rpl_youreservice(const str &servicename, int to);
         irc::message * rpl_time(const str &srvname, int to);
-        irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to);
-        irc::message * rpl_lusersop(size_t nb, int to);
-        irc::message * rpl_lusersunknown(size_t nb, int to);
-        irc::message * rpl_luserschannels(size_t nb, int to);
-        irc::message * rpl_lusersme(size_t nb, int to);
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to);
         irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to);
         irc::message * rpl_whoisoperator(const str &nick, int to);

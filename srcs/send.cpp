@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:29:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:57:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ namespace irc{
         irc::message * err_nooperhost(int to)														{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOOPERHOST), 		"", 			"No O-lines for your host", to));}
         irc::message * err_umodeunknownflag(int to)							    					{ return (new irc::message(SERVER_NAME, SSTR(ERR_UMODEUNKNOWNFLAG),   "", 			"Unknown MODE flag", to));}
         irc::message * err_usersdontmatch(int to)													{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERSDONTMATCH), 	"", 			"Can't change mode for other users", to));}
-    } /* end of namespace Error */
+    }
 
     namespace rpl
     {
@@ -67,30 +67,11 @@ namespace irc{
         irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to) 
                                                                                                     { return (new irc::message(SERVER_NAME, "004", 			nick, 			srvname + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes, to));}
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to)	    { return (new irc::message(SERVER_NAME, "005", 			nick, 			"Try server " + srvname + ", port " + port, to));}
-    //     irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to){
-    //         strstream ss;
-    //         ss << linkname << ' ' << sendq << ' ' << sentMessages << ' ' << sentKbytes
-    //         << ' ' << recvMessages << ' ' << recvKbytes << ' ' << timeOpen;
-    //         return (new irc::message(SERVER_NAME, SSTR(RPL_STATSLINKINFO), ss.str(), to));
-    // }
-    //     irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to){
-    //         strstream ss;
-    //         ss << command << ' ' << count << ' ' << byteCount << ' ' << remoteCount;
-    //         return (new irc::message(SERVER_NAME, SSTR(RPL_STATSCOMMANDS), ss.str(), to));
-    // }
+        // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to){}
+        // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to){}
         irc::message * rpl_endofstats(const str &letter, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		letter, 		"End of STATS report", to));}
-        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		nickname,	'+' + modes, to));}
-        // irc::message * rpl_statuptime(time_t uptime, int to){
-        //     strstream ss;
-        //     time_t m = 60, h = 60 * m, d = 24 * h;
-        //     ss << ":Server Up " << (uptime / d) << " days ";
-        //     uptime %= d;
-        //     ss << (uptime / h, to);
-        //     uptime %= h;
-        //     ss << ':' << std::setfill('0') << std::setw(2) << (uptime / m)
-        //     << ':' << std::setfill('0') << std::setw(2) << (uptime % m, to);
-        //     return (new irc::message(SERVER_NAME, SSTR(RPL_STATSUPTIME), ss.str(), to));
-        // }
+        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		nickname,	'+' + modes, to));}
+        // irc::message * rpl_statuptime(time_t uptime, int to)                                         { return (new irc::message(SERVER_NAME, "", "", to));}
         irc::message * rpl_statoline(const str &hostmask, const str &name, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    "O " + hostmask + " * " + name, "", to));}
         irc::message * rpl_away(const str &nickname, const str &reason, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    nickname, 		reason, to));}
         irc::message * rpl_unaway(int to)															{ return (new irc::message(SERVER_NAME, SSTR(RPL_UNAWAY), 			"", 			"You are no longer marked as being away", to));}
@@ -113,13 +94,7 @@ namespace irc{
         irc::message * rpl_info(const str &info, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_INFO), 			    "", 			info, to));}
         irc::message * rpl_endofinfo(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFINFO), 		    "", 			"End of INFO list", to));}
         irc::message * rpl_youreoper(const str &nickname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOUREOPER), 		    nickname, 		"You are now an IRC operator", to));}
-        irc::message * rpl_youreservice(const str &servicename, int to)								{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOURESERVICE), 	    "", 			"You are service " + servicename, to));}
         irc::message * rpl_time(const str &srvname, int to)										    { return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			    srvname, 	ft_current_time(), to));} 
-        irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERCLIENT), 		"", 			"There are " + SSTR(users) + " users and " + SSTR(services) + " services on " + SSTR(servers) + " server", to));	}
-        irc::message * rpl_lusersop(size_t nb, int to)												{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSEROP), 			SSTR(nb), "operator(s) online", to));}
-        irc::message * rpl_lusersunknown(size_t nb, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERUNKNOWN), 	    SSTR(nb), "unknown connection(s)", to));}
-        irc::message * rpl_luserschannels(size_t nb, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERCHANNELS), 	    SSTR(nb), "channels formed", to));}
-        irc::message * rpl_lusersme(size_t nb, int to)												{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERME), 			"", 			"I have " + SSTR(nb) + " clients and 1 server", to));}
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISUSER), 		    nick + " " + user + " " + host + " *", realname, to));}
         irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to)
