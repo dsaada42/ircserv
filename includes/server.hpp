@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 16:20:30 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 19:32:37 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ namespace irc{
             fd_set                              write_sockets;
             fd_set                              except_sockets;
             irc::adminUser                      _admin;
+            unsigned long                       _creation_time;
             str                                 _creation_date;
             
         public:

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 18:10:36 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 19:29:00 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ namespace irc{
         // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to){}
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		nickname + " " + letter, 		"End of STATS report", to));}
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		nickname,	'+' + modes, to));}
-        // irc::message * rpl_statuptime(time_t uptime, int to)                                         { return (new irc::message(SERVER_NAME, "", "", to));}
+        irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to)               { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSUPTIME), nickname, "Server up for " + stats, to));}
         irc::message * rpl_away(const str &nickname, const str &reason, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    nickname, 		reason, to));}
         irc::message * rpl_unaway(int to)															{ return (new irc::message(SERVER_NAME, SSTR(RPL_UNAWAY), 			"", 			"You are no longer marked as being away", to));}
         irc::message * rpl_nowaway(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			    "", 			"You have been marked as being away", to));}

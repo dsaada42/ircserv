@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 18:19:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 19:34:34 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ irc::server::server(int port, str password) :
         init_cmd_map();
         _server_name = SERVER_NAME;
         _creation_date = ft_current_time();
+        _creation_time = get_time_ms();
     }
 
 irc::server::~server( void ){
@@ -615,6 +616,7 @@ void irc::server::ft_quit(irc::message * msg){
 void irc::server::ft_stats(irc::message * msg){
     std::map<int, irc::user*>::iterator it;
     irc::user                           *current;
+    unsigned long                       uptime;
 
     current = find_user_by_fd(msg->get_fd());
     if (current){
@@ -623,6 +625,11 @@ void irc::server::ft_stats(irc::message * msg){
                 _messages.push(rpl::rpl_statslinkinfo( current->nickname(), it->second->connection_stats(), msg->get_fd()));
             }
             _messages.push(rpl::rpl_endofstats(current->nickname(), "l", msg->get_fd()));    
+        }
+        else if (msg->get_params() == "u"){
+            uptime = get_time_ms() - _creation_time;
+            _messages.push(rpl::rpl_statsuptime(current->nickname(), ft_ms_to_duration(uptime), msg->get_fd()));
+            _messages.push(rpl::rpl_endofstats(current->nickname(), "u", msg->get_fd()));    
         }
     }
     //STATS <query> <server>

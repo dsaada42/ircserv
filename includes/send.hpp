@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 18:10:50 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 19:29:19 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ namespace irc{
         // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to);
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
-        // irc::message * rpl_statuptime(time_t uptime, int to);
+        irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to);
         irc::message * rpl_away(const str &nickname, const str &reason, int to);
         irc::message * rpl_unaway(int to);
         irc::message * rpl_nowaway(int to);
