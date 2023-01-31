@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 08:47:31 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 09:05:16 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,7 +308,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("OPER", &irc::server::ft_oper));                                        //PRESQUE
     _cmds.insert(std::make_pair("PASS", &irc::server::ft_pass));                                        //OK
     _cmds.insert(std::make_pair("PART", &irc::server::ft_part));
-    _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));
+    _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));                                        //OK
     _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));                                        //OK
     _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //PRESQUE
@@ -518,7 +518,6 @@ void irc::server::ft_oper(irc::message * msg){
 
     args = ft_split(msg->get_params(), " ");
     if (args.size() < 2){
-        std::cout << "need more params" << std::endl;
         _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
         return;
     }
@@ -526,7 +525,7 @@ void irc::server::ft_oper(irc::message * msg){
         if (current->fd() == msg->get_fd()){
             if (args[1] == OPER_PASSWORD){
             _messages.push(rpl::rpl_youreoper(current->nickname(), msg->get_fd()));
-            current->set_oper(true);
+            current->change_mode('o', true);
             //generate broadcast message MODE +o to inform other users of the new oper
             }
             else{

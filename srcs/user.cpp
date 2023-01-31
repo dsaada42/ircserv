@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 08:44:30 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 09:05:37 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ irc::user::user( int fd , unsigned long timestamp )
 
 // ----- Copy Constructor -----
 irc::user::user( const irc::user & x)
-    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _oper(x.oper()), _fd(x.fd()), _remain(0), _timestamp(x.timestamp()){}
+    : _username(x.username()), _nickname(x.nickname()), _fullname(x.fullname()), _fd(x.fd()), _remain(0), _timestamp(x.timestamp()){}
 // ----- Destructor -----
 irc::user::~user( void ){
     shutdown(_fd, 2);
@@ -37,7 +37,6 @@ irc::user & irc::user::operator= (const irc::user & x){
 const str   & irc::user::username   ( void ) const  { return(_username);}
 const str   & irc::user::fullname   ( void ) const  { return(_fullname);}
 const str   & irc::user::nickname   ( void ) const  { return(_nickname);}
-const bool  & irc::user::oper       ( void ) const  { return(_oper);}
 const int   & irc::user::fd         ( void ) const  { return(_fd);}
 const unsigned long & irc::user::timestamp( void ) const { return(_timestamp);}
 const bool  & irc::user::connected  ( void ) const  { return(_connected);}
@@ -48,7 +47,6 @@ const str   & irc::user::mode       ( void ) const  { return(_mode);}
 void irc::user::set_username(const str & username)  { _username = username; }
 void irc::user::set_fullname(const str & fullname)  { _fullname = fullname; }
 void irc::user::set_nickname(const str & nickname)  { _nickname = nickname; }
-void irc::user::set_oper    (const bool & oper)     { _oper = oper; }
 void irc::user::set_connected(const bool & connected){ _connected = connected; }
 void irc::user::set_ping(const bool & ping)         { _ping = ping; }
 void irc::user::set_pass(const bool & pass)         { _pass = pass; }
@@ -123,7 +121,7 @@ void irc::user::print(void){
     std::cout << "-> Username   : " << _username << std::endl;
     std::cout << "-> Fullname   : " << _fullname << std::endl;
     std::cout << "-> Nickname   : " << _nickname << std::endl;
-    std::cout << "-> Oper       : " << _oper << std::endl;
+    std::cout << "-> Modes      : " << _mode << std::endl;
     std::cout << "-> Fd         : " << _fd << std::endl;
     std::cout << "-> Connected  : " << _connected << std::endl;
     std::cout << "-> Ping       : " << _ping << std::endl;

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 08:45:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 09:04:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ namespace irc{
             str             _username;
             str             _nickname;
             str             _fullname;
-            bool            _oper;
             int             _fd;
             char            _buff[BUFF_SIZE];
             bool            _connected;
@@ -46,7 +45,6 @@ namespace irc{
             const str   & username ( void ) const;
             const str   & nickname ( void ) const;
             const str   & fullname ( void ) const;
-            const bool  & oper     ( void ) const;
             const int   & fd       ( void ) const;
             const unsigned long & timestamp( void ) const;
             const bool  & connected( void ) const;
@@ -58,7 +56,6 @@ namespace irc{
             void set_username( const str & username );
             void set_nickname( const str & nickname );
             void set_fullname( const str & fullname );
-            void set_oper    ( const bool & oper );
             void set_connected( const bool & connected);
             void set_ping( const bool & ping);
             void set_pass( const bool & pass);
