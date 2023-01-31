@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/30 11:13:39 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 08:48:36 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ namespace irc{
     //         return (new irc::message(SERVER_NAME, SSTR(RPL_STATSCOMMANDS), ss.str(), to));
     // }
         irc::message * rpl_endofstats(const str &letter, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		letter, 		"End of STATS report", to));}
-        irc::message * rpl_umodeis(const str &modes, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 			'+' + modes, 	"", to));}
+        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		nickname,	'+' + modes, to));}
         // irc::message * rpl_statuptime(time_t uptime, int to){
         //     strstream ss;
         //     time_t m = 60, h = 60 * m, d = 24 * h;

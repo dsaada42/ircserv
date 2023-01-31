@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/30 11:11:06 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 08:48:55 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ namespace irc{
         // irc::message * rpl_statslinkinfo(const str &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen, int to);
         irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
         irc::message * rpl_endofstats(const str &letter, int to);
-        irc::message * rpl_umodeis(const str &modes, int to);
+        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
         // irc::message * rpl_statuptime(time_t uptime, int to);
         irc::message * rpl_statoline(const str &hostmask, const str &name, int to);
         irc::message * rpl_away(const str &nickname, const str &reason, int to);

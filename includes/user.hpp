@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 09:10:09 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 08:45:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ namespace irc{
             unsigned long   _remain;
             unsigned long   _timestamp; //time in ms set at creation
             bool            _pass;
+            str             _mode;
             
         
         public:
@@ -51,6 +52,7 @@ namespace irc{
             const bool  & connected( void ) const;
             const bool  & ping( void ) const;
             const bool  & pass( void ) const;
+            const str   & mode( void ) const;
 
         // ----- Setters -----
             void set_username( const str & username );
@@ -61,6 +63,9 @@ namespace irc{
             void set_ping( const bool & ping);
             void set_pass( const bool & pass);
 
+        // ----- Mode -----
+            bool is_mode(char c);
+            void change_mode(char c, bool plus);
         // ----- Read Connexion -----
             int read_connection( void );
             message *extract_message(str delim);

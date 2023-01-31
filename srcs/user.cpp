@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:34:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 08:44:30 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ const unsigned long & irc::user::timestamp( void ) const { return(_timestamp);}
 const bool  & irc::user::connected  ( void ) const  { return(_connected);}
 const bool  & irc::user::ping       ( void ) const  { return(_ping);}
 const bool  & irc::user::pass       ( void ) const  { return(_pass);}
-
+const str   & irc::user::mode       ( void ) const  { return(_mode);}
 // ----- Setters -----
 void irc::user::set_username(const str & username)  { _username = username; }
 void irc::user::set_fullname(const str & fullname)  { _fullname = fullname; }
@@ -52,6 +52,33 @@ void irc::user::set_oper    (const bool & oper)     { _oper = oper; }
 void irc::user::set_connected(const bool & connected){ _connected = connected; }
 void irc::user::set_ping(const bool & ping)         { _ping = ping; }
 void irc::user::set_pass(const bool & pass)         { _pass = pass; }
+
+// ----- MODE ------
+bool    irc::user::is_mode( char c ){
+    
+    if (_mode.find(c) != str::npos)
+        return (true);
+    return (false);
+}
+void    irc::user::change_mode(char c, bool plus){
+    str::size_type  pos;
+
+    if (plus){
+        if (_mode.find(c) == str::npos){ //if mode searched is not already present
+            std::cout << "Added mode " << c << " to user " << _nickname << std::endl;
+            _mode += c;
+        }
+        //if already present do nothing
+    }
+    else{
+        if ((pos = _mode.find(c)) != str::npos){ //if mode searched is already present
+            std::cout << "Suppressed mode " << c << " to user " << _nickname << std::endl;
+           _mode.erase(pos, 1);
+        }
+        //if not present do nnothing
+    }
+        
+}
 
 // ----- Read Connexion -----
 int irc::user::read_connection(void)                { 

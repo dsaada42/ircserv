@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/29 21:45:10 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 07:48:47 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
         ( std::ostringstream() << std::dec << x ) ).str()
 
 # include <cstdlib>
+# include <algorithm>
 # include <iostream>
 # include <vector>
 # include <map>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/30 13:16:52 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 08:47:31 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -447,7 +447,49 @@ void irc::server::ft_list( irc::message * msg ){
     //RPL_LIST
     //RPL_LISTEND
 }
-void irc::server::ft_mode(irc::message * msg){(void)msg;} // both channel and users
+void irc::server::ft_mode(irc::message * msg){
+    irc::user   *current;
+    std::vector<str> args;
+    char        c;
+    
+    //channels ?
+    
+    //users    
+    args = ft_split(msg->get_params(), " ");
+    if (args.size() < 2){
+        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        return;
+    }
+    current = find_user_by_nick(args[0]);
+    if (!current)
+        _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));
+    else if (find_user_by_fd(msg->get_fd()) != current){
+        _messages.push(err::err_usersdontmatch(msg->get_fd()));
+    }
+    else{
+        if (args[1].size() == 2){
+            c = args[1].at(1);
+            if (c == 'i' || c == 'o' || c == 's'){
+                if (args[1].at(0) == '+'){
+                    if ( c == 'o' ) // ignore +o
+                        return;
+                    current->change_mode(c, true);
+                    _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
+                    return;
+                }        
+                else if (args[1].at(0) == '-'){
+                    current->change_mode(c, false);
+                    _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
+                    return;
+                }
+                
+            }
+        }
+        else
+            _messages.push(err::err_umodeunknownflag(msg->get_fd()));
+    }
+}
+
 void irc::server::ft_names(irc::message * msg){
     //lists all nicknames visible on all visible channels (if a channel is private or secret, it won't appear unless the user is part of it)
     //params can be a list of channels (will get an answer only if channel is visible)
