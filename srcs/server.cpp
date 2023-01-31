@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 16:24:34 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:44:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,7 +312,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));                                        //OK
     _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));                                        //OK
     _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
-    _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //PRESQUE
+    _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
     _cmds.insert(std::make_pair("STATS", &irc::server::ft_stats));
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
     _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
@@ -602,12 +602,14 @@ void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
 // ----- QUIT -----
 void irc::server::ft_quit(irc::message * msg){
     irc::user   *current;
+    std::map<int, irc::user*>::iterator it;
 
-    // if (!msg->get_trailing().empty())
-    //last message received from a user, if Quit is received , disconnect user and send message to all
     current = find_user_by_fd(msg->get_fd());
+    for (it = _users.begin(); it != _users.end(); it++){
+        if (it->second->nickname() != current->nickname())
+            _messages.push(cmd::cmd_quit(user_prefix(current), msg->get_trailing(), it->second->fd()));    
+    }
     delete_user(current);
-    (void)msg;
 }
 //----- STATS -----
 void irc::server::ft_stats(irc::message * msg){
