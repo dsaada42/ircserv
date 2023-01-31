@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 08:54:24 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:29:58 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ namespace irc{
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &chan, int to);
         irc::message * rpl_endofwhois(const str &nick, int to);
         irc::message * rpl_whoreply(const str &msg, int to);
-        irc::message * rpl_endofwho(const str &target, int to);
+        irc::message * rpl_endofwho(const str &nickname, const str &target, int to);
         irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to);
         irc::message * rpl_endofwhowas(const str &nick, int to);
         irc::message * rpl_userhostreply(const str &msg, int to);

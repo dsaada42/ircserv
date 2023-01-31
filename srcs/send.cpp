@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 08:48:36 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:29:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ namespace irc{
         irc::message * rpl_endofinfo(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFINFO), 		    "", 			"End of INFO list", to));}
         irc::message * rpl_youreoper(const str &nickname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOUREOPER), 		    nickname, 		"You are now an IRC operator", to));}
         irc::message * rpl_youreservice(const str &servicename, int to)								{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOURESERVICE), 	    "", 			"You are service " + servicename, to));}
-        irc::message * rpl_time(const str &srvname, int to)										    { return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			    srvname, 	ft_current_time(), to));} // formatter le time autrement
+        irc::message * rpl_time(const str &srvname, int to)										    { return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			    srvname, 	ft_current_time(), to));} 
         irc::message * rpl_lusersclient(size_t users, size_t services, size_t servers, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERCLIENT), 		"", 			"There are " + SSTR(users) + " users and " + SSTR(services) + " services on " + SSTR(servers) + " server", to));	}
         irc::message * rpl_lusersop(size_t nb, int to)												{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSEROP), 			SSTR(nb), "operator(s) online", to));}
         irc::message * rpl_lusersunknown(size_t nb, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_LUSERUNKNOWN), 	    SSTR(nb), "unknown connection(s)", to));}
@@ -130,7 +130,7 @@ namespace irc{
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISCHANNELS), 	    nick, 			status + channel, to));}
         irc::message * rpl_endofwhois(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOIS), 		nick, 			"End of WHOIS list", to));}
         irc::message * rpl_whoreply(const str &msg, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOREPLY), 		    msg, 			"", to));}
-        irc::message * rpl_endofwho(const str &target, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHO), 		    target, 		"End of WHO list", to));}
+        irc::message * rpl_endofwho(const str &nickname, const str &target, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHO), 		nickname + " "  +  target, 		"End of /WHO list", to));}
         irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOWASUSER), 		nick + " " + user + " " + host + " *", realname, to));}
         irc::message * rpl_endofwhowas(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOWAS), 		nick, 			"End of WHOWAS", to));}

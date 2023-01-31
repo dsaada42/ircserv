@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 09:23:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:30:50 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -646,8 +646,26 @@ void irc::server::ft_version(irc::message * msg){
     else
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
 }
-//==============================================================
-void irc::server::ft_who(irc::message * msg){(void)msg;}
+// ----- WHO ------
+void irc::server::ft_who(irc::message * msg){
+    std::vector<str> args;
+    irc::user        *current;
+    
+    if (msg->get_params().empty())
+        _messages.push(err::err_nonicknamegiven(msg->get_fd()));
+    else if ((current = find_user_by_fd(msg->get_fd())) != NULL){
+        args = ft_split(msg->get_params(), " ");
+        if (args.size() == 1){
+            //search what is given as param
+            //priority to search for channels, if name given isn't channel , search for everything
+        }
+        else if (args.size() == 2 && args[1] == "o"){
+            //search for param as operator
+        }
+        _messages.push(rpl::rpl_endofwho(current->nickname(), args[0], msg->get_fd()));
+    }
+}
+//============================================================
 void irc::server::ft_whois(irc::message * msg){(void)msg;}
 void irc::server::ft_whowas(irc::message * msg){(void)msg;}
 //=============================================================

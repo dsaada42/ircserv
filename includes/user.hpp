@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 09:04:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 10:02:00 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ namespace irc{
         protected:
             str             _username;
             str             _nickname;
+            str             _oldnick;
             str             _fullname;
             int             _fd;
             char            _buff[BUFF_SIZE];
@@ -51,6 +52,7 @@ namespace irc{
             const bool  & ping( void ) const;
             const bool  & pass( void ) const;
             const str   & mode( void ) const;
+            const str   & oldnick( void ) const;
 
         // ----- Setters -----
             void set_username( const str & username );
