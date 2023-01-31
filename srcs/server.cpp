@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 18:11:03 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:19:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,14 +313,14 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));                                        //OK
     _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
-    _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //DOING IT
+    _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //EN COURS
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
     _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));                                        //OK
     _cmds.insert(std::make_pair("version", &irc::server::ft_version));                                  //OK
-    _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));
-    _cmds.insert(std::make_pair("WHOIS", &irc::server::ft_whois));
-    _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));
+    _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));                                          //EN COURS                               
+    _cmds.insert(std::make_pair("WHOIS", &irc::server::ft_whois));                                      //EN COURS 
+    _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));                                    //EN COURS 
     _cmds.insert(std::make_pair("SUMMON", &irc::server::ft_summon));                                    //OK
     _cmds.insert(std::make_pair("USERS", &irc::server::ft_users));                                      //OK
 }

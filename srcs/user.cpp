@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 18:13:59 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:32:47 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ str irc::user::connection_stats( void ){
     opentime = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
     opentime -= _creation_time;
     
-    return (_nickname + " " + "0 messages in queue " + SSTR(_sent) + " messages sent " + SSTR(_sentbytes) + " bytes sent " + SSTR(_received) + " messages received " + SSTR(_receivedbytes) + " bytes received " + ft_ms_to_duration(opentime) + " elapsed time sice creation");    
+    return (_nickname + " " + "[0 msg in queue] [" + SSTR(_sent) + " msg sent] [" + SSTR(_sentbytes) + " bytes sent] [" + SSTR(_received) + " msg received] [" + SSTR(_receivedbytes) + " bytes received] " + ft_ms_to_duration(opentime) + " elapsed since creation");    
 }
 
 // ----- New Timestamp -----

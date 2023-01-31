@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 09:59:03 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 17:49:12 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 18:28:52 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,12 @@ str irc::ft_current_time(){
 }
 
 str irc::ft_ms_to_duration(unsigned long ms){
-    return ("");
+    unsigned long min;
+    unsigned long sec;
+    unsigned long hour;
+
+    hour = (ms / 1000) / 3600;
+    min = (ms / 1000) % 3600 / 60 ;
+    sec = (ms / 1000) % 60;
+    return ( SSTR(hour) + " hours " + SSTR(min) + " minutes " + SSTR(sec) + " seconds");
 }
