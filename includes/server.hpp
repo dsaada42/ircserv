@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/30 11:01:34 by dylan            ###   ########.fr       */
+/*   Updated: 2023/01/31 16:20:30 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ namespace irc{
             irc::user   *find_user_by_fd(const int & fd);
             irc::user   *find_user_by_nick(const str & nick);
             irc::channel*find_channel_by_name(const str & name);
+            str          user_prefix(irc::user *usr);
         // ----- Is ? ------
             bool        check_nickname_rules(const str & nick);
             bool        check_channel_rules(const str & chan);

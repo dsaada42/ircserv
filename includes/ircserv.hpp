@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/31 09:20:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:01:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 #define BUFF_SIZE 1024
 #define SUCCESS 0
 #define FAILURE 1
-#define PING_TRIGGER_TIME 5000
-#define DISCONNECT_TRIGGER_TIME 10000
-#define CONNECTION_TIMEOUT 15000
+#define PING_TRIGGER_TIME 20000
+#define DISCONNECT_TRIGGER_TIME 30000
+#define CONNECTION_TIMEOUT 30000
 #include <sstream>
 
 //macro to convert int to string

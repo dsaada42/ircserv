@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 11:38:13 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:24:34 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));
     _cmds.insert(std::make_pair("NICK", &irc::server::ft_nick));                                        //OK
     _cmds.insert(std::make_pair("NOTICE", &irc::server::ft_notice));                                    //OK
-    _cmds.insert(std::make_pair("OPER", &irc::server::ft_oper));                                        //PRESQUE
+    _cmds.insert(std::make_pair("OPER", &irc::server::ft_oper));                                        //OK
     _cmds.insert(std::make_pair("PASS", &irc::server::ft_pass));                                        //OK
     _cmds.insert(std::make_pair("PART", &irc::server::ft_part));
     _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));                                        //OK
@@ -398,6 +398,10 @@ bool        irc::server::is_a_channel(const str & chan){
     return(true);    
 }
 
+str         irc::server::user_prefix(irc::user *usr){
+    return (usr->nickname()+"!~"+usr->username()+"@"+_server_name);
+}
+
 // ----- Message Interpreter + Reply generator -----
 void        irc::server::interprete_and_reply( void ){
     std::map<int, irc::user*>::iterator it;
@@ -487,7 +491,6 @@ void irc::server::ft_mode(irc::message * msg){
                     _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
                     return;
                 }
-                
             }
         }
         else
@@ -510,12 +513,16 @@ void irc::server::ft_nick(irc::message * msg){
         _messages.push(err::err_nonicknamegiven(msg->get_fd()));
     else if (check_nickname_rules(msg->get_params()) == false)
         _messages.push(err::err_erroneusnickname(msg->get_params(), msg->get_fd()));
-    else if (is_a_nickname(msg->get_params()) == false){
+    else{
         current = find_user_by_fd(msg->get_fd());
-        current->set_nickname(msg->get_params());
+        if (is_a_nickname(msg->get_params()) == false){
+            if (current->connected())
+                _messages.push(cmd::cmd_nick(user_prefix(current), msg->get_params(), msg->get_fd()));
+            current->set_nickname(msg->get_params());
+        }
+        else if (current->nickname() != msg->get_params())
+            _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
     }
-    else
-        _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
 }
 // ----- NOTICE -----
 void irc::server::ft_notice(irc::message * msg){(void)msg;}//(won't trigger any reply since we are a server)
@@ -523,7 +530,8 @@ void irc::server::ft_notice(irc::message * msg){(void)msg;}//(won't trigger any 
 void irc::server::ft_oper(irc::message * msg){
     std::vector<str>    args;
     irc::user           *current;
-
+    std::map<int, irc::user*>::iterator it;
+    
     args = ft_split(msg->get_params(), " ");
     if (args.size() < 2){
         _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
@@ -532,9 +540,11 @@ void irc::server::ft_oper(irc::message * msg){
     if ((current = find_user_by_nick(args[0])) != NULL){
         if (current->fd() == msg->get_fd()){
             if (args[1] == OPER_PASSWORD){
-            _messages.push(rpl::rpl_youreoper(current->nickname(), msg->get_fd()));
-            current->change_mode('o', true);
-            //generate broadcast message MODE +o to inform other users of the new oper
+                _messages.push(rpl::rpl_youreoper(current->nickname(), msg->get_fd()));
+                current->change_mode('o', true);
+                for (it = _users.begin(); it != _users.end(); it++){
+                    _messages.push(cmd::cmd_mode(current->nickname(), "+o", it->second->fd()));    
+                }
             }
             else{
                 _messages.push(err::err_passwdmissmatch(msg->get_fd()));

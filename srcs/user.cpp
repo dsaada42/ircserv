@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:05:25 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 15:39:43 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,16 @@ void    irc::user::change_mode(char c, bool plus){
     str::size_type  pos;
 
     if (plus){
-        if (_mode.find(c) == str::npos){ //if mode searched is not already present
+        if (_mode.find(c) == str::npos){
             std::cout << "Added mode " << c << " to user " << _nickname << std::endl;
             _mode += c;
         }
-        //if already present do nothing
     }
     else{
-        if ((pos = _mode.find(c)) != str::npos){ //if mode searched is already present
+        if ((pos = _mode.find(c)) != str::npos){
             std::cout << "Suppressed mode " << c << " to user " << _nickname << std::endl;
            _mode.erase(pos, 1);
         }
-        //if not present do nnothing
     }
         
 }

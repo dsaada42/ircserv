@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 10:59:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:21:50 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,6 @@ namespace irc{
         RPL_STATSUPTIME = 242,
         RPL_STATSOLINE = 243,
         RPL_STATSHLINE = 244, //==========?
-        RPL_LUSERCLIENT = 251,
-        RPL_LUSEROP = 252,
-        RPL_LUSERUNKNOWN = 253,
-        RPL_LUSERCHANNELS = 254,
-        RPL_LUSERME = 255,
         RPL_AWAY = 301,
         RPL_USERHOST = 302,
         RPL_UNAWAY = 305,
@@ -215,6 +210,8 @@ namespace irc{
     namespace cmd
     {
         irc::message * cmd_ping(const str &nick, int to);
+        irc::message * cmd_mode(const str &target, const str &param, int to);
+        irc::message * cmd_nick(const str &user_prefix, const str &nick, int to);                  
     }  
     
 }
