@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/31 07:48:47 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 09:20:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define SERVER_PORT 6667
 #define SERVER_NAME "shittyIRC"
 #define SERVER_VERSION "V1.0"
+#define UMODES "ios"
 #define OPER_PASSWORD "Metsmoioperwesh!"
 #define TCP 0
 #define BACKLOG 10

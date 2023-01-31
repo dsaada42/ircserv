@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 09:05:16 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/01/31 09:23:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int         irc::server::run( void ){
 
         interprete_and_reply();
         
-        handle_write_set();//gerer les messages perdus
+        handle_write_set();
 
         handle_users_timeout();
     }
@@ -124,9 +124,9 @@ void        irc::server::say_welcome(irc::user *new_user){
     _messages.push(msg);
     msg = rpl::rpl_yourhost(new_user->nickname(), _server_name, SERVER_VERSION , new_user->fd());
     _messages.push(msg);
-    msg = rpl::rpl_created(new_user->nickname(), _creation_date, new_user->fd()); // remplacer le champ vide par la date
+    msg = rpl::rpl_created(new_user->nickname(), _creation_date, new_user->fd());
     _messages.push(msg);
-    msg = rpl::rpl_myinfo(new_user->nickname(), _server_name, SERVER_VERSION, "", "", new_user->fd()); // remplacer les champs vides par les modes user disponibles et mode channels disponibles
+    msg = rpl::rpl_myinfo(new_user->nickname(), _server_name, SERVER_VERSION, UMODES, "", new_user->fd()); // remplacer le champ vide par les modes channels disponibles
     _messages.push(msg);
     msg = rpl::rpl_bounce(new_user->nickname(), _server_name, SSTR(_port), new_user->fd());
     _messages.push(msg);
@@ -136,7 +136,6 @@ int         irc::server::handle_user_connection(irc::user *current){
     irc::message            *msg;
     
     while ((msg = current->extract_message("\r\n")) != NULL){
-        //message received doesn't have the right format
         if (msg->parse_message() == FAILURE)
             return (FAILURE);
         if (msg->get_cmd() == "CAP"){
@@ -152,9 +151,8 @@ int         irc::server::handle_user_connection(irc::user *current){
             ft_user(msg);
         }
         else
-            return (FAILURE); //message received is not part of connection process
+            return (FAILURE);
     }
-    //if everything ok 
     if (current->pass() && current->nickname().size() > 0 && current->fullname().size() > 0 ){
         current->set_connected(true);
         current->new_timestamp();
@@ -226,7 +224,7 @@ void        irc::server::handle_write_set(void){
                 std::cerr << "failed sending message" << std::endl; // behaviour?
         }
         else{
-            if (!find_user_by_fd(current->get_fd())) // si le message est destine a un fd inconnu 
+            if (!find_user_by_fd(current->get_fd()))
                 delete current;
             tmp_messages.push(current);
         }
@@ -301,7 +299,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));
     _cmds.insert(std::make_pair("KILL", &irc::server::ft_kill));
     _cmds.insert(std::make_pair("LIST", &irc::server::ft_list));
-    _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));
+    _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));                                        //OK FOR USERS
     _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));
     _cmds.insert(std::make_pair("NICK", &irc::server::ft_nick));                                        //OK
     _cmds.insert(std::make_pair("NOTICE", &irc::server::ft_notice));                                    //OK
@@ -322,7 +320,6 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));
     _cmds.insert(std::make_pair("SUMMON", &irc::server::ft_summon));                                    //OK
     _cmds.insert(std::make_pair("USERS", &irc::server::ft_users));                                      //OK
-
 }
 
 //===========================================================================================
@@ -360,7 +357,7 @@ irc::channel    *irc::server::find_channel_by_name(const str & name){
     return (NULL);    
 }
 
-// ----- Is ? ------
+// ----- Is channel / Is user ------
 bool        irc::server::check_nickname_rules(const str & nick){
     str::size_type i = 0;
     
@@ -413,7 +410,7 @@ void        irc::server::interprete_and_reply( void ){
                 funcp = itmap->second;
                 (*this.*funcp)(msg);
             }
-            else // en cas de commande non geree par le serveur
+            else
                 _messages.push(err::err_unknowncommand(msg->get_cmd(), msg->get_fd()));
         }
         delete msg;
@@ -423,6 +420,7 @@ void        irc::server::interprete_and_reply( void ){
 
 // ================> ALL COMMANDS HANDLED BY SERVER <===================
 
+// ----- ADMIN -----
 void irc::server::ft_admin( irc::message * msg ){
     if (msg->get_params().empty())
         _messages.push(err::err_noadmininfo(msg->get_fd()));
@@ -431,7 +429,9 @@ void irc::server::ft_admin( irc::message * msg ){
     else
         _messages.push(err::err_noadmininfo(msg->get_fd()));
 }
+// ----- CAP -----
 void irc::server::ft_cap( irc::message * msg ){(void)msg;}//ignore CAP messages
+//=======================================================================================
 void irc::server::ft_info( irc::message * msg ){(void)msg;}
 void irc::server::ft_invite( irc::message * msg ){(void)msg;} //-> invite a user to a channel
 void irc::server::ft_join( irc::message * msg ){(void)msg;} //-> join a channel
@@ -447,6 +447,8 @@ void irc::server::ft_list( irc::message * msg ){
     //RPL_LIST
     //RPL_LISTEND
 }
+//==============================================================================================
+// ----- MODE -----
 void irc::server::ft_mode(irc::message * msg){
     irc::user   *current;
     std::vector<str> args;
@@ -497,6 +499,7 @@ void irc::server::ft_names(irc::message * msg){
     //RPL_ENDOFNAMES 
     (void)msg;
 }
+// ----- NICK -----
 void irc::server::ft_nick(irc::message * msg){
     irc::user       *current;
     
@@ -511,7 +514,9 @@ void irc::server::ft_nick(irc::message * msg){
     else
         _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
 }
+// ----- NOTICE -----
 void irc::server::ft_notice(irc::message * msg){(void)msg;}//(won't trigger any reply since we are a server)
+// ----- OPER -----
 void irc::server::ft_oper(irc::message * msg){
     std::vector<str>    args;
     irc::user           *current;
@@ -537,6 +542,7 @@ void irc::server::ft_oper(irc::message * msg){
         _messages.push(err::err_nooperhost(msg->get_fd()));
     }
 }
+// ----- PASS -----
 void irc::server::ft_pass(irc::message * msg){
     irc::user * current;
 
@@ -555,22 +561,32 @@ void irc::server::ft_pass(irc::message * msg){
         }
     }
 }
+// ----- PART -----
 void irc::server::ft_part(irc::message * msg){
     // quits channel (with optionnal message sent to current users in channel)
     (void)msg;
 }
+// ----- PING -----
 void irc::server::ft_ping(irc::message * msg){(void)msg;}// server will ignore message but listen to the ping to refresh inactivity timestamp of sending user
+// ----- PONG -----
 void irc::server::ft_pong(irc::message * msg){
+    irc::user   *current;
+    
     if (msg->get_params().empty()){
         _messages.push(err::err_noorigin(msg->get_fd()));
     }
     else if (msg->get_params() != SERVER_NAME){
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
     }
-    else //attention au cas ou user send QUIT then PONG --> need security on find_user
-        find_user_by_fd(msg->get_fd())->set_ping(false);
+    else {
+        current = find_user_by_fd(msg->get_fd());
+        if (current)
+            current->set_ping(false);
+    }
 }
+// ----- PRIVMSG -----
 void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
+// ----- QUIT -----
 void irc::server::ft_quit(irc::message * msg){
     irc::user   *current;
 
@@ -580,7 +596,11 @@ void irc::server::ft_quit(irc::message * msg){
     delete_user(current);
     (void)msg;
 }
-void irc::server::ft_stats(irc::message * msg){(void)msg;}
+//----- STATS -----
+void irc::server::ft_stats(irc::message * msg){
+    (void)msg;
+}
+//----- TIME -----
 void irc::server::ft_time(irc::message * msg){
     if (!msg->get_params().empty() && msg->get_params() != SERVER_NAME){
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
@@ -588,7 +608,9 @@ void irc::server::ft_time(irc::message * msg){
     else
         _messages.push(rpl::rpl_time(SERVER_NAME, msg->get_fd()));
 }
+// ----- TOPIC -----
 void irc::server::ft_topic(irc::message * msg){(void)msg;} //send topic of given channel 
+// ----- USER -----
 void irc::server::ft_user(irc::message * msg){
     irc::user * current;
     std::vector<str> args;
@@ -612,7 +634,7 @@ void irc::server::ft_user(irc::message * msg){
         current->set_fullname(msg->get_trailing());
     }
 }
-
+// ----- VERSION -----
 void irc::server::ft_version(irc::message * msg){
     irc::user *current;
 
@@ -624,11 +646,14 @@ void irc::server::ft_version(irc::message * msg){
     else
         _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
 }
+//==============================================================
 void irc::server::ft_who(irc::message * msg){(void)msg;}
 void irc::server::ft_whois(irc::message * msg){(void)msg;}
 void irc::server::ft_whowas(irc::message * msg){(void)msg;}
-//disabled commands
+//=============================================================
+// ----- USERS -----
 void irc::server::ft_users(irc::message * msg){ _messages.push(err::err_usersdisabled(msg->get_fd())); }
+// ----- SUMMON -----
 void irc::server::ft_summon(irc::message * msg){ _messages.push(err::err_summondisabled(msg->get_fd())); }
 
 //===========================================================================================
