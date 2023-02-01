@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 14:23:37 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/01 14:28:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ namespace irc{
 		// private:
 		//    std::vector<irc::user>	_users;
 		//    std::vector<irc::user>	_op;
-		//    str			_name;
-		//    str			_topic;
-		//    str			_modes;
+		//    str			            _name;
+		//    str			            _topic;
+		//    str			            _modes;
 
 		// public:
 		//    //CONSTRUCTOR & DESTRCUTOR
