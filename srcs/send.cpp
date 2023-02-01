@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 08:10:30 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/01 11:01:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ namespace irc{
                                                                                                     { return (new irc::message(SERVER_NAME, "004", 			            nick, 			srvname + ' ' + version + " [user modes: " + umodes + "] [channel modes: " + cmodes + "]", to));}
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to)	    { return (new irc::message(SERVER_NAME, "005", 			            nick, 			"Try server " + srvname + ", port " + port, to));}
         irc::message * rpl_statslinkinfo(const str &nickname, const str &stats, int to)             { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSLINKINFO),    nickname, stats, to));}
-        irc::message * rpl_statscommands(const str &nickname, const str &command, int count, int to){ return (new irc::message(SERVER_NAME, SSTR(RPL_STATSCOMMANDS),    nickname, command + " [used " + SSTR(count) + " times]", to));}
+        irc::message * rpl_statscommands(const str &nickname, const str &command, int to)           { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSCOMMANDS),    nickname, command, to));}
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		nickname + " " + letter, 		"End of STATS report", to));}
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		    nickname,	'+' + modes, to));}
         irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to)               { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSUPTIME),      nickname,       "Server up for " + stats, to));}
@@ -117,6 +117,7 @@ namespace irc{
         irc::message * cmd_mode(const str &target, const str &param, int to)                        { return (new irc::message(SERVER_NAME, "MODE", target, param, to));}
         irc::message * cmd_nick(const str &user_prefix, const str &nick, int to)                    { return (new irc::message(user_prefix, "NICK", "", nick, to));}   
         irc::message * cmd_quit(const str &user_prefix, const str &msg, int to)                     { return (new irc::message(user_prefix, "QUIT", "", msg, to));}    
+        irc::message * cmd_privmsg(const str &user_prefix, const str &target, const str &msg, int to){ return (new irc::message(user_prefix, "PRIVMSG", target, msg, to));}
     } 
 
 }

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/01 08:50:56 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/01 11:07:17 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,8 +192,26 @@
                 current->set_ping(false);
         }
     }
-// ----- PRIVMSG -----
-    void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
+// ----- PRIVMSG -----  OK
+    void irc::server::ft_privmsg(irc::message * msg){
+        irc::user   *current;
+        irc::user   *from;
+        
+        if (msg->get_params().empty()){
+            _messages.push(err::err_norecipient(msg->get_cmd(), msg->get_fd()));
+        }
+        else if (msg->get_trailing().empty()){
+            _messages.push(err::err_notexttosend(msg->get_fd()));
+        }
+        else{
+            if ((current = find_user_by_nick(msg->get_params())) != NULL){
+                from = find_user_by_fd(msg->get_fd());
+                _messages.push(cmd::cmd_privmsg(user_prefix(from), current->nickname(), msg->get_trailing(), current->fd()));
+            }
+            else
+                _messages.push(err::err_nosuchnick(msg->get_params(), msg->get_fd()));
+        }
+    }
 // ----- QUIT -----     OK
     void irc::server::ft_quit(irc::message * msg){
         irc::user   *current;
@@ -206,7 +224,7 @@
         }
         delete_user(current);
     }
-// ----- STATS -----
+// ----- STATS -----    OK
     void irc::server::ft_stats(irc::message * msg){
         std::vector<str> args;
         std::map<int, irc::user*>::iterator it;
@@ -235,7 +253,7 @@
                 }
                 else if (args[0] == "m"){
                     for (itf = _cmds.begin(); itf != _cmds.end(); itf++){
-                        _messages.push(rpl::rpl_statscommands(current->nickname(), itf->first, 0 , msg->get_fd()));
+                        _messages.push(rpl::rpl_statscommands(current->nickname(), itf->first, msg->get_fd()));
                     }
                     _messages.push(rpl::rpl_endofstats(current->nickname(), "m", msg->get_fd()));
                 }
