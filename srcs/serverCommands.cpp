@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/01 11:07:17 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/01 14:24:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,57 @@
 // ----- INFO -----
     void irc::server::ft_info( irc::message * msg ){(void)msg;}
 // ----- INVITE -----
-    void irc::server::ft_invite( irc::message * msg ){(void)msg;} //-> invite a user to a channel
+    void irc::server::ft_invite( irc::message * msg )
+    {
+        (void)msg;
+        // channel			    *channel;
+        // user			    *sender;
+        // user			    *receiver;
+        // std::vector<str> 	args;
+
+        // sender = find_user_by_fd(msg->get_fd());
+        // args = ft_split(msg->get_params(), " ");
+
+        // if (args.size() < 2)
+        // {
+        //     _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        //     return; //Not enough args
+        // }
+        // if (!(receiver = find_user_by_nick(args[0])))
+        // {
+        //     _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));
+        //     return; //No such nickname
+        // }
+        // if (!(channel = find_channel_by_name(args[1])))
+        // {
+        //     _messages.push(err::err_nosuchchannel(args[1], msg->get_fd()));
+        //     return; //No such channel
+        // }
+        // else//Channel exists
+        // {
+        //     if (channel->get_modes.find("i")) //If channel is invtationnal
+        //     {
+        //         if (!channel->is_user_op(*sender))//If sender is not op
+        //         {
+        //             _messages.push(err::err_chanoprivsneeded(args[1], msg->get_fd()));
+        //             return;
+        //         }
+                    
+        //     }
+        //     if (!channel->is_user(*sender))//If sender is not on channel
+        //     {
+        //         _messages.push(err::err_notonchannel(args[1], msg->get_fd()));
+        //         return;
+        //     }
+        //     if (channel->is_user(*receiver))//If receiver is already on channel
+        //     {
+        //         _messages.push(err::err_useronchannel(args[0], args[1], msg->get_fd()));
+        //         return;
+        //     }
+        //     //Invitation can be sent
+        //     _messages.push(rpl::rpl_inviting(args[1], args[0], msg->get_fd()));
+        // }
+    }
 // ----- JOIN -----
     void irc::server::ft_join( irc::message * msg ){(void)msg;} //-> join a channel
 // ----- KICK -----
