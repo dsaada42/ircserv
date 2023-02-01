@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverCommands.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/31 20:13:42 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/01 08:50:56 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 //=                                                                                         =
 //===========================================================================================
 
-// ----- ADMIN -----
+// ----- ADMIN -----    OK
     void irc::server::ft_admin( irc::message * msg ){
         if (msg->get_params().empty())
             _messages.push(err::err_noadmininfo(msg->get_fd()));
@@ -27,7 +27,7 @@
         else
             _messages.push(err::err_noadmininfo(msg->get_fd()));
     }
-// ----- CAP -----
+// ----- CAP -----      OK
     void irc::server::ft_cap( irc::message * msg ){(void)msg;}//ignore CAP messages
 // ----- INFO -----
     void irc::server::ft_info( irc::message * msg ){(void)msg;}
@@ -100,7 +100,7 @@
         //RPL_ENDOFNAMES 
         (void)msg;
     }
-// ----- NICK -----
+// ----- NICK -----     OK
     void irc::server::ft_nick(irc::message * msg){
         irc::user       *current;
         
@@ -119,9 +119,9 @@
                 _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
         }
     }
-// ----- NOTICE -----
+// ----- NOTICE -----   OK
     void irc::server::ft_notice(irc::message * msg){(void)msg;}//(won't trigger any reply since we are a server)
-// ----- OPER -----
+// ----- OPER -----     OK
     void irc::server::ft_oper(irc::message * msg){
         std::vector<str>    args;
         irc::user           *current;
@@ -150,7 +150,7 @@
             _messages.push(err::err_nooperhost(msg->get_fd()));
         }
     }
-// ----- PASS -----
+// ----- PASS -----     OK
     void irc::server::ft_pass(irc::message * msg){
         irc::user * current;
 
@@ -169,14 +169,14 @@
             }
         }
     }
-// ----- PART -----
+// ----- PART -----     
     void irc::server::ft_part(irc::message * msg){
         // quits channel (with optionnal message sent to current users in channel)
         (void)msg;
     }
-// ----- PING -----
+// ----- PING -----     OK
     void irc::server::ft_ping(irc::message * msg){(void)msg;}// server will ignore message but listen to the ping to refresh inactivity timestamp of sending user
-// ----- PONG -----
+// ----- PONG -----     OK
     void irc::server::ft_pong(irc::message * msg){
         irc::user   *current;
         
@@ -194,7 +194,7 @@
     }
 // ----- PRIVMSG -----
     void irc::server::ft_privmsg(irc::message * msg){(void)msg;}
-// ----- QUIT -----
+// ----- QUIT -----     OK
     void irc::server::ft_quit(irc::message * msg){
         irc::user   *current;
         std::map<int, irc::user*>::iterator it;
@@ -208,36 +208,44 @@
     }
 // ----- STATS -----
     void irc::server::ft_stats(irc::message * msg){
+        std::vector<str> args;
         std::map<int, irc::user*>::iterator it;
+        std::map<str, void (server::*)(irc::message *)>::iterator itf;
         irc::user                           *current;
         unsigned long                       uptime;
 
         current = find_user_by_fd(msg->get_fd());
         if (current){
-            if (msg->get_params() == "l"){
-                for (it = _users.begin(); it != _users.end(); it++){
-                    _messages.push(rpl::rpl_statslinkinfo( current->nickname(), it->second->connection_stats(), msg->get_fd()));
+            args = ft_split(msg->get_params(), " ");
+            if (args.size() == 2){
+                if (args[1] != _server_name){
+                    _messages.push(err::err_nosuchserver(args[1], msg->get_fd()));
+                    return;
                 }
-                _messages.push(rpl::rpl_endofstats(current->nickname(), "l", msg->get_fd()));    
+                if (args[0] == "l"){
+                    for (it = _users.begin(); it != _users.end(); it++){
+                        _messages.push(rpl::rpl_statslinkinfo( current->nickname(), it->second->connection_stats(), msg->get_fd()));
+                    }
+                    _messages.push(rpl::rpl_endofstats(current->nickname(), "l", msg->get_fd()));    
+                }
+                else if (args[0] == "u"){
+                    uptime = get_time_ms() - _creation_time;
+                    _messages.push(rpl::rpl_statsuptime(current->nickname(), ft_ms_to_duration(uptime), msg->get_fd()));
+                    _messages.push(rpl::rpl_endofstats(current->nickname(), "u", msg->get_fd()));    
+                }
+                else if (args[0] == "m"){
+                    for (itf = _cmds.begin(); itf != _cmds.end(); itf++){
+                        _messages.push(rpl::rpl_statscommands(current->nickname(), itf->first, 0 , msg->get_fd()));
+                    }
+                    _messages.push(rpl::rpl_endofstats(current->nickname(), "m", msg->get_fd()));
+                }
             }
-            else if (msg->get_params() == "u"){
-                uptime = get_time_ms() - _creation_time;
-                _messages.push(rpl::rpl_statsuptime(current->nickname(), ft_ms_to_duration(uptime), msg->get_fd()));
-                _messages.push(rpl::rpl_endofstats(current->nickname(), "u", msg->get_fd()));    
+            else{
+                _messages.push(rpl::rpl_endofstats(current->nickname(), msg->get_params(), msg->get_fd()));
             }
         }
-        //STATS <query> <server>
-        //if server omitted , send RPL_ENDOFSTATS
-        //if server not ours, send ERR_NOSUCHSERVER
-        //we handle m (list of commands supported (number of time each command has been called))
-        //RPL_STATSCOMMANDS
-        //we handle u (uptime)
-        //RPL_STATSUPTIME
-        //we handle l (list of connections and stats on each connection)
-        //RPL_STATSLINKINFO
-        //RPL_ENDOFSTATS
     }
-// ----- TIME -----
+// ----- TIME -----     OK
     void irc::server::ft_time(irc::message * msg){
         if (!msg->get_params().empty() && msg->get_params() != SERVER_NAME){
             _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
@@ -247,7 +255,7 @@
     }
 // ----- TOPIC -----
     void irc::server::ft_topic(irc::message * msg){(void)msg;} //send topic of given channel 
-// ----- USER -----
+// ----- USER -----     OK
     void irc::server::ft_user(irc::message * msg){
         irc::user * current;
         std::vector<str> args;
@@ -271,7 +279,7 @@
             current->set_fullname(msg->get_trailing());
         }
     }
-// ----- VERSION -----
+// ----- VERSION -----  OK
     void irc::server::ft_version(irc::message * msg){
         irc::user *current;
 
@@ -283,7 +291,7 @@
         else
             _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
     }
-// ----- WHO ------
+// ----- WHO ------     
     void irc::server::ft_who(irc::message * msg){
         std::vector<str> args;
         irc::user        *current;
@@ -306,7 +314,7 @@
     void irc::server::ft_whois(irc::message * msg){(void)msg;}
 // ----- WHOWAS -----
     void irc::server::ft_whowas(irc::message * msg){(void)msg;}
-// ----- USERS -----
+// ----- USERS -----    OK
     void irc::server::ft_users(irc::message * msg){ _messages.push(err::err_usersdisabled(msg->get_fd())); }
-// ----- SUMMON -----
+// ----- SUMMON -----   OK
     void irc::server::ft_summon(irc::message * msg){ _messages.push(err::err_summondisabled(msg->get_fd())); }

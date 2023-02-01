@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 19:29:19 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/01 08:00:32 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,10 @@ namespace irc{
         irc::message * rpl_welcome(const str &nick, int to);
         irc::message * rpl_yourhost(const str &nick, const str &srvname, const str &version, int to);
         irc::message * rpl_created(const str &nick, const str &date, int to);
-        irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &availableUserModes, const str &availableChannelModes, int to);
+        irc::message * rpl_myinfo(const str &nick, const str &srvname, const str &version, const str &umodes, const str &cmodes, int to);
         irc::message * rpl_bounce(const str &nick, const str &srvname, const str &port, int to);
         irc::message * rpl_statslinkinfo(const str &nickname, const str &stats, int to);
-        // irc::message * rpl_statscommands(const str &command, size_t count, size_t byteCount, size_t remoteCount, int to);
+        irc::message * rpl_statscommands(const str &nickname, const str &command, int count, int to);        
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to);
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
         irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to);

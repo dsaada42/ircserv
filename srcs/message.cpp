@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/27 10:34:42 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/01 08:47:09 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,17 @@ int irc::message::parse_message( void ){
         if (pos == str::npos){
             std::cout << "no cmd detected, failed parsing message" << std::endl;  
             return (FAILURE);
-        } //cas ou rien derriere le prefixe -> cmd not valid
+        }
         _prefix = msg.substr( 0, pos );
         msg = msg.substr(pos + 1, msg.size());
     }
     pos = msg.find(" ");
     _cmd = msg.substr( 0 , pos ); 
-    if ( pos == str::npos ) //cas ou uniquement commande sans arguments 
+    if ( pos == str::npos ) 
         return (SUCCESS);
     msg = msg.substr( pos + 1, msg.size());
     pos = msg.find(":");
-    if (pos == str::npos){ // no trailing found, the rest is args
+    if (pos == str::npos){
         _params = msg;
     }
     else{ //found trailing 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 20:05:10 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/01 08:51:20 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,14 +213,19 @@ void        irc::server::handle_read_set( void ){
 // ----- Write Handler -----
 void        irc::server::handle_write_set(void){
     message                 *current;
+    irc::user               *usr;
     std::queue<message*>    tmp_messages;
 
     while (_messages.size() > 0){        
         current = _messages.front();
         _messages.pop();
         if (FD_ISSET(current->get_fd(), &write_sockets)){
-            if (current->send() == SUCCESS)
+            if (current->send() == SUCCESS){
+                usr = find_user_by_fd(current->get_fd());
+                usr->incr_sent_cmd();
+                usr->incr_sent_bytes(current->get_message().size());
                 delete current;
+            }
             else{
                 delete current;
                 std::cerr << "failed sending message" << std::endl; // behaviour?
