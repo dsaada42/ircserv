@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 11:58:35 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/02 14:21:13 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,11 @@ namespace irc{
 		    void			add_op(user *obj);
 		    void			add_invit(user *obj);
 		    void			add_ban(user *obj);
+		    //REMOVING
+		    void			remove_user(user *obj);
+		    void			remove_op(user *obj);
+		    void			remove_invit(user *obj);
+		    void			remove_ban(user *obj);
     
     };
 

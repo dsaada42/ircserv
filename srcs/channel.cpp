@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 11:59:17 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/02 14:32:18 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,63 @@ bool			irc::channel::is_ban(user *obj)
 }
 //ADDING
 void			irc::channel::add_user(user *obj) { _users.push_back(obj); }
+
 void			irc::channel::add_op(user *obj) { _op.push_back(obj); }
+
 void			irc::channel::add_invit(user *obj) { _invit.push_back(obj); }
+//REMOVING
+void			irc::channel::remove_user(user *obj)
+{
+	std::vector<irc::user*>::iterator it;
+
+	for (it = _users.begin(); it != _users.end(); it++)
+	{
+		if (*it == obj)
+		{
+			_users.erase(it);
+			break;
+		}
+	}
+}
+
+void			irc::channel::remove_op(user *obj)
+{
+	std::vector<irc::user*>::iterator it;
+
+	for (it = _op.begin(); it != _op.end(); it++)
+	{
+		if (*it == obj)
+		{
+			_op.erase(it);
+			break;
+		}
+	}
+}
+
+void			irc::channel::remove_invit(user *obj)
+{
+	std::vector<irc::user*>::iterator it;
+
+	for (it = _invit.begin(); it != _invit.end(); it++)
+	{
+		if (*it == obj)
+		{
+			_invit.erase(it);
+			break;
+		}
+	}
+}
+
+void			irc::channel::remove_ban(user *obj)
+{
+	std::vector<irc::user*>::iterator it;
+
+	for (it = _ban.begin(); it != _ban.end(); it++)
+	{
+		if (*it == obj)
+		{
+			_ban.erase(it);
+			break;
+		}
+	}
+}

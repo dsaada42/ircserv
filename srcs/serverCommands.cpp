@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/02 12:54:04 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/02 14:36:44 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@
 			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
 		}
 		else//If channel doesn't exist
-		{
+		{//We create a new channel with or without password
 			if (args.size() == 2)
 				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], args[1], "", ""))).first->second;
 			else if (args.size() == 1)
@@ -140,7 +140,47 @@
 		}
 	}
 // ----- KICK -----
-    void irc::server::ft_kick( irc::message * msg ){(void)msg;} //-> operator kicks user from channel
+    void irc::server::ft_kick( irc::message * msg)
+	{
+		user			*sender;
+		user			*receiver;
+		channel			*channel;
+		std::vector<str>	args;
+
+		args = ft_split(msg->get_params(), " ");
+		if (args.size() < 2)//Not enough params
+		{
+			_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+			return;
+		}
+		if (!find_channel_by_name(args[0]))//If channel doesn't exist
+		{
+			_messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
+			return;
+		}
+		channel = find_channel_by_name(args[0]);
+		sender = find_user_by_fd(msg->get_fd());
+		if (!channel->is_op(sender))//If sender is not op
+		{
+			_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
+			return;
+		}
+		if (!find_user_by_nick(args[1]))//If receiver is not on server
+		{
+			_messages.push(err::err_notonchannel(args[0], msg->get_fd()));
+			return;
+		}
+		else if ((receiver = find_user_by_nick(args[1])))//If receiver is in server
+		{
+			if (!channel->is_user(receiver))//If receiver is not in channel
+			{
+				_messages.push(err::err_notonchannel(args[0], msg->get_fd()));
+				return;
+			}
+			channel->remove_user(receiver);
+			//Reponse client ?
+		}
+	}
 // ----- KILL -----
     void irc::server::ft_kill( irc::message * msg ){(void)msg;} //-> operator kills user (delete user)
 // ----- LIST -----
