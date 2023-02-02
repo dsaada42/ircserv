@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 11:03:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 08:55:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ namespace irc{
         irc::message * cmd_nick(const str &user_prefix, const str &nick, int to);                  
         irc::message * cmd_quit(const str &user_prefix, const str &msg, int to);
         irc::message * cmd_privmsg(const str &user_prefix, const str &target, const str &msg, int to);
+        irc::message * cmd_notice(const str &user_prefix, const str &target, const str &msg, int to);
     }  
     
 }

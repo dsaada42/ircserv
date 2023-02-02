@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/02 08:09:44 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 08:53:53 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,17 @@
         }
     }
 // ----- NOTICE -----   OK
-    void irc::server::ft_notice(irc::message * msg){(void)msg;}//(won't trigger any reply since we are a server)
+    void irc::server::ft_notice(irc::message * msg){
+        irc::user   *current;
+        irc::user   *from;
+        
+        if (!msg->get_params().empty() && !msg->get_trailing().empty()){
+            if ((current = find_user_by_nick(msg->get_params())) != NULL){
+                from = find_user_by_fd(msg->get_fd());
+                _messages.push(cmd::cmd_notice(user_prefix(from), current->nickname(), msg->get_trailing(), current->fd()));
+            }
+        }
+    }
 // ----- OPER -----     OK
     void irc::server::ft_oper(irc::message * msg){
         std::vector<str>    args;

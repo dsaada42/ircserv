@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 08:51:20 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 08:52:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ void       irc::server::handle_users_timeout(void){
                 delete_user(current);
             }
             else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
-                std::cout << "Sending ping to inactive user" << std::endl;
                 msg = cmd::cmd_ping( current->nickname() , current->fd() );
                 _messages.push(msg);
                 current->set_ping(true);
@@ -183,23 +182,18 @@ void        irc::server::handle_read_set( void ){
         current = (*it).second;
         it++; 
         if (FD_ISSET(current->fd(), &read_sockets)){
-            //case reading error
             if (current->read_connection() == FAILURE){ 
                 std::cout << "deleting user because connection lost" << std::endl;   
                 delete_user(current);
             }
             else{
-                //case user already fully connected
                 if (current->connected()){
-                    std::cout << "Received message from established connection" << std::endl;
                     while ((msg = current->extract_message("\r\n")) != NULL){
                         _received.push(msg);
                     }    
                 }
-                //case user still connecting
-                else{
-                    handle_user_connection(current);
-                }                
+                else
+                    handle_user_connection(current);            
             }
         }
         //case exception occurred on connection
