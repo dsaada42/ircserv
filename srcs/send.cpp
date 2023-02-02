@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 08:54:46 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 12:58:25 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ namespace irc{
         irc::message * cmd_quit(const str &user_prefix, const str &msg, int to)                     { return (new irc::message(user_prefix, "QUIT", "", msg, to));}    
         irc::message * cmd_privmsg(const str &user_prefix, const str &target, const str &msg, int to){ return (new irc::message(user_prefix, "PRIVMSG", target, msg, to));}
         irc::message * cmd_notice(const str &user_prefix, const str &target, const str &msg, int to){ return (new irc::message(user_prefix, "NOTICE", target, msg, to));}
+	irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to)	    { return (new irc::message(user_prefix, "JOIN", "", channel_name, to));}
     } 
 
 }

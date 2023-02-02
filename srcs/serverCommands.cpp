@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/02 08:53:53 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 12:54:04 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
     void irc::server::ft_info( irc::message * msg ){(void)msg;}
 // ----- INVITE -----
     void irc::server::ft_invite( irc::message * msg )
-    {
+	{
          //(void)msg;
          channel			    *channel;
          user			    *sender;
@@ -63,7 +63,7 @@
          {
              if (channel->get_modes().find("i")) //If channel is invtationnal
              {
-                 if (!channel->is_user_op(sender))//If sender is not op
+                 if (!channel->is_op(sender))//If sender is not op
                  {
                      _messages.push(err::err_chanoprivsneeded(args[1], msg->get_fd()));
                      return;
@@ -85,7 +85,60 @@
          }
     }
 // ----- JOIN -----
-    void irc::server::ft_join( irc::message * msg ){(void)msg;} //-> join a channel
+    void irc::server::ft_join( irc::message * msg) 
+	{
+		std::vector<str>       args;
+		channel			*channel;
+		user			*user;
+
+		user = find_user_by_fd(msg->get_fd());
+		args = ft_split(msg->get_params(), " ");
+		if (args.size() < 1 || args.size() > 2)//Not enough args
+		{
+			 _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+			 return;
+		}
+		if ((channel = find_channel_by_name(args[0])))//If channel exists
+		{
+			if (channel->is_ban(user))//If user is banned
+			{
+				_messages.push(err::err_bannedfromchan(args[0], msg->get_fd()));
+				return;
+			}
+			if (channel->get_modes().find("i")) //If channel is invtationnal
+			{
+				if (!channel->is_invit(user))//If user is not on invit list
+				{
+					_messages.push(err::err_inviteonlychan(args[0], msg->get_fd()));
+					return;
+				}
+			}
+			if (channel->get_modes().find("k"))//If channel has a password
+			{
+				if (args.size() < 2 || args[1] != channel->get_password())//Bad password
+				{
+					_messages.push(err::err_badchannelkey(args[0], msg->get_fd()));
+					return;
+				}
+			}
+			channel->add_user(user);
+			std::cout << user->nickname() << " joined channel: " << channel->get_name() << std::endl;
+			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
+			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
+		}
+		else//If channel doesn't exist
+		{
+			if (args.size() == 2)
+				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], args[1], "", ""))).first->second;
+			else if (args.size() == 1)
+				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], "", "Topitopic", ""))).first->second;
+			channel->add_user(user);
+			std::cout << user->nickname() << " created & joined channel: " << channel->get_name() << std::endl;
+			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
+			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
+
+		}
+	}
 // ----- KICK -----
     void irc::server::ft_kick( irc::message * msg ){(void)msg;} //-> operator kicks user from channel
 // ----- KILL -----
