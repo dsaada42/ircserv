@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 08:47:09 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/02 08:09:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int irc::message::parse_message( void ){
             std::cout << "no cmd detected, failed parsing message" << std::endl;  
             return (FAILURE);
         }
-        _prefix = msg.substr( 0, pos );
+        _prefix = msg.substr( 1, pos + 1 );
         msg = msg.substr(pos + 1, msg.size());
     }
     pos = msg.find(" ");
