@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 23:54:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/04 00:25:52 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@
 		}
 		channel = find_channel_by_name(args[0]);
 		sender = find_user_by_fd(msg->get_fd());
-		if (!channel->is_op(sender))//If sender is not op
+		if (!channel->is_op(sender))//If sender is not op ================== CHECK IF SERVER OP
 		{
 			_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
 			return;
@@ -209,16 +209,40 @@
             delete_user(to_kill);
         }   
     }
-// ----- LIST -----
+// ----- LIST ----- //A COMPLETER POUR LE CAS DE LA CHANNEL LIST
     void irc::server::ft_list( irc::message * msg ){
-        //lists all channels + topic if param is empty
-        // if params not empty , lists the channels listed with their topics (separated by comas)
-        // there is a space in the params, it must be the last param, and this param refers to a server
-        (void)msg;
-        //ERR_NOSUCHSERVER
-        //RPL_LISTSTART
-        //RPL_LIST
-        //RPL_LISTEND
+        irc::channel *chan;
+        irc::user   *usr;
+        std::map<str, channel*>::iterator itc;
+        std::vector<str>  args;
+        std::vector<str>  chans;
+        
+        args = ft_split(msg->get_params(), " ");
+        if (msg->get_params().empty()){
+            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        }
+        if ((usr = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
+        if (args.size() == 1){
+            if (args[0] != _server_name)
+                _messages.push(err::err_nosuchserver(args[0], msg->get_fd()));
+            else{
+                _messages.push(rpl::rpl_liststart(msg->get_fd()));
+                for(itc = _channels.begin(); itc != _channels.end(); itc++){
+                    chan = itc->second;
+                    // if (chan->is_mode("p") && !chan->is_user(usr)){
+                    //     _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), "Prv", msg->get_fd()));
+                    // }
+                    // else{
+                        _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), chan->get_topic(), msg->get_fd()));
+                    // }
+                }
+                _messages.push(rpl::rpl_listend(msg->get_fd()));
+            }
+        }
+        else{//cas ou channels are listed, split args[0] sur ',' and get info for each (only display topic if not private) if args[1] is channel
+            
+        }
     }
 // ----- MODE -----
     void irc::server::ft_mode(irc::message * msg){

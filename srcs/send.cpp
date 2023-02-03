@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 15:02:24 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/04 00:22:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ namespace irc{
         irc::message * rpl_away(const str &nickname, const str &reason, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			nickname, 		reason, to));}
         irc::message * rpl_unaway(int to)															{ return (new irc::message(SERVER_NAME, SSTR(RPL_UNAWAY), 			"", 			"You are no longer marked as being away", to));}
         irc::message * rpl_nowaway(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			"", 			"You have been marked as being away", to));}
-        // irc::message * rpl_list(const str &channel, size_t visible, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			    channel + ' ' + SSTR(visible, topic), to));} // because SSTR not working here
+        irc::message * rpl_liststart(int to)                                                        { return (new irc::message(SERVER_NAME, SSTR(RPL_LISTSTART), "", "List START", to));}
+        irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			nick + " " +  channel + ' ' + topic, "",  to));} // because SSTR not working here
         irc::message * rpl_listend(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_LISTEND), 			"", 			"End of LIST", to));}
         irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_CHANNELMODEIS), 	channel + " +" + modes, "", to));}
         irc::message * rpl_notopic(const str &nickname, const str &channel, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			nickname + ' ' + channel, 		"No topic set", to));}
