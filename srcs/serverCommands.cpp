@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 16:43:35 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 21:35:46 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@
                 _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
         }
     }
-// ----- NOTICE -----   OK
+// ----- NOTICE -----   OK (rajouter pour channel)
     void irc::server::ft_notice(irc::message * msg){
         irc::user   *current;
         irc::user   *from;
@@ -407,7 +407,8 @@
             _messages.push(err::err_notexttosend(msg->get_fd()));
         }
         else{
-            from = find_user_by_fd(msg->get_fd());
+            if ((from = find_user_by_fd(msg->get_fd())) == NULL)
+                return;
             if ((chan = find_channel_by_name(msg->get_params())) != NULL){
                 chan_users = chan->get_users();
                 for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
@@ -491,7 +492,8 @@
         if (msg->get_params().empty())
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
         else{
-            usr = find_user_by_fd(msg->get_fd());
+            if ((usr = find_user_by_fd(msg->get_fd())) == NULL)
+                return;
             if ((chan = find_channel_by_name(msg->get_params())) == NULL){
                 _messages.push(err::err_nosuchchannel(msg->get_params(), msg->get_fd()));
             }
