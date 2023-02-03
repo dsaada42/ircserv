@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 11:33:17 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 14:05:00 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,11 +345,11 @@
             _messages.push(err::err_notonchannel(current->nickname(), msg->get_fd()));
         }
         else{//user is on channel
-            chan->remove_user(current);
             chan_users = chan->get_users();
             for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
                 _messages.push(cmd::cmd_part(user_prefix(current), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
             }
+            chan->remove_user(current);
         }
     }
 // ----- PING -----     OK

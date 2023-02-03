@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 16:23:24 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/24 10:30:25 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 14:09:05 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ irc::serverSocket::serverSocket( int domain, int service, int protocol , int por
         perror("Failed to create socket...");
         throw(exitException());
     }
+    const int enable = 1;
+    if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+        perror("setsockopt(SO_REUSEADDR) failed");
     bind_socket();
     start_listening();
 }
