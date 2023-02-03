@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/02 14:36:44 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/03 10:53:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,11 @@
 // ----- INVITE -----
     void irc::server::ft_invite( irc::message * msg )
 	{
-         //(void)msg;
-         channel			    *channel;
-         user			    *sender;
-         user			    *receiver;
-	 str			modes;
-         std::vector<str> 	args;
+        channel			    *channel;
+        user			    *sender;
+        user			    *receiver;
+	    str			modes;
+        std::vector<str> 	args;
 
          sender = find_user_by_fd(msg->get_fd());
          args = ft_split(msg->get_params(), " ");
@@ -61,7 +60,7 @@
          }
          else//Channel exists
          {
-             if (channel->get_modes().find("i")) //If channel is invtationnal
+             if (channel->get_modes().find("i") != str::npos) //If channel is invtationnal
              {
                  if (!channel->is_op(sender))//If sender is not op
                  {
@@ -81,15 +80,18 @@
                  return;
              }
              //Invitation can be sent
-             _messages.push(rpl::rpl_inviting(args[1], args[0], msg->get_fd()));
+             _messages.push(rpl::rpl_inviting(channel->get_name(), sender->nickname(), receiver->nickname(), msg->get_fd()));
+             _messages.push(cmd::cmd_invite(user_prefix(sender), receiver->nickname(), channel->get_name(), receiver->fd()));
          }
     }
 // ----- JOIN -----
     void irc::server::ft_join( irc::message * msg) 
 	{
-		std::vector<str>       args;
-		channel			*channel;
-		user			*user;
+		std::vector<str>                args;
+		irc::channel		            *channel;
+		irc::user			            *user;
+        std::vector<irc::user *>             chan_users;
+        std::vector<irc::user *>::iterator   itu;
 
 		user = find_user_by_fd(msg->get_fd());
 		args = ft_split(msg->get_params(), " ");
@@ -105,7 +107,7 @@
 				_messages.push(err::err_bannedfromchan(args[0], msg->get_fd()));
 				return;
 			}
-			if (channel->get_modes().find("i")) //If channel is invtationnal
+			if (channel->get_modes().find("i") != str::npos) //If channel is invtationnal
 			{
 				if (!channel->is_invit(user))//If user is not on invit list
 				{
@@ -113,7 +115,7 @@
 					return;
 				}
 			}
-			if (channel->get_modes().find("k"))//If channel has a password
+			if (channel->get_modes().find("k") != str::npos)//If channel has a password
 			{
 				if (args.size() < 2 || args[1] != channel->get_password())//Bad password
 				{
@@ -123,7 +125,9 @@
 			}
 			channel->add_user(user);
 			std::cout << user->nickname() << " joined channel: " << channel->get_name() << std::endl;
-			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
+			chan_users = channel->get_users();
+            for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                _messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), (*itu)->fd()));
 			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
 		}
 		else//If channel doesn't exist
@@ -348,9 +352,12 @@
     }
 // ----- PRIVMSG -----  OK
     void irc::server::ft_privmsg(irc::message * msg){
-        irc::user   *current;
-        irc::user   *from;
-        
+        irc::user       *current;
+        irc::channel    *chan;
+        irc::user       *from;
+        std::vector<user *> chan_users;
+        std::vector<user *>::iterator itu;
+
         if (msg->get_params().empty()){
             _messages.push(err::err_norecipient(msg->get_cmd(), msg->get_fd()));
         }
@@ -358,8 +365,15 @@
             _messages.push(err::err_notexttosend(msg->get_fd()));
         }
         else{
-            if ((current = find_user_by_nick(msg->get_params())) != NULL){
-                from = find_user_by_fd(msg->get_fd());
+            from = find_user_by_fd(msg->get_fd());
+            if ((chan = find_channel_by_name(msg->get_params())) != NULL){
+                chan_users = chan->get_users();
+                for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
+                    if (*itu != from)
+                        _messages.push(cmd::cmd_privmsg(user_prefix(from), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
+                }
+            }
+            else if ((current = find_user_by_nick(msg->get_params())) != NULL){
                 _messages.push(cmd::cmd_privmsg(user_prefix(from), current->nickname(), msg->get_trailing(), current->fd()));
             }
             else

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 12:58:25 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/03 10:46:35 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ namespace irc{
         irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_CHANNELMODEIS), 	channel + " +" + modes, "", to));}
         irc::message * rpl_notopic(const str &channel, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			channel, 		"No topic is set", to));}
         irc::message * rpl_topic(const str &channel, const str &topic, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_TOPIC), 			channel, 		topic, to));}
-        irc::message * rpl_inviting(const str &channel, const str &nickname, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		channel + ' ' + nickname, "", to));}
+        irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to){ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		nickname + ' ' + target + ' ' + channel, "", to));}
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_VERSION), 			nickname,  version + '.' + debuglevel + ' ' + server + ' ' + comments, to));}
         irc::message * rpl_namreply(const str &names, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NAMREPLY), 		names, 			"", to));}
@@ -119,7 +119,8 @@ namespace irc{
         irc::message * cmd_quit(const str &user_prefix, const str &msg, int to)                     { return (new irc::message(user_prefix, "QUIT", "", msg, to));}    
         irc::message * cmd_privmsg(const str &user_prefix, const str &target, const str &msg, int to){ return (new irc::message(user_prefix, "PRIVMSG", target, msg, to));}
         irc::message * cmd_notice(const str &user_prefix, const str &target, const str &msg, int to){ return (new irc::message(user_prefix, "NOTICE", target, msg, to));}
-	irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to)	    { return (new irc::message(user_prefix, "JOIN", "", channel_name, to));}
+	    irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to)	        { return (new irc::message(user_prefix, "JOIN", "", channel_name, to));}
+        irc::message * cmd_invite(const str &user_prefix, const str &target, const str &channel_name, int to) {return (new irc::message(user_prefix, "INVITE", target, channel_name, to));}
     } 
 
 }

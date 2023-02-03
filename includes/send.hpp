@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 12:50:17 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/03 10:41:25 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ namespace irc{
         irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to);
         irc::message * rpl_notopic(const str &channel, int to);
         irc::message * rpl_topic(const str &channel, const str &topic, int to);
-        irc::message * rpl_inviting(const str &channel, const str &nickname, int to);
+        irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to);
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to);
         irc::message * rpl_namreply(const str &names, int to);
         irc::message * rpl_endofnames(const str &name, int to);
@@ -207,7 +207,8 @@ namespace irc{
         irc::message * cmd_quit(const str &user_prefix, const str &msg, int to);
         irc::message * cmd_privmsg(const str &user_prefix, const str &target, const str &msg, int to);
         irc::message * cmd_notice(const str &user_prefix, const str &target, const str &msg, int to);
-	irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to);
+	    irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to);
+        irc::message * cmd_invite(const str &user_prefix, const str &target, const str &channel_name, int to);
     }  
     
 }
