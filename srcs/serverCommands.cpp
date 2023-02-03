@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 21:35:46 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 23:54:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,14 +289,25 @@
                 _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
         }
     }
-// ----- NOTICE -----   OK (rajouter pour channel)
+// ----- NOTICE -----   OK
     void irc::server::ft_notice(irc::message * msg){
-        irc::user   *current;
-        irc::user   *from;
+        irc::user       *current;
+        irc::channel    *chan;
+        irc::user       *from;
+        std::vector<irc::user *>             chan_users;
+        std::vector<irc::user *>::iterator   itu;
         
         if (!msg->get_params().empty() && !msg->get_trailing().empty()){
-            if ((current = find_user_by_nick(msg->get_params())) != NULL){
-                from = find_user_by_fd(msg->get_fd());
+            if ((from = find_user_by_fd(msg->get_fd())) == NULL)
+                return;
+            if ((chan = find_channel_by_name(msg->get_params())) != NULL){
+                chan_users = chan->get_users();
+                for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
+                    if (from != (*itu))    
+                        _messages.push(cmd::cmd_notice(user_prefix(from), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
+                }
+            }
+            else if ((current = find_user_by_nick(msg->get_params())) != NULL){
                 _messages.push(cmd::cmd_notice(user_prefix(from), current->nickname(), msg->get_trailing(), current->fd()));
             }
         }
