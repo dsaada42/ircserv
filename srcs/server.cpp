@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 14:12:12 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 15:17:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,7 +317,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
     _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //OK
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
-    _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
+    _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));                                      //Reste a tester le chanoprivneede (no such OK / needmore OK / modif topic + notif all OK / notonchan OK / rpl_topic OK)
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));                                        //OK
     _cmds.insert(std::make_pair("version", &irc::server::ft_version));                                  //OK
     _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));                                          //EN COURS                               

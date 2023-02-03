@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 11:41:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 15:09:02 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ namespace irc{
 		    const str				&get_password(void) const;
 		    const str				&get_topic(void) const;
 		    const str				&get_modes(void) const;
+			//SETTERS
+			void			set_topic(const str &topic);
 		    //CHECKING
 			bool			is_empty(void);
 		    bool			is_op(user *obj);

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 11:30:56 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 15:02:24 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ namespace irc{
         // irc::message * rpl_list(const str &channel, size_t visible, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			    channel + ' ' + SSTR(visible, topic), to));} // because SSTR not working here
         irc::message * rpl_listend(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_LISTEND), 			"", 			"End of LIST", to));}
         irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_CHANNELMODEIS), 	channel + " +" + modes, "", to));}
-        irc::message * rpl_notopic(const str &channel, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			channel, 		"No topic is set", to));}
-        irc::message * rpl_topic(const str &channel, const str &topic, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_TOPIC), 			channel, 		topic, to));}
+        irc::message * rpl_notopic(const str &nickname, const str &channel, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			nickname + ' ' + channel, 		"No topic set", to));}
+        irc::message * rpl_topic(const str& nickname, const str &channel, const str &topic, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_TOPIC), 			nickname + ' ' + channel, 		topic, to));}
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to){ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		nickname + ' ' + target + ' ' + channel, "", to));}
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_VERSION), 			nickname,  version + '.' + debuglevel + ' ' + server + ' ' + comments, to));}

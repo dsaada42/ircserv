@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 11:55:50 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 15:08:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ const str			&irc::channel::get_topic(void) const { return _topic; }
 
 const str			&irc::channel::get_modes(void) const { return _modes; }
 
+//SETTERS
+
+void				irc::channel::set_topic(const str &topic){ _topic = topic; }
+
  //CHECKING
 bool			irc::channel::is_empty( void ){
 	return (_users.size() == 0);
@@ -45,6 +49,7 @@ bool			irc::channel::is_op(user *obj)
 {
 	std::vector<irc::user*>::iterator it;
 
+	//if user mode +o return true
 	for (it = _op.begin(); it != _op.end(); it++)
 	{
 		if (*it == obj)

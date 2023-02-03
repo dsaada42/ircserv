@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 14:05:00 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 15:16:16 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@
 			chan_users = channel->get_users();
             for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
                 _messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), (*itu)->fd()));
-			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
+			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 		}
 		else//If channel doesn't exist
 		{//We create a new channel with or without password
@@ -139,7 +139,7 @@
 			channel->add_user(user);
 			std::cout << user->nickname() << " created & joined channel: " << channel->get_name() << std::endl;
 			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
-			_messages.push(rpl::rpl_topic(args[0], channel->get_topic(), msg->get_fd()));
+			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 
 		}
 	}
@@ -459,8 +459,42 @@
         else
             _messages.push(rpl::rpl_time(SERVER_NAME, msg->get_fd()));
     }
-// ----- TOPIC -----
-    void irc::server::ft_topic(irc::message * msg){(void)msg;} //send topic of given channel 
+// ----- TOPIC -----   
+    void irc::server::ft_topic(irc::message * msg){
+        irc::channel     *chan;
+        irc::user        *usr;
+        std::vector<irc::user *>             chan_users;
+        std::vector<irc::user *>::iterator   itu;
+        
+        if (msg->get_params().empty())
+            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        else{
+            usr = find_user_by_fd(msg->get_fd());
+            if ((chan = find_channel_by_name(msg->get_params())) == NULL){
+                _messages.push(err::err_nosuchchannel(msg->get_params(), msg->get_fd()));
+            }
+            else if (!chan->is_user(usr)){
+                _messages.push(err::err_notonchannel(usr->nickname(), msg->get_fd()));
+            }
+            else if (msg->get_trailing().size() > 0){
+                if (chan->get_modes().find('t') != str::npos && !chan->is_op(usr)) // si le mode t est active et l'user n'est pas op
+                    _messages.push(err::err_chanoprivsneeded(chan->get_name(), msg->get_fd()));
+                else{
+                    chan->set_topic(msg->get_trailing());
+                    chan_users = chan->get_users();
+                    for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
+                        _messages.push(rpl::rpl_topic((*itu)->nickname(), chan->get_name(), chan->get_topic(), (*itu)->fd()));
+                    }
+                }
+            }
+            else{
+                if (chan->get_topic().size() == 0)
+                    _messages.push(rpl::rpl_notopic(usr->nickname(), chan->get_name(), usr->fd()));
+                else
+                    _messages.push(rpl::rpl_topic(usr->nickname(), chan->get_name(), chan->get_topic(), usr->fd()));
+            }
+        }
+    } 
 // ----- USER -----     OK
     void irc::server::ft_user(irc::message * msg){
         irc::user * current;
