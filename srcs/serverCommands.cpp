@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 15:16:16 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 16:06:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,33 @@
 			//Reponse client ?
 		}
 	}
-// ----- KILL -----
-    void irc::server::ft_kill( irc::message * msg ){(void)msg;} //-> operator kills user (delete user)
+// ----- KILL ----- OK
+    void irc::server::ft_kill( irc::message * msg ){
+        irc::user   *usr;
+        irc::user   *to_kill;
+        std::map<int, user*>::iterator itu;
+        
+        if ((usr = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
+        if (!usr->is_mode('o')){
+            _messages.push(err::err_noprivileges(msg->get_fd()));
+        }
+        else if (msg->get_params().empty()){
+            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        }
+        else if ((to_kill = find_user_by_nick(msg->get_params())) == NULL){
+            _messages.push(err::err_nosuchnick(msg->get_params(), msg->get_fd()));
+        }
+        else{
+            for (itu = _users.begin(); itu != _users.end(); itu++){
+                if (msg->get_trailing().empty())
+                    _messages.push(cmd::cmd_quit(user_prefix(to_kill), "Got killed by oper " + usr->nickname(), itu->second->fd()));
+                else
+                    _messages.push(cmd::cmd_quit(user_prefix(to_kill), msg->get_trailing(), itu->second->fd()));
+            }
+            delete_user(to_kill);
+        }   
+    }
 // ----- LIST -----
     void irc::server::ft_list( irc::message * msg ){
         //lists all channels + topic if param is empty
@@ -327,7 +352,7 @@
             }
         }
     }
-// ----- PART -----     
+// ----- PART -----     OK
     void irc::server::ft_part(irc::message * msg){
         irc::channel    *chan;
         irc::user       *current;
@@ -459,7 +484,7 @@
         else
             _messages.push(rpl::rpl_time(SERVER_NAME, msg->get_fd()));
     }
-// ----- TOPIC -----   
+// ----- TOPIC -----    OK
     void irc::server::ft_topic(irc::message * msg){
         irc::channel     *chan;
         irc::user        *usr;

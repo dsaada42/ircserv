@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 15:17:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 16:07:20 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,10 +299,10 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("admin", &irc::server::ft_admin));                                      //OK
     _cmds.insert(std::make_pair("CAP", &irc::server::ft_cap));                                          //OK
     _cmds.insert(std::make_pair("info", &irc::server::ft_info));
-    _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));
-    _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));
-    _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));
-    _cmds.insert(std::make_pair("KILL", &irc::server::ft_kill));
+    _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));                                    //a tester
+    _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));                                        //a tester
+    _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));                                        
+    _cmds.insert(std::make_pair("kill", &irc::server::ft_kill));                                        //OK
     _cmds.insert(std::make_pair("LIST", &irc::server::ft_list));
     _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));                                        //OK FOR USERS
     _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));
