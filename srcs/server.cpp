@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 16:28:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 17:16:59 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,6 +264,11 @@ void       irc::server::update_sets( void )       {
 
 // ----- Memory Handling -----
 void        irc::server::delete_user(user *el){
+    std::map<str, channel*>::iterator itc;
+
+    for (itc = _channels.begin(); itc != _channels.end(); itc++){
+        itc->second->delete_user(el);
+    }
     _users.erase(el->fd());
     delete el;
 }

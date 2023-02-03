@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 15:08:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 17:00:55 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,14 @@ void			irc::channel::remove_ban(user *obj)
 			break;
 		}
 	}
+}
+
+void			irc::channel::delete_user(user *obj){
+	//in case a user is deleted, this function is called to ensure it doesn't stay in the channel
+	remove_ban(obj);
+	remove_invit(obj);
+	remove_op(obj);
+	remove_user(obj);
 }
 
 
