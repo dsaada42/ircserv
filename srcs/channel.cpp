@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 14:32:18 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/03 11:55:50 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ const str			&irc::channel::get_topic(void) const { return _topic; }
 const str			&irc::channel::get_modes(void) const { return _modes; }
 
  //CHECKING
+bool			irc::channel::is_empty( void ){
+	return (_users.size() == 0);
+}
+
 bool			irc::channel::is_op(user *obj)
 {
 	std::vector<irc::user*>::iterator it;
@@ -81,6 +85,7 @@ bool			irc::channel::is_ban(user *obj)
 	}
 	return false;
 }
+
 //ADDING
 void			irc::channel::add_user(user *obj) { _users.push_back(obj); }
 
@@ -143,3 +148,5 @@ void			irc::channel::remove_ban(user *obj)
 		}
 	}
 }
+
+

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 10:53:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 11:33:17 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,8 +329,28 @@
     }
 // ----- PART -----     
     void irc::server::ft_part(irc::message * msg){
-        // quits channel (with optionnal message sent to current users in channel)
-        (void)msg;
+        irc::channel    *chan;
+        irc::user       *current;
+        std::vector<irc::user *>             chan_users;
+        std::vector<irc::user *>::iterator   itu;
+        
+        current = find_user_by_fd(msg->get_fd());
+        if (msg->get_params().empty()){ //no channel given
+            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        } //channel doesn't exist
+        else if ((chan = find_channel_by_name(msg->get_params())) == NULL){
+            _messages.push(err::err_nosuchchannel(msg->get_params(), msg->get_fd()));
+        }
+        else if (!chan->is_user(current)){// user is not on channel
+            _messages.push(err::err_notonchannel(current->nickname(), msg->get_fd()));
+        }
+        else{//user is on channel
+            chan->remove_user(current);
+            chan_users = chan->get_users();
+            for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
+                _messages.push(cmd::cmd_part(user_prefix(current), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
+            }
+        }
     }
 // ----- PING -----     OK
     void irc::server::ft_ping(irc::message * msg){(void)msg;}// server will ignore message but listen to the ping to refresh inactivity timestamp of sending user

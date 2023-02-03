@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 08:50:56 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 11:56:53 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ namespace irc{
             void        delete_all_received(void);
         // ----- Init cmd map -----
             void        init_cmd_map(void);
+        // ----- Clear useless -----
+            void        clear_useless( void );
 
         //====== IRC LOGIC / RECEIVED COMMANDS ======
 

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 08:52:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 11:57:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int         irc::server::run( void ){
         handle_write_set();
 
         handle_users_timeout();
+
+        clear_useless();
     }
 }
 
@@ -311,9 +313,9 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("PART", &irc::server::ft_part));
     _cmds.insert(std::make_pair("PING", &irc::server::ft_ping));                                        //OK
     _cmds.insert(std::make_pair("PONG", &irc::server::ft_pong));                                        //OK
-    _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));
+    _cmds.insert(std::make_pair("PRIVMSG", &irc::server::ft_privmsg));                                  //OK
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
-    _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //EN COURS
+    _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //OK
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
     _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));                                        //OK
@@ -323,6 +325,21 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));                                    //EN COURS 
     _cmds.insert(std::make_pair("SUMMON", &irc::server::ft_summon));                                    //OK
     _cmds.insert(std::make_pair("USERS", &irc::server::ft_users));                                      //OK
+}
+
+//----- Clear useless -----
+void        irc::server::clear_useless(void){
+    std::map<str, irc::channel*>::iterator it;
+    irc::channel *chan;
+    
+    for (it = _channels.begin(); it != _channels.end(); it++){
+        chan = it->second;
+        if (chan->is_empty()){//delete useless 
+            _channels.erase(chan->get_name());
+            std::cout << "deleting empty channel: " << chan->get_name() << std::endl;
+            delete chan;
+        }
+    }
 }
 
 //===========================================================================================
