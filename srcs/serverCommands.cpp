@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/03 16:06:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/03 16:19:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,19 @@
 // ----- CAP -----      OK
     void irc::server::ft_cap( irc::message * msg ){(void)msg;}//ignore CAP messages
 // ----- INFO -----
-    void irc::server::ft_info( irc::message * msg ){(void)msg;}
+    void irc::server::ft_info( irc::message * msg ){ //OK
+        if (!msg->get_params().empty() && msg->get_params() != _server_name){
+            _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
+        }
+        else{
+            _messages.push(rpl::rpl_info("Server name: " + _server_name, msg->get_fd()));
+            _messages.push(rpl::rpl_info("Maintainers: Dylan and Ryad", msg->get_fd()));
+            _messages.push(rpl::rpl_info("Creation date: " + _creation_date, msg->get_fd()));
+            _messages.push(rpl::rpl_info("Number of connected users: " + SSTR(_users.size()), msg->get_fd()));
+            _messages.push(rpl::rpl_info("Number of channels: " + SSTR(_channels.size()), msg->get_fd()));
+            _messages.push(rpl::rpl_endofinfo(msg->get_fd()));
+        } 
+    }
 // ----- INVITE -----
     void irc::server::ft_invite( irc::message * msg )
 	{
