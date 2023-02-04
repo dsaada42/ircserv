@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/04 08:10:26 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/04 08:30:27 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,96 +222,103 @@
     }
 // ----- MODE -----
     void irc::server::ft_mode(irc::message * msg){
-	irc::channel	*channel;
+        irc::channel	*channel;
         irc::user   	*current;
         std::vector<str> args;
-	char		c;
-        
-        //users    
+        char		c;
+            
+        //users   ========================> NE PAS OUBLIER DE GENERER LA REPONSE ADEQUATE EN CAS DE SUCCES <=========================(rpl chanmodeis?)
         args = ft_split(msg->get_params(), " ");
         if (args.size() < 2){
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
             return;
         }
-	if (check_channel_rules(find_channel_by_name(args[0])->get_name()))//CORRECT CHANNEL SYNTAX
-	{
-		if ((channel = find_channel_by_name(args[0])))//CHANNEL MODE
-		{
-			if (!channel->is_op(find_user_by_fd(msg->get_fd())) || !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
-			{
-				_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
-				return;
-			}
-			if (args[1].at(0) == '+')//MODE +
-			{
-				if (args[1].at(1) == 'o')
-				{
-					if (args.size() < 3)
-					{
-						_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-						return;
-					}
-					else
-					{	
-						if (!find_user_by_nick(args[2]))
-							_messages.push(err::err_nosuchnick(args[2], msg->get_fd()));
-						channel->add_op(find_user_by_nick(args[2]));
-						//Reponse au client
-					}
-				}	
-				else if (args[1].at(1) == 'p')
-					channel->add_mode("p");
-				else if (args[1].at(1) == 't')
-					channel->add_mode("t");
-				else if (args[1].at(1) == 'l')
-				{
-					if (args.size() < 3)
-					{
-						_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-						return;
-					}
-					else
-					{
-						channel->add_mode("l");
-						if (channel->is_num(args[2]))
-							channel->add_nb_max(atoi(args[2].c_str()));
-					}
-				}
-			}
-			else if (args[1].at(0) == '-')//MODE -
-			{
-				std::cout << "bonjour\n";
-			}
-		}
-	}
-        current = find_user_by_nick(args[0]);//USER MODE
-        if (!current)
-            _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));
-        else if (find_user_by_fd(msg->get_fd()) != current){
-            _messages.push(err::err_usersdontmatch(msg->get_fd()));
-        }
-        else{
-            if (args[1].size() == 2){
-                c = args[1].at(1);
-                if (c == 'i' || c == 'o' || c == 's'){
-                    if (args[1].at(0) == '+'){
-                        if ( c == 'o' ) // ignore +o
+        if (check_channel_rules(find_channel_by_name(args[0])->get_name()))//CORRECT CHANNEL SYNTAX
+        {
+            if ((channel = find_channel_by_name(args[0])))//CHANNEL MODE
+            {
+                if (!channel->is_op(find_user_by_fd(msg->get_fd())) || !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
+                {
+                    _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
+                    return;
+                }
+                if (args[1].at(0) == '+')//MODE +
+                {//ATTENTION AU CAS OU ON DONNE +o[x...x] => sera OK mais ne devrait pas
+                    if (args[1].at(1) == 'o')
+                    {
+                        if (args.size() < 3)
+                        {
+                            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
                             return;
-                        current->change_mode(c, true);
-                        _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
-                        return;
-                    }        
-                    else if (args[1].at(0) == '-'){
-                        current->change_mode(c, false);
-                        _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
-                        return;
+                        }
+                        else
+                        {	
+                            if (!find_user_by_nick(args[2]))
+                                _messages.push(err::err_nosuchnick(args[2], msg->get_fd()));
+                            channel->add_op(find_user_by_nick(args[2]));
+                            //Reponse au client
+                        }
+                    }	
+                    else if (args[1].at(1) == 'p')
+                        channel->add_mode("p");
+                    else if (args[1].at(1) == 't')
+                        channel->add_mode("t");
+                    else if (args[1].at(1) == 'l')
+                    {
+                        if (args.size() < 3)
+                        {
+                            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+                            return;
+                        }
+                        else
+                        {
+                            channel->add_mode("l");
+                            if (channel->is_num(args[2]))
+                                channel->add_nb_max(atoi(args[2].c_str()));
+                        }
                     }
+                    else{//SI AUCUN DES MODES CI DESSUS UNKNOWN FLAG
+                        _messages.push(err::err_unknownmode(args[1], msg->get_fd()));
+                    }
+                }
+                else if (args[1].at(0) == '-')//MODE -
+                {//JE T"AI FAIT UNE FONCTION chan->remove_mode(char c)
+                    std::cout << "bonjour\n";
+                }
+            }
+            else// SI AUCUN CHANNEL NE CORRESPOND -> NO SUCH CHANNEL
+                _messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
+        }
+        else{ //User modes 
+            current = find_user_by_nick(args[0]);
+            if (!current)
+                _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));
+            else if (find_user_by_fd(msg->get_fd()) != current){
+                _messages.push(err::err_usersdontmatch(msg->get_fd()));
+            }
+            else{
+                if (args[1].size() == 2){
+                    c = args[1].at(1);
+                    if (c == 'i' || c == 'o' || c == 's'){
+                        if (args[1].at(0) == '+'){
+                            if ( c == 'o' ) // ignore +o
+                                return;
+                            current->change_mode(c, true);
+                            _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
+                            return;
+                        }        
+                        else if (args[1].at(0) == '-'){
+                            current->change_mode(c, false);
+                            _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
+                            return;
+                        }
+                    }
+                    else
+                        _messages.push(err::err_umodeunknownflag(msg->get_fd()));
                 }
                 else
                     _messages.push(err::err_umodeunknownflag(msg->get_fd()));
             }
-            else
-                _messages.push(err::err_umodeunknownflag(msg->get_fd()));
         }
     }
 // ----- NAMES -----

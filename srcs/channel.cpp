@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 00:56:54 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/04 08:19:17 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "channel.hpp"
-
-#include "user.hpp"
 
  //CONSTRUCTOR& DESTRUCTOR
  irc::channel::channel(str name, str pass, str topic, str modes): _name(name), _password(pass), _topic(topic), _modes(modes), _nb_max_users(0) {}
@@ -110,6 +108,14 @@ void			irc::channel::add_mode(str m)
 {
 	if (!is_mode(m))
 		_modes += m;
+}
+void 			irc::channel::remove_mode(char c)
+{
+	str::size_type pos;
+
+	if ((pos = _modes.find(c)) != str::npos){
+       _modes.erase(pos, 1);
+    }
 }
 
 void			irc::channel::add_nb_max(int nb) { _nb_max_users = nb; }
