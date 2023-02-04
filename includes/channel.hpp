@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 17:01:23 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/04 00:42:18 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ namespace irc{
 		    str				_password;
 		    str				_topic;
 		    str				_modes;
+		    int				_nb_max_users;
 
 		 public:
 		    //CONSTRUCTOR & DESTRCUTOR
@@ -42,6 +43,7 @@ namespace irc{
 		    const str				&get_password(void) const;
 		    const str				&get_topic(void) const;
 		    const str				&get_modes(void) const;
+		    const int				&get_nb_max(void) const;
 			//SETTERS
 			void			set_topic(const str &topic);
 		    //CHECKING
@@ -50,11 +52,14 @@ namespace irc{
 		    bool			is_user(user *obj);
 		    bool			is_invit(user *obj);
 		    bool			is_ban(user *obj);
+		    bool			is_mode(str m);
 		    //ADDING
 		    void			add_user(user *obj);
 		    void			add_op(user *obj);
 		    void			add_invit(user *obj);
 		    void			add_ban(user *obj);
+		    void			add_mode(str m);
+		    void			add_nb_max(int nb);
 		    //REMOVING
 		    void			remove_user(user *obj);
 		    void			remove_op(user *obj);
@@ -62,6 +67,8 @@ namespace irc{
 		    void			remove_ban(user *obj);
 			//HANDLING USER DELETIOn/QUIT/KILL
 			void			delete_user(user *obj);
+		    //UTILS
+		    bool			is_num(str s);
 			
     
     };

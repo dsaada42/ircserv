@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 17:00:55 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/04 00:56:54 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "user.hpp"
 
  //CONSTRUCTOR& DESTRUCTOR
- irc::channel::channel(str name, str pass, str topic, str modes): _name(name), _password(pass), _topic(topic), _modes(modes) {}
+ irc::channel::channel(str name, str pass, str topic, str modes): _name(name), _password(pass), _topic(topic), _modes(modes), _nb_max_users(0) {}
 
  irc::channel::~channel(void) {}
 
@@ -35,6 +35,8 @@ const str			&irc::channel::get_password(void) const { return _password; }
 const str			&irc::channel::get_topic(void) const { return _topic; }
 
 const str			&irc::channel::get_modes(void) const { return _modes; }
+
+const int			&irc::channel::get_nb_max(void) const { return _nb_max_users; }
 
 //SETTERS
 
@@ -90,6 +92,12 @@ bool			irc::channel::is_ban(user *obj)
 	}
 	return false;
 }
+bool			irc::channel::is_mode(str m)
+{
+	if (_modes.find(m) != str::npos)
+		return true;
+	return false;
+}
 
 //ADDING
 void			irc::channel::add_user(user *obj) { _users.push_back(obj); }
@@ -97,6 +105,14 @@ void			irc::channel::add_user(user *obj) { _users.push_back(obj); }
 void			irc::channel::add_op(user *obj) { _op.push_back(obj); }
 
 void			irc::channel::add_invit(user *obj) { _invit.push_back(obj); }
+
+void			irc::channel::add_mode(str m)
+{
+	if (!is_mode(m))
+		_modes += m;
+}
+
+void			irc::channel::add_nb_max(int nb) { _nb_max_users = nb; }
 //REMOVING
 void			irc::channel::remove_user(user *obj)
 {
@@ -161,5 +177,11 @@ void			irc::channel::delete_user(user *obj){
 	remove_op(obj);
 	remove_user(obj);
 }
-
+//UTILS
+bool			irc::channel::is_num(str s)
+{
+	std::string::iterator it = s.begin();
+	while (it != s.end() && std::isdigit(*it)) ++it;
+	return !s.empty() && it == s.end();
+}
 

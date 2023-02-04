@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/04 00:25:52 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/04 01:05:59 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@
 		}
 		channel = find_channel_by_name(args[0]);
 		sender = find_user_by_fd(msg->get_fd());
-		if (!channel->is_op(sender))//If sender is not op ================== CHECK IF SERVER OP
+		if (!channel->is_op(sender))//If sender is not op
 		{
 			_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
 			return;
@@ -209,48 +209,23 @@
             delete_user(to_kill);
         }   
     }
-// ----- LIST ----- //A COMPLETER POUR LE CAS DE LA CHANNEL LIST
+// ----- LIST -----
     void irc::server::ft_list( irc::message * msg ){
-        irc::channel *chan;
-        irc::user   *usr;
-        std::map<str, channel*>::iterator itc;
-        std::vector<str>  args;
-        std::vector<str>  chans;
-        
-        args = ft_split(msg->get_params(), " ");
-        if (msg->get_params().empty()){
-            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-        }
-        if ((usr = find_user_by_fd(msg->get_fd())) == NULL)
-            return;
-        if (args.size() == 1){
-            if (args[0] != _server_name)
-                _messages.push(err::err_nosuchserver(args[0], msg->get_fd()));
-            else{
-                _messages.push(rpl::rpl_liststart(msg->get_fd()));
-                for(itc = _channels.begin(); itc != _channels.end(); itc++){
-                    chan = itc->second;
-                    // if (chan->is_mode("p") && !chan->is_user(usr)){
-                    //     _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), "Prv", msg->get_fd()));
-                    // }
-                    // else{
-                        _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), chan->get_topic(), msg->get_fd()));
-                    // }
-                }
-                _messages.push(rpl::rpl_listend(msg->get_fd()));
-            }
-        }
-        else{//cas ou channels are listed, split args[0] sur ',' and get info for each (only display topic if not private) if args[1] is channel
-            
-        }
+        //lists all channels + topic if param is empty
+        // if params not empty , lists the channels listed with their topics (separated by comas)
+        // there is a space in the params, it must be the last param, and this param refers to a server
+        (void)msg;
+        //ERR_NOSUCHSERVER
+        //RPL_LISTSTART
+        //RPL_LIST
+        //RPL_LISTEND
     }
 // ----- MODE -----
     void irc::server::ft_mode(irc::message * msg){
-        irc::user   *current;
+	irc::channel	*channel;
+        irc::user   	*current;
         std::vector<str> args;
-        char        c;
-        
-        //channels ?
+	char		c;
         
         //users    
         args = ft_split(msg->get_params(), " ");
@@ -258,7 +233,58 @@
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
             return;
         }
-        current = find_user_by_nick(args[0]);
+	if (check_channel_rules(find_channel_by_name(args[0])->get_name()))//CORRECT CHANNEL SYNTAX
+	{
+		if ((channel = find_channel_by_name(args[0])))//CHANNEL MODE
+		{
+			if (!channel->is_op(find_user_by_fd(msg->get_fd())) || !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
+			{
+				_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
+				return;
+			}
+			if (args[1].at(0) == '+')//MODE +
+			{
+				if (args[1].at(1) == 'o')
+				{
+					if (args.size() < 3)
+					{
+						_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+						return;
+					}
+					else
+					{	
+						if (!find_user_by_nick(args[2]))
+							_messages.push(err::err_nosuchnick(args[2], msg->get_fd()));
+						channel->add_op(find_user_by_nick(args[2]));
+						//Reponse au client
+					}
+				}	
+				else if (args[1].at(1) == 'p')
+					channel->add_mode("p");
+				else if (args[1].at(1) == 't')
+					channel->add_mode("t");
+				else if (args[1].at(1) == 'l')
+				{
+					if (args.size() < 3)
+					{
+						_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+						return;
+					}
+					else
+					{
+						channel->add_mode("l");
+						if (channel->is_num(args[2]))
+							channel->add_nb_max(atoi(args[2].c_str()));
+					}
+				}
+			}
+			else if (args[1].at(0) == '-')//MODE -
+			{
+				std::cout << "bonjour\n";
+			}
+		}
+	}
+        current = find_user_by_nick(args[0]);//USER MODE
         if (!current)
             _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));
         else if (find_user_by_fd(msg->get_fd()) != current){
@@ -313,25 +339,14 @@
                 _messages.push(err::err_nicknameinuse(msg->get_params(), msg->get_fd()));
         }
     }
-// ----- NOTICE -----   OK
+// ----- NOTICE -----   OK (rajouter pour channel)
     void irc::server::ft_notice(irc::message * msg){
-        irc::user       *current;
-        irc::channel    *chan;
-        irc::user       *from;
-        std::vector<irc::user *>             chan_users;
-        std::vector<irc::user *>::iterator   itu;
+        irc::user   *current;
+        irc::user   *from;
         
         if (!msg->get_params().empty() && !msg->get_trailing().empty()){
-            if ((from = find_user_by_fd(msg->get_fd())) == NULL)
-                return;
-            if ((chan = find_channel_by_name(msg->get_params())) != NULL){
-                chan_users = chan->get_users();
-                for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
-                    if (from != (*itu))    
-                        _messages.push(cmd::cmd_notice(user_prefix(from), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
-                }
-            }
-            else if ((current = find_user_by_nick(msg->get_params())) != NULL){
+            if ((current = find_user_by_nick(msg->get_params())) != NULL){
+                from = find_user_by_fd(msg->get_fd());
                 _messages.push(cmd::cmd_notice(user_prefix(from), current->nickname(), msg->get_trailing(), current->fd()));
             }
         }
