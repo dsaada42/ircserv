@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverCommands.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/04 01:05:59 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/04 08:10:26 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,6 +307,8 @@
                         return;
                     }
                 }
+                else
+                    _messages.push(err::err_umodeunknownflag(msg->get_fd()));
             }
             else
                 _messages.push(err::err_umodeunknownflag(msg->get_fd()));
