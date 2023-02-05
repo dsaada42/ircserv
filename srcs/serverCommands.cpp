@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/04 08:30:27 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/05 16:23:47 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,10 +233,11 @@
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
             return;
         }
-        if (check_channel_rules(find_channel_by_name(args[0])->get_name()))//CORRECT CHANNEL SYNTAX
+        if (check_channel_rules(args[0]))//CORRECT CHANNEL SYNTAX
         {
             if ((channel = find_channel_by_name(args[0])))//CHANNEL MODE
             {
+                std::cout << "channel mode" << std::endl;
                 if (!channel->is_op(find_user_by_fd(msg->get_fd())) || !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
                 {
                     _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
