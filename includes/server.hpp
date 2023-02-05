@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/03 11:56:53 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/05 17:50:40 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ namespace irc{
         //====== INIT / MEMORY MANAGEMENT ======
             
         // ----- Memory handler ----- 
-            void        delete_user(user * el);
+            void        delete_user(user * el, str reason);
             void        delete_user(const str & nick);
             void        delete_all_users(void);
             void        delete_channel(const str & name);

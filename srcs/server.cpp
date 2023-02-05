@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 00:26:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/05 17:52:04 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void       irc::server::handle_users_timeout(void){
         if (current->connected()){
             if (inactive_time > DISCONNECT_TRIGGER_TIME){
                 std::cout << "Closing connection with user inactive for too long" << std::endl;
-                delete_user(current);
+                delete_user(current, "User inactive for too long");
             }
             else if (inactive_time > PING_TRIGGER_TIME && !current->ping()){
                 msg = cmd::cmd_ping( current->nickname() , current->fd() );
@@ -114,7 +114,7 @@ void       irc::server::handle_users_timeout(void){
         else if (inactive_time > CONNECTION_TIMEOUT){
             std::cout << "Deleting user: connection procedure timeout" << std::endl;
             current->print();
-            delete_user(current);
+            delete_user(current, "Connection procedure timeout");
         }
     }
 }
@@ -186,7 +186,7 @@ void        irc::server::handle_read_set( void ){
         if (FD_ISSET(current->fd(), &read_sockets)){
             if (current->read_connection() == FAILURE){ 
                 std::cout << "deleting user because connection lost" << std::endl;   
-                delete_user(current);
+                delete_user(current, "Connection lost");
             }
             else{
                 if (current->connected()){
@@ -201,7 +201,7 @@ void        irc::server::handle_read_set( void ){
         //case exception occurred on connection
         else if (FD_ISSET(current->fd(), &except_sockets)){
             std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
-            delete_user(current);
+            delete_user(current, "Connection error occurred");
         }
     }
 }
@@ -263,9 +263,16 @@ void       irc::server::update_sets( void )       {
 //===========================================================================================
 
 // ----- Memory Handling -----
-void        irc::server::delete_user(user *el){
+void        irc::server::delete_user(user *el, str reason){
     std::map<str, channel*>::iterator itc;
+    std::map<int, user*>::iterator itu;
 
+    if (reason.size() != 0){
+        for (itu = _users.begin(); itu != _users.end(); itu++){
+            if (itu->second->nickname() != el->nickname())
+                _messages.push(cmd::cmd_quit(user_prefix(el), reason, itu->second->fd()));    
+        }
+    }
     for (itc = _channels.begin(); itc != _channels.end(); itc++){
         itc->second->delete_user(el);
     }

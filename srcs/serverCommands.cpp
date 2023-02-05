@@ -6,7 +6,7 @@
 /*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/05 16:23:47 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/05 17:48:40 by dylan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@
                 else
                     _messages.push(cmd::cmd_quit(user_prefix(to_kill), msg->get_trailing(), itu->second->fd()));
             }
-            delete_user(to_kill);
+            delete_user(to_kill,"");
         }   
     }
 // ----- LIST -----
@@ -493,7 +493,7 @@
             if (it->second->nickname() != current->nickname())
                 _messages.push(cmd::cmd_quit(user_prefix(current), msg->get_trailing(), it->second->fd()));    
         }
-        delete_user(current);
+        delete_user(current, "");
     }
 // ----- STATS -----    OK
     void irc::server::ft_stats(irc::message * msg){
