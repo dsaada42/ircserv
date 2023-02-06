@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 11:11:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 16:00:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace irc{
         irc::message * err_nonicknamegiven(int to)	    											{ return (new irc::message(SERVER_NAME, SSTR(ERR_NONICKNAMEGIVEN), 	"", 			"No nickame given", to));}
         irc::message * err_erroneusnickname(const str &nickname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_ERRONEUSNICKNAME), nickname, 		"Erroneus nickname", to));}
         irc::message * err_nicknameinuse(const str &nickname, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_NICKNAMEINUSE), 	nickname,	 	nickname, to));}
-        irc::message * err_usernotinchannel(const str &nickname, const str &channel, int to)		{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERNOTINCHANNEL), nickname + ' ' + channel, "They aren't on that channel", to));}
+        irc::message * err_usernotinchannel(const str &nickname, const str &target, const str &channel, int to)		{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERNOTINCHANNEL), nickname + ' ' + channel, "User " + target + " is not in that channel", to));}
         irc::message * err_notonchannel(const str &channel, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOTONCHANNEL), 	channel, 		"You're not on that channel", to));}
         irc::message * err_useronchannel(const str &nickname, const str &channel, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_USERONCHANNEL), 	nickname + ' ' + channel, "is already on channel", to));}
         irc::message * err_summondisabled(int to)													{ return (new irc::message(SERVER_NAME, SSTR(ERR_SUMMONDISABLED), 	"", 			"Summon has been disabled", to));}

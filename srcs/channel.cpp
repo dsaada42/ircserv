@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 10:53:54 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 16:17:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +98,20 @@ bool			irc::channel::is_mode(str c)
 }
 
 //ADDING
-void			irc::channel::add_user(user *obj) { _users.push_back(obj); }
+void			irc::channel::add_user(user *obj) { 
+	if (!is_user(obj))
+		_users.push_back(obj);
+}
 
-void			irc::channel::add_op(user *obj) { _op.push_back(obj); }
+void			irc::channel::add_op(user *obj) { 
+	if (!is_op(obj))
+		_op.push_back(obj); 
+}
 
-void			irc::channel::add_invit(user *obj) { _invit.push_back(obj); }
+void			irc::channel::add_invit(user *obj) {
+	if (!is_invit(obj))
+		_invit.push_back(obj);
+}
 
 void			irc::channel::add_mode(str c)
 {

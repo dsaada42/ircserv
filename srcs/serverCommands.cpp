@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 11:16:52 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 16:27:23 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
             _messages.push(rpl::rpl_endofinfo(msg->get_fd()));
         } 
     }
-// ----- INVITE -----   OK // CHANOP
+// ----- INVITE -----   OK
     void irc::server::ft_invite( irc::message * msg )
 	{
         channel			    *channel;
@@ -88,11 +88,11 @@
 // ----- JOIN -----     OK
     void irc::server::ft_join( irc::message * msg) 
 	{
-		std::vector<str>                args;
-		irc::channel		            *channel;
-		irc::user			            *user;
-        std::vector<irc::user *>             chan_users;
-        std::vector<irc::user *>::iterator   itu;
+		std::vector<str>                    args;
+		irc::channel		                *channel;
+		irc::user			                *user;
+        std::vector<irc::user *>            chan_users;
+        std::vector<irc::user *>::iterator  itu;
 
 		if (!(user = find_user_by_fd(msg->get_fd())))
             return;
@@ -135,37 +135,46 @@
             channel->add_op(user);
 			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
 			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
-
 		}
 	}
-// ----- KICK ----- // CHANOP
+// ----- KICK ----- OK
     void irc::server::ft_kick( irc::message * msg)
 	{
-		user			*sender;
-		user			*receiver;
-		channel			*channel;
-		std::vector<str>	args;
+		user			                    *sender;
+		user			                    *receiver;
+		channel			                    *channel;
+		std::vector<str>	                args;
+        std::vector<irc::user *>            chan_users;
+        std::vector<irc::user *>::iterator  itu;
 
 		args = ft_split(msg->get_params(), " ");
-		if (args.size() < 2)//Not enough params
+		if (args.size() < 2)
 			_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-		else if (!find_channel_by_name(args[0]))//If channel doesn't exist
+		else if (!(channel = find_channel_by_name(args[0])))
 			_messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
         else{          
-            channel = find_channel_by_name(args[0]);
             if (!(sender = find_user_by_fd(msg->get_fd())))
                 return;
-            if (!channel->is_op(sender))//If sender is not op
-                _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
-            else if (!find_user_by_nick(args[1]))//If receiver is not on server
-                _messages.push(err::err_notonchannel(args[0], msg->get_fd()));
-            else if ((receiver = find_user_by_nick(args[1])))//If receiver is in server
+            if (!channel->is_user(sender))
+                _messages.push(err::err_notonchannel(channel->get_name(), msg->get_fd()));
+            else if (!channel->is_op(sender) && !sender->is_mode('o'))
+                _messages.push(err::err_chanoprivsneeded(channel->get_name(), msg->get_fd()));
+            else if (!find_user_by_nick(args[1]))
+                _messages.push(err::err_nosuchnick(channel->get_name(), msg->get_fd()));
+            else if ((receiver = find_user_by_nick(args[1])))
             {
-                if (!channel->is_user(receiver))//If receiver is not in channel
-                    _messages.push(err::err_notonchannel(args[0], msg->get_fd()));
-                else
-                    channel->remove_user(receiver);
-                //Reponse client ?
+                if (!channel->is_user(receiver))
+                    _messages.push(err::err_usernotinchannel(sender->nickname(), receiver->nickname(), channel->get_name(), msg->get_fd()));
+                else{
+                    chan_users = channel->get_users();
+                    for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
+                        if (msg->get_trailing().size() != 0)    
+                            _messages.push(cmd::cmd_part(user_prefix(receiver), channel->get_name(), msg->get_trailing(), (*itu)->fd())); 
+                        else
+                            _messages.push(cmd::cmd_part(user_prefix(receiver), channel->get_name(), "Kicked by oper " + sender->nickname(), (*itu)->fd())); 
+                    }
+                    channel->delete_user(receiver);
+                }
             }
         }
 	}
@@ -235,6 +244,7 @@
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
+        irc::user       *target;
         std::vector<str> args;
         str		m;
         char    c;
@@ -249,9 +259,8 @@
             return;
         }
         args = ft_split(msg->get_params(), " ");
-        if (args.size() < 2){// ATTENTION AU  "MODE #channel  -> rpl_"
+        if (args.size() < 2)
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-        }
         else if (check_channel_rules(args[0])){
             if ((channel = find_channel_by_name(args[0]))){
                 if (!channel->is_op(find_user_by_fd(msg->get_fd())) && !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
@@ -281,11 +290,26 @@
                 else if (args.size() == 3 && args[1].size() == 2){
                     m = args[1].at(1);
                     if (m == "o"){
-                        if (args[1].at(0) == '-'){
-                        //case +o or -o , last arg is target
+                        if ((target = find_user_by_nick(args[2])) != NULL){
+                            if (channel->is_user(target)){    
+                                if (args[1].at(0) == '-'){
+                                    if (channel->is_op(target)){
+                                        channel->remove_op(target);
+                                        //notify all users that target is not chanop anymore
+                                    }
+                                }
+                                else if (args[1].at(0) == '+'){
+                                    if (!channel->is_op(target)){
+                                        channel->add_op(target);
+                                        //notify all users that target is now chanop
+                                    }
+                                }
+                            }
+                            else
+                                _messages.push(err::err_usernotinchannel(current->nickname(), target->nickname(), channel->get_name(), msg->get_fd()));
                         }
-                        else if (args[1].at(0) == '+'){
-                            
+                        else{
+                            _messages.push(err::err_nosuchnick(target->nickname(), msg->get_fd()));
                         }
                     }
                 }

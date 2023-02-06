@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 11:10:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 15:58:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ namespace irc{
         irc::message * err_nonicknamegiven(int to);
         irc::message * err_erroneusnickname(const str &nickname, int to);
         irc::message * err_nicknameinuse(const str &nickname, int to);
-        irc::message * err_usernotinchannel(const str &nickname, const str &channel, int to);
+        irc::message * err_usernotinchannel(const str &nickname, const str &target, const str &channel, int to);
         irc::message * err_notonchannel(const str &channel, int to);
         irc::message * err_useronchannel(const str &nickname, const str &channel, int to);
         irc::message * err_summondisabled(int to);

@@ -1,2 +1,0 @@
-http://ircd.bircd.org/
-ircd@bircd.org
