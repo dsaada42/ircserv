@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 17:52:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 20:31:07 by mlaouedj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@
 		irc::user			                *user;
         std::vector<irc::user *>            chan_users;
         std::vector<irc::user *>::iterator  itu;
+        irc::message                        *tmp_msg;
 
 		if (!(user = find_user_by_fd(msg->get_fd())))
             return;
@@ -123,7 +124,10 @@
 			chan_users = channel->get_users();
             for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
                 _messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), (*itu)->fd()));
-			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
+			tmp_msg = new irc::message("", "NAMES", channel->get_name(), "", user->fd());
+            ft_names(tmp_msg);
+            delete tmp_msg;
+            _messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 		}
 		else
 		{
@@ -134,6 +138,9 @@
 			channel->add_user(user);
             channel->add_op(user);
 			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
+            tmp_msg = new irc::message("", "NAMES", channel->get_name(), "", user->fd());
+            ft_names(tmp_msg);
+            delete tmp_msg;
 			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 		}
 	}
