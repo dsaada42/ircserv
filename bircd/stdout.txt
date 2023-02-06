@@ -1,4 +1,4 @@
-Monday February 6 2023 -- 10:29:15 +01:00
+Monday February 6 2023 -- 19:51:36 +01:00
    server started successfully
-Monday February 6 2023 -- 10:49:46 +01:00
+Monday February 6 2023 -- 20:17:08 +01:00
    server shutdown: received signal SIGTERM
