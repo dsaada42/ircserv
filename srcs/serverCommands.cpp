@@ -380,11 +380,63 @@
     }
 // ----- NAMES -----
     void irc::server::ft_names(irc::message * msg){
-        //lists all nicknames visible on all visible channels (if a channel is private or secret, it won't appear unless the user is part of it)
-        //params can be a list of channels (will get an answer only if channel is visible)
-        //RPL_NAMREPLY
-        //RPL_ENDOFNAMES 
-        (void)msg;
+	std::vector<str>	args;
+	std::vector<str>	chans;
+	std::vector<user*> 	chan_users;
+	irc::channel		*chan;
+	irc::user		*usr;
+
+	std::map<str, channel*>::iterator itc;
+	std::vector<irc::user*>::iterator itu;
+
+	args = ft_split(msg->get_params(), " ");
+	std::cout << args.size() << std::endl;
+	if((usr = find_user_by_fd(msg->get_fd())) == NULL)
+		return;
+	else if (args.empty())//List all visibles channels & users
+	{
+		for(itc = _channels.begin(); itc != _channels.end(); itc++)
+		{
+			chan = itc->second;
+			if (!chan->is_mode("i") || (chan->is_mode("i") && chan->is_user(usr)))
+			{
+				chan_users = chan->get_users();
+				for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+				{
+					if (!(*itu)->is_mode('i'))//ATTENTION AU CAS OU OPER
+						_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), (*itu)->nickname(), msg->get_fd()));
+				}
+			}
+		}
+	}
+	else if (args.size() == 1)//List users by channel in args
+	{
+		chans = ft_split(msg->get_params(), ",");
+
+		if (chans.empty())
+			return;
+		else
+		{
+			std::vector<str>::iterator it;
+			for (it = chans.begin(); it != chans.end(); it++)
+			{
+				if ((chan = find_channel_by_name(*it)))
+				{
+					chan_users = chan->get_users();	
+					for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+					{
+						if (!(*itu)->is_mode('i')){
+							if (chan->is_op(*itu))
+								_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), "@" + (*itu)->nickname(), msg->get_fd()));
+							else
+								_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), (*itu)->nickname(), msg->get_fd()));
+						}
+					}
+				}
+			}
+		}
+	}
+	_messages.push(rpl::rpl_endofnames(find_user_by_fd(msg->get_fd())->nickname(), msg->get_fd()));
     }
 // ----- NICK -----     OK
     void irc::server::ft_nick(irc::message * msg){

@@ -170,7 +170,7 @@ namespace irc{
         irc::message * rpl_topic(const str &nickname, const str &channel, const str &topic, int to);
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to);
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to);
-        irc::message * rpl_namreply(const str &names, int to);
+        irc::message * rpl_namreply(const str &nickname, const str &channel_name, const str &names, int to);
         irc::message * rpl_endofnames(const str &name, int to);
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to);
         irc::message * rpl_endofbanlist(const str &channel, int to);

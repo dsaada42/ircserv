@@ -81,7 +81,7 @@ namespace irc{
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to){ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		nickname + ' ' + target + ' ' + channel, "", to));}
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_VERSION), 			nickname,  version + '.' + debuglevel + ' ' + server + ' ' + comments, to));}
-        irc::message * rpl_namreply(const str &names, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NAMREPLY), 		names, 			"", to));}
+        irc::message * rpl_namreply(const str &nickname, const str &channel_name, const str &names, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_NAMREPLY), 	nickname + " = " + channel_name , names, to));}
         irc::message * rpl_endofnames(const str &name, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFNAMES), 		name, 			"End of NAMES list", to));}
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_BANLIST), 			channel + ' ' + banmask, "", to));}
         irc::message * rpl_endofbanlist(const str &channel, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFBANLIST), 	channel, 		"End of channel ban list", to));}
