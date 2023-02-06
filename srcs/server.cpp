@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/05 17:52:04 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/06 08:52:26 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,6 @@ void        irc::server::handle_read_set( void ){
         it++; 
         if (FD_ISSET(current->fd(), &read_sockets)){
             if (current->read_connection() == FAILURE){ 
-                std::cout << "deleting user because connection lost" << std::endl;   
                 delete_user(current, "Connection lost");
             }
             else{
@@ -200,7 +199,6 @@ void        irc::server::handle_read_set( void ){
         }
         //case exception occurred on connection
         else if (FD_ISSET(current->fd(), &except_sockets)){
-            std::cout << "Exception occured on connexion with user, closing connexion" << std::endl;
             delete_user(current, "Connection error occurred");
         }
     }
@@ -220,12 +218,8 @@ void        irc::server::handle_write_set(void){
                 usr = find_user_by_fd(current->get_fd());
                 usr->incr_sent_cmd();
                 usr->incr_sent_bytes(current->get_message().size());
-                delete current;
             }
-            else{
-                delete current;
-                std::cerr << "failed sending message" << std::endl; // behaviour?
-            }
+            delete current;
         }
         else{
             if (!find_user_by_fd(current->get_fd()))
@@ -267,7 +261,7 @@ void        irc::server::delete_user(user *el, str reason){
     std::map<str, channel*>::iterator itc;
     std::map<int, user*>::iterator itu;
 
-    if (reason.size() != 0){
+    if (reason.size() != 0 && el->connected() == true){
         for (itu = _users.begin(); itu != _users.end(); itu++){
             if (itu->second->nickname() != el->nickname())
                 _messages.push(cmd::cmd_quit(user_prefix(el), reason, itu->second->fd()));    
@@ -329,7 +323,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("QUIT", &irc::server::ft_quit));                                        //OK
     _cmds.insert(std::make_pair("stats", &irc::server::ft_stats));                                      //OK
     _cmds.insert(std::make_pair("time", &irc::server::ft_time));                                        //OK
-    _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));                                      //Reste a tester le chanoprivneeded
+    _cmds.insert(std::make_pair("TOPIC", &irc::server::ft_topic));                                      //OK
     _cmds.insert(std::make_pair("USER", &irc::server::ft_user));                                        //OK
     _cmds.insert(std::make_pair("version", &irc::server::ft_version));                                  //OK
     _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));                                          //EN COURS                               

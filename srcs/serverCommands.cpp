@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 07:45:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 09:11:06 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
             _messages.push(rpl::rpl_endofinfo(msg->get_fd()));
         } 
     }
-// ----- INVITE -----   OK -> NEED TESTS
+// ----- INVITE -----   OK // CHANOP
     void irc::server::ft_invite( irc::message * msg )
 	{
         channel			    *channel;
@@ -64,9 +64,9 @@
              _messages.push(err::err_nosuchchannel(args[1], msg->get_fd()));
          else//Channel exists
          {
-             if (channel->get_modes().find("i") != str::npos) //============ NEED TESTS ============
+             if (channel->get_modes().find("i") != str::npos)
              {
-                if (!channel->is_op(sender))
+                if (!channel->is_op(sender) && !sender->is_mode('o')) //is sender is not chanop nor servop
                     _messages.push(err::err_chanoprivsneeded(args[1], msg->get_fd()));
                 else{
                     if (!channel->is_invit(receiver))
@@ -74,10 +74,10 @@
                     _messages.push(rpl::rpl_inviting(channel->get_name(), sender->nickname(), receiver->nickname(), msg->get_fd()));
                     _messages.push(cmd::cmd_invite(user_prefix(sender), receiver->nickname(), channel->get_name(), receiver->fd()));    
                 }                    
-             }//=======================================================================================
-             else if (!channel->is_user(sender))//If sender is not on channel
+             }
+             else if (!channel->is_user(sender))
                  _messages.push(err::err_notonchannel(args[1], msg->get_fd()));
-             else if (channel->is_user(receiver))//If receiver is already on channel
+             else if (channel->is_user(receiver))
                  _messages.push(err::err_useronchannel(args[0], args[1], msg->get_fd()));
              else{
                 _messages.push(rpl::rpl_inviting(channel->get_name(), sender->nickname(), receiver->nickname(), msg->get_fd()));
@@ -85,7 +85,7 @@
              }
          }
     }
-// ----- JOIN -----     OK? -> NEED TESTS
+// ----- JOIN -----     OK
     void irc::server::ft_join( irc::message * msg) 
 	{
 		std::vector<str>                args;
@@ -97,50 +97,48 @@
 		if (!(user = find_user_by_fd(msg->get_fd())))
             return;
 		args = ft_split(msg->get_params(), " ");
-		if (args.size() < 1 || args.size() > 2)//Not enough args
+		if (args.size() < 1)
 			 _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-		else if ((channel = find_channel_by_name(args[0])))//If channel exists
-		{//============================ NEEDS TESTS =========================================================
-			if (channel->is_ban(user))//If user is banned
+		else if ((channel = find_channel_by_name(args[0])))
+		{
+			if (channel->is_ban(user))
 			{
 				_messages.push(err::err_bannedfromchan(args[0], msg->get_fd()));
 				return;
 			}
-			if (channel->get_modes().find("i") != str::npos) //If channel is invtationnal
-			{
-				if (!channel->is_invit(user))//If user is not on invit list
-				{
-					_messages.push(err::err_inviteonlychan(args[0], msg->get_fd()));
-					return;
-				}
+			if (channel->get_modes().find("i") != str::npos && !channel->is_invit(user))
+            {
+				_messages.push(err::err_inviteonlychan(args[0], msg->get_fd()));
+				return;
 			}
-			if (channel->get_modes().find("k") != str::npos)//If channel has a password
+			if (channel->get_modes().find("k") != str::npos)
 			{
-				if (args.size() < 2 || args[1] != channel->get_password())//Bad password
+				if (args.size() < 2 || args[1] != channel->get_password())
 				{
 					_messages.push(err::err_badchannelkey(args[0], msg->get_fd()));
 					return;
 				}
-			}//=================================================================================================
+			}
 			channel->add_user(user);
 			chan_users = channel->get_users();
             for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
                 _messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), (*itu)->fd()));
 			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 		}
-		else//If channel doesn't exist
-		{//We create a new channel with or without password
+		else
+		{
 			if (args.size() == 2)
 				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], args[1], "", ""))).first->second;
-			else if (args.size() == 1)
-				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], "", "Topitopic", ""))).first->second;
+			else
+				channel = _channels.insert(std::make_pair(args[0], new irc::channel(args[0], "", "", ""))).first->second;
 			channel->add_user(user);
+            channel->add_op(user);
 			_messages.push(cmd::cmd_join(user_prefix(user), channel->get_name(), msg->get_fd()));
 			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 
 		}
 	}
-// ----- KICK -----
+// ----- KICK ----- // CHANOP
     void irc::server::ft_kick( irc::message * msg)
 	{
 		user			*sender;
@@ -150,37 +148,26 @@
 
 		args = ft_split(msg->get_params(), " ");
 		if (args.size() < 2)//Not enough params
-		{
 			_messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-			return;
-		}
-		if (!find_channel_by_name(args[0]))//If channel doesn't exist
-		{
+		else if (!find_channel_by_name(args[0]))//If channel doesn't exist
 			_messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
-			return;
-		}
-		channel = find_channel_by_name(args[0]);
-		sender = find_user_by_fd(msg->get_fd());
-		if (!channel->is_op(sender))//If sender is not op
-		{
-			_messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
-			return;
-		}
-		if (!find_user_by_nick(args[1]))//If receiver is not on server
-		{
-			_messages.push(err::err_notonchannel(args[0], msg->get_fd()));
-			return;
-		}
-		else if ((receiver = find_user_by_nick(args[1])))//If receiver is in server
-		{
-			if (!channel->is_user(receiver))//If receiver is not in channel
-			{
-				_messages.push(err::err_notonchannel(args[0], msg->get_fd()));
-				return;
-			}
-			channel->remove_user(receiver);
-			//Reponse client ?
-		}
+        else{          
+            channel = find_channel_by_name(args[0]);
+            if (!(sender = find_user_by_fd(msg->get_fd())))
+                return;
+            if (!channel->is_op(sender))//If sender is not op
+                _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
+            else if (!find_user_by_nick(args[1]))//If receiver is not on server
+                _messages.push(err::err_notonchannel(args[0], msg->get_fd()));
+            else if ((receiver = find_user_by_nick(args[1])))//If receiver is in server
+            {
+                if (!channel->is_user(receiver))//If receiver is not in channel
+                    _messages.push(err::err_notonchannel(args[0], msg->get_fd()));
+                else
+                    channel->remove_user(receiver);
+                //Reponse client ?
+            }
+        }
 	}
 // ----- KILL ----- OK
     void irc::server::ft_kill( irc::message * msg ){
@@ -230,12 +217,12 @@
                 _messages.push(rpl::rpl_liststart(msg->get_fd()));
                 for(itc = _channels.begin(); itc != _channels.end(); itc++){
                     chan = itc->second;
-                    // if (chan->is_mode("p") && !chan->is_user(usr)){
-                    //     _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), "Prv", msg->get_fd()));
-                    // }
-                    // else{
+                    if (chan->is_mode("p") && !chan->is_user(usr)){
+                        _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), "Prv", msg->get_fd()));
+                    }
+                    else{
                         _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), chan->get_topic(), msg->get_fd()));
-                    // }
+                    }
                 }
                 _messages.push(rpl::rpl_listend(msg->get_fd()));
             }
@@ -244,7 +231,7 @@
             
         }
     }
-// ----- MODE -----
+// ----- MODE ----- //CHANOP
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
@@ -363,7 +350,8 @@
         else if (check_nickname_rules(msg->get_params()) == false)
             _messages.push(err::err_erroneusnickname(msg->get_params(), msg->get_fd()));
         else{
-            current = find_user_by_fd(msg->get_fd());
+            if ((current = find_user_by_fd(msg->get_fd())) == NULL)
+                return;
             if (is_a_nickname(msg->get_params()) == false){
                 if (current->connected())
                     _messages.push(cmd::cmd_nick(user_prefix(current), msg->get_params(), msg->get_fd()));
@@ -431,8 +419,9 @@
 
         if (msg->get_params().empty())
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));   
-        else{
-            current = find_user_by_fd(msg->get_fd());
+        else{            
+            if ((current = find_user_by_fd(msg->get_fd())) == NULL)
+                return;
             if (current->connected()){
                 _messages.push(err::err_alreadyregistred(msg->get_fd()));
             }
@@ -451,7 +440,8 @@
         std::vector<irc::user *>             chan_users;
         std::vector<irc::user *>::iterator   itu;
         
-        current = find_user_by_fd(msg->get_fd());
+        if ((current = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
         if (msg->get_params().empty()){ //no channel given
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
         } //channel doesn't exist
@@ -523,7 +513,8 @@
         irc::user   *current;
         std::map<int, irc::user*>::iterator it;
 
-        current = find_user_by_fd(msg->get_fd());
+        if ((current = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
         for (it = _users.begin(); it != _users.end(); it++){
             if (it->second->nickname() != current->nickname())
                 _messages.push(cmd::cmd_quit(user_prefix(current), msg->get_trailing(), it->second->fd()));    
@@ -596,7 +587,7 @@
                 _messages.push(err::err_notonchannel(usr->nickname(), msg->get_fd()));
             }
             else if (msg->get_trailing().size() > 0){
-                if (chan->get_modes().find('t') != str::npos && !chan->is_op(usr)) // si le mode t est active et l'user n'est pas op
+                if (chan->get_modes().find('t') != str::npos && !chan->is_op(usr))
                     _messages.push(err::err_chanoprivsneeded(chan->get_name(), msg->get_fd()));
                 else{
                     chan->set_topic(msg->get_trailing());
@@ -628,7 +619,8 @@
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
             return;
         }
-        current = find_user_by_fd(msg->get_fd());
+        if ((current = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
         if (current->username().size() != 0){
             _messages.push(err::err_alreadyregistred(msg->get_fd()));
             return;

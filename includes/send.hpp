@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 00:24:05 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 08:47:18 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,9 @@ namespace irc{
         RPL_STATSCOMMANDS = 212,
         RPL_ENDOFSTATS = 219,
         RPL_UMODEIS = 221,
-        RPL_STATSLLINE = 241, //list of all connexion. time elapsed on each connection and traffic on each in bytes and messages
+        RPL_STATSLLINE = 241,
         RPL_STATSUPTIME = 242,
-        RPL_AWAY = 301,
         RPL_USERHOST = 302,
-        RPL_UNAWAY = 305,
-        RPL_NOWAWAY = 306,
         RPL_WHOISUSER = 311,
         RPL_WHOISSERVER = 312,
         RPL_WHOISOPERATOR = 313,
@@ -85,7 +82,7 @@ namespace irc{
         RPL_WHOISIDLE = 317,
         RPL_ENDOFWHOIS = 318,
         RPL_WHOISCHANNELS = 319,
-        RPL_LISTSTART = 321, /* Not used / (╯°□°）╯︵ ┻━┻  */
+        RPL_LISTSTART = 321, 
         RPL_LIST = 322,
         RPL_LISTEND = 323,
         RPL_CHANNELMODEIS = 324,
@@ -165,9 +162,6 @@ namespace irc{
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to);
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to);
         irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to);
-        irc::message * rpl_away(const str &nickname, const str &reason, int to);
-        irc::message * rpl_unaway(int to);
-        irc::message * rpl_nowaway(int to);
         irc::message * rpl_liststart(int to);
         irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to);
         irc::message * rpl_listend(int to);

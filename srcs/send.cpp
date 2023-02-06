@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 00:22:02 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 08:47:30 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,6 @@ namespace irc{
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		nickname + " " + letter, 		"End of STATS report", to));}
         irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		    nickname,	'+' + modes, to));}
         irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to)               { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSUPTIME),      nickname,       "Server up for " + stats, to));}
-        irc::message * rpl_away(const str &nickname, const str &reason, int to)						{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			nickname, 		reason, to));}
-        irc::message * rpl_unaway(int to)															{ return (new irc::message(SERVER_NAME, SSTR(RPL_UNAWAY), 			"", 			"You are no longer marked as being away", to));}
-        irc::message * rpl_nowaway(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_AWAY), 			"", 			"You have been marked as being away", to));}
         irc::message * rpl_liststart(int to)                                                        { return (new irc::message(SERVER_NAME, SSTR(RPL_LISTSTART), "", "List START", to));}
         irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			nick + " " +  channel + ' ' + topic, "",  to));} // because SSTR not working here
         irc::message * rpl_listend(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_LISTEND), 			"", 			"End of LIST", to));}
