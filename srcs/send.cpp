@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 16:00:22 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:08:49 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ namespace irc{
         irc::message * cmd_invite(const str &user_prefix, const str &target, const str &channel_name, int to) {return (new irc::message(user_prefix, "INVITE", target, channel_name, to));}
         irc::message * cmd_part(const str &user_prefix, const str &channel_name, const str &msg, int to){ return (new irc::message(user_prefix, "PART", channel_name, msg, to));}
         irc::message * cmd_mode_channel(const str &user_prefix, const str &channel_name, const str &mode, int to){ return (new irc::message(user_prefix, "MODE", channel_name + " " + mode, "", to));}
+        irc::message * cmd_pong(const str& param, int to)                                           { return (new irc::message(SERVER_NAME, "PONG", param, "", to));}
     } 
 
 }

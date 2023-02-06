@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 16:27:23 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:09:20 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,7 +478,13 @@
         }
     }
 // ----- PING -----     OK
-    void irc::server::ft_ping(irc::message * msg){(void)msg;}// server will ignore message but listen to the ping to refresh inactivity timestamp of sending user
+    void irc::server::ft_ping(irc::message * msg){
+        irc::user *usr;
+
+        if ((usr = find_user_by_fd(msg->get_fd())) != NULL){
+            _messages.push(cmd::cmd_pong(msg->get_params(), msg->get_fd()));
+        }
+    }
 // ----- PONG -----     OK
     void irc::server::ft_pong(irc::message * msg){
         irc::user   *current;
