@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 08:19:17 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/06 10:53:54 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ bool			irc::channel::is_ban(user *obj)
 	}
 	return false;
 }
-bool			irc::channel::is_mode(str m)
+bool			irc::channel::is_mode(str c)
 {
-	if (_modes.find(m) != str::npos)
+	if (_modes.find(c) != str::npos)
 		return true;
 	return false;
 }
@@ -104,12 +104,12 @@ void			irc::channel::add_op(user *obj) { _op.push_back(obj); }
 
 void			irc::channel::add_invit(user *obj) { _invit.push_back(obj); }
 
-void			irc::channel::add_mode(str m)
+void			irc::channel::add_mode(str c)
 {
-	if (!is_mode(m))
-		_modes += m;
+	if (!is_mode(c))
+		_modes += c;
 }
-void 			irc::channel::remove_mode(char c)
+void 			irc::channel::remove_mode(str c)
 {
 	str::size_type pos;
 

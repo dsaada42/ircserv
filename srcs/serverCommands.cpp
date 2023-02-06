@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 09:11:06 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 11:16:52 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,9 @@
 				_messages.push(err::err_bannedfromchan(args[0], msg->get_fd()));
 				return;
 			}
-			if (channel->get_modes().find("i") != str::npos && !channel->is_invit(user))
+			if (channel->get_modes().find("i") != str::npos && !channel->is_invit(user) && !user->is_mode('o'))
             {
-				_messages.push(err::err_inviteonlychan(args[0], msg->get_fd()));
+				_messages.push(err::err_inviteonlychan(user->nickname(), args[0], msg->get_fd()));
 				return;
 			}
 			if (channel->get_modes().find("k") != str::npos)
@@ -236,69 +236,63 @@
         irc::channel	*channel;
         irc::user   	*current;
         std::vector<str> args;
-        char		c;
-            
-        //users   ========================> NE PAS OUBLIER DE GENERER LA REPONSE ADEQUATE EN CAS DE SUCCES <=========================(rpl chanmodeis?)
-        args = ft_split(msg->get_params(), " ");
-        if (args.size() < 2){
-            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        str		m;
+        char    c;
+        std::vector<user *> chan_users;
+        std::vector<user *>::iterator itu; 
+        
+        current = find_user_by_fd(msg->get_fd());
+        if (!current)
+            return;
+        if ((channel = find_channel_by_name(msg->get_params())) != NULL){
+            _messages.push(rpl::rpl_channelmodeis(current->nickname(), channel->get_name(), channel->get_modes(), msg->get_fd()));
             return;
         }
-        if (check_channel_rules(args[0]))//CORRECT CHANNEL SYNTAX
-        {
-            if ((channel = find_channel_by_name(args[0])))//CHANNEL MODE
-            {
-                std::cout << "channel mode" << std::endl;
-                if (!channel->is_op(find_user_by_fd(msg->get_fd())) || !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
-                {
+        args = ft_split(msg->get_params(), " ");
+        if (args.size() < 2){// ATTENTION AU  "MODE #channel  -> rpl_"
+            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+        }
+        else if (check_channel_rules(args[0])){
+            if ((channel = find_channel_by_name(args[0]))){
+                if (!channel->is_op(find_user_by_fd(msg->get_fd())) && !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
                     _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
-                    return;
-                }
-                if (args[1].at(0) == '+')//MODE +
-                {//ATTENTION AU CAS OU ON DONNE +o[x...x] => sera OK mais ne devrait pas
-                    if (args[1].at(1) == 'o')
-                    {
-                        if (args.size() < 3)
-                        {
-                            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-                            return;
+                else if (args.size() == 2 && args[1].size() == 2){
+                    m = args[1].at(1);
+                    if (m == "p" || m == "t" || m == "i"){
+                        if (args[1].at(0) == '+'){
+                            channel->add_mode(m);
+                            chan_users = channel->get_users();
+                            for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "+" + m, (*itu)->fd()));            
                         }
-                        else
-                        {	
-                            if (!find_user_by_nick(args[2]))
-                                _messages.push(err::err_nosuchnick(args[2], msg->get_fd()));
-                            channel->add_op(find_user_by_nick(args[2]));
-                            //Reponse au client
-                        }
-                    }	
-                    else if (args[1].at(1) == 'p')
-                        channel->add_mode("p");
-                    else if (args[1].at(1) == 't')
-                        channel->add_mode("t");
-                    else if (args[1].at(1) == 'l')
-                    {
-                        if (args.size() < 3)
-                        {
-                            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
-                            return;
-                        }
-                        else
-                        {
-                            channel->add_mode("l");
-                            if (channel->is_num(args[2]))
-                                channel->add_nb_max(atoi(args[2].c_str()));
+                        else if (args[1].at(0) == '-'){
+                            channel->remove_mode(m);
+                            chan_users = channel->get_users();
+                            for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "-" + m, (*itu)->fd()));
                         }
                     }
-                    else{//SI AUCUN DES MODES CI DESSUS UNKNOWN FLAG
-                        _messages.push(err::err_unknownmode(args[1], msg->get_fd()));
+                    else if (m == "o"){
+                        _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+                    }
+                    else
+                        _messages.push(err::err_unknownmode(current->nickname(), args[1], msg->get_fd()));
+                }
+                else if (args.size() == 3 && args[1].size() == 2){
+                    m = args[1].at(1);
+                    if (m == "o"){
+                        if (args[1].at(0) == '-'){
+                        //case +o or -o , last arg is target
+                        }
+                        else if (args[1].at(0) == '+'){
+                            
+                        }
                     }
                 }
-                else if (args[1].at(0) == '-')//MODE -
-                {//JE T"AI FAIT UNE FONCTION chan->remove_mode(char c)
-                    std::cout << "bonjour\n";
-                }
+                else
+                    _messages.push(err::err_unknownmode(current->nickname(), args[1], msg->get_fd()));
             }
-            else// SI AUCUN CHANNEL NE CORRESPOND -> NO SUCH CHANNEL
+            else
                 _messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
         }
         else{ //User modes 
@@ -456,7 +450,7 @@
             for (itu = chan_users.begin(); itu != chan_users.end(); itu++){
                 _messages.push(cmd::cmd_part(user_prefix(current), chan->get_name(), msg->get_trailing(), (*itu)->fd()));
             }
-            chan->remove_user(current);
+            chan->delete_user(current);
         }
     }
 // ----- PING -----     OK

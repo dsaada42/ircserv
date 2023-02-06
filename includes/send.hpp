@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 08:47:18 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 11:10:57 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,8 @@ namespace irc{
         irc::message * err_yourebannedcreep(int to);
         irc::message * err_keyset(const str &channel, int to);
         irc::message * err_channelisfull(const str &channel, int to);
-        irc::message * err_unknownmode(const str &c, int to);
-        irc::message * err_inviteonlychan(const str &channel, int to);
+        irc::message * err_unknownmode(const str &nickname, const str &c, int to);
+        irc::message * err_inviteonlychan(const str &nickname, const str &channel, int to);
         irc::message * err_bannedfromchan(const str &channel, int to);
         irc::message * err_badchannelkey(const str &channel, int to);
         irc::message * err_noprivileges(int to);
@@ -165,7 +165,7 @@ namespace irc{
         irc::message * rpl_liststart(int to);
         irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to);
         irc::message * rpl_listend(int to);
-        irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to);
+        irc::message * rpl_channelmodeis(const str &nickname, const str &channel, const str &modes, int to);
         irc::message * rpl_notopic(const str &nickname, const str &channel, int to);
         irc::message * rpl_topic(const str &nickname, const str &channel, const str &topic, int to);
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to);
@@ -205,6 +205,7 @@ namespace irc{
 	    irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to);
         irc::message * cmd_invite(const str &user_prefix, const str &target, const str &channel_name, int to);
         irc::message * cmd_part(const str &user_prefix, const str &channel_name, const str &msg, int to);
+        irc::message * cmd_mode_channel(const str &user_prefix, const str &channel_name, const str &mode, int to);
     }  
     
 }

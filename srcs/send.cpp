@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 08:47:30 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 11:11:22 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ namespace irc{
         irc::message * err_yourebannedcreep(int to)							    					{ return (new irc::message(SERVER_NAME, SSTR(ERR_YOUREBANNEDCREEP), "", 			"You are banned from this server", to));}
         irc::message * err_keyset(const str &channel, int to)										{ return (new irc::message(SERVER_NAME, SSTR(ERR_KEYSET), 			channel, 		"Channel key already set", to));}
         irc::message * err_channelisfull(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_CHANNELISFULL), 	channel, 		"Channel is full", to));}
-        irc::message * err_unknownmode(const str &c, int to)										{ return (new irc::message(SERVER_NAME, SSTR(ERR_UNKNOWNMODE), 		c, 				"is unknown mode char to me", to));}
-        irc::message * err_inviteonlychan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_INVITEONLYCHAN), 	channel, 		"Cannot join channel (+i)", to));}
+        irc::message * err_unknownmode(const str &nickname, const str &c, int to)				    { return (new irc::message(SERVER_NAME, SSTR(ERR_UNKNOWNMODE), 		nickname,       c + " is unknown mode char to me", to));}
+        irc::message * err_inviteonlychan(const str &nickname, const str &channel, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_INVITEONLYCHAN), 	nickname + " " + channel, 		"Cannot join channel (+i)", to));}
         irc::message * err_bannedfromchan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BANNEDFROMCHAN), 	channel, 		"Cannot join channel (+b)", to));}
         irc::message * err_badchannelkey(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADCHANNELKEY),    channel, 		"Cannot join channel (+k)", to));}
         irc::message * err_noprivileges(int to)						    							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOPRIVILEGES),     "", 			"Permission Denied- You're not an IRC operator", to));}
@@ -75,7 +75,7 @@ namespace irc{
         irc::message * rpl_liststart(int to)                                                        { return (new irc::message(SERVER_NAME, SSTR(RPL_LISTSTART), "", "List START", to));}
         irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			nick + " " +  channel + ' ' + topic, "",  to));} // because SSTR not working here
         irc::message * rpl_listend(int to)											    			{ return (new irc::message(SERVER_NAME, SSTR(RPL_LISTEND), 			"", 			"End of LIST", to));}
-        irc::message * rpl_channelmodeis(const str &channel, const str &modes, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_CHANNELMODEIS), 	channel + " +" + modes, "", to));}
+        irc::message * rpl_channelmodeis(const str &nickname, const str &channel, const str &modes, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_CHANNELMODEIS), 	nickname + " " + channel + " +" + modes, "", to));}
         irc::message * rpl_notopic(const str &nickname, const str &channel, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_NOTOPIC), 			nickname + ' ' + channel, 		"No topic set", to));}
         irc::message * rpl_topic(const str& nickname, const str &channel, const str &topic, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_TOPIC), 			nickname + ' ' + channel, 		topic, to));}
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to){ return (new irc::message(SERVER_NAME, SSTR(RPL_INVITING), 		nickname + ' ' + target + ' ' + channel, "", to));}
@@ -120,6 +120,7 @@ namespace irc{
 	    irc::message * cmd_join(const str &user_prefix, const str &channel_name, int to)	        { return (new irc::message(user_prefix, "JOIN", "", channel_name, to));}
         irc::message * cmd_invite(const str &user_prefix, const str &target, const str &channel_name, int to) {return (new irc::message(user_prefix, "INVITE", target, channel_name, to));}
         irc::message * cmd_part(const str &user_prefix, const str &channel_name, const str &msg, int to){ return (new irc::message(user_prefix, "PART", channel_name, msg, to));}
+        irc::message * cmd_mode_channel(const str &user_prefix, const str &channel_name, const str &mode, int to){ return (new irc::message(user_prefix, "MODE", channel_name + " " + mode, "", to));}
     } 
 
 }

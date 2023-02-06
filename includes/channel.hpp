@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/04 08:18:46 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/06 10:54:16 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,15 @@ namespace irc{
 		    bool			is_user(user *obj);
 		    bool			is_invit(user *obj);
 		    bool			is_ban(user *obj);
-		    bool			is_mode(str m);
+		    bool			is_mode(str c);
 		    //ADDING
 		    void			add_user(user *obj);
 		    void			add_op(user *obj);
 		    void			add_invit(user *obj);
 		    void			add_ban(user *obj);
-		    void			add_mode(str m);
+		    void			add_mode(str c);
 		    void			add_nb_max(int nb);
-			void 			remove_mode(char c);
+			void 			remove_mode(str c);
 
 		    //REMOVING
 		    void			remove_user(user *obj);
