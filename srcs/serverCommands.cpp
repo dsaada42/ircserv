@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 17:09:20 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:52:33 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@
 			{
 				if (args.size() < 2 || args[1] != channel->get_password())
 				{
-					_messages.push(err::err_badchannelkey(args[0], msg->get_fd()));
+					_messages.push(err::err_badchannelkey(user->nickname(), args[0], msg->get_fd()));
 					return;
 				}
 			}
@@ -137,7 +137,7 @@
 			_messages.push(rpl::rpl_topic(user->nickname(), channel->get_name(), channel->get_topic(), msg->get_fd()));
 		}
 	}
-// ----- KICK ----- OK
+// ----- KICK -----     OK
     void irc::server::ft_kick( irc::message * msg)
 	{
 		user			                    *sender;
@@ -178,7 +178,7 @@
             }
         }
 	}
-// ----- KILL ----- OK
+// ----- KILL -----     OK
     void irc::server::ft_kill( irc::message * msg ){
         irc::user   *usr;
         irc::user   *to_kill;
@@ -216,6 +216,7 @@
         args = ft_split(msg->get_params(), " ");
         if (msg->get_params().empty()){
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+            return;
         }
         if ((usr = find_user_by_fd(msg->get_fd())) == NULL)
             return;
@@ -240,7 +241,9 @@
             
         }
     }
-// ----- MODE ----- //CHANOP
+
+    
+// ----- MODE ----- 
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
@@ -267,7 +270,20 @@
                     _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
                 else if (args.size() == 2 && args[1].size() == 2){
                     m = args[1].at(1);
-                    if (m == "p" || m == "t" || m == "i"){
+                    if (m == "k"){
+                        if (args[1].at(0) == '-'){
+                            channel->remove_mode(m);
+                            chan_users = channel->get_users();
+                            for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "-" + m, (*itu)->fd()));
+                        }
+                        else if (args[1].at(0) == '+'){
+                            _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
+                        }
+                        else
+                            _messages.push(err::err_unknownmode(current->nickname(), args[1], msg->get_fd()));
+                    }
+                    else if (m == "p" || m == "t" || m == "i"){
                         if (args[1].at(0) == '+'){
                             channel->add_mode(m);
                             chan_users = channel->get_users();
@@ -312,6 +328,17 @@
                             _messages.push(err::err_nosuchnick(target->nickname(), msg->get_fd()));
                         }
                     }
+                    else if (m == "k"){
+                        if (args[1].at(0) == '+'){
+                            channel->add_mode(m);
+                            channel->set_password(args[2]);
+                            chan_users = channel->get_users();
+                            for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "+" + m, (*itu)->fd()));
+                        }
+                        else
+                            _messages.push(err::err_unknownmode(current->nickname(), args[1], msg->get_fd()));
+                    }
                 }
                 else
                     _messages.push(err::err_unknownmode(current->nickname(), args[1], msg->get_fd()));
@@ -319,7 +346,7 @@
             else
                 _messages.push(err::err_nosuchchannel(args[0], msg->get_fd()));
         }
-        else{ //User modes 
+        else{ //USERS
             current = find_user_by_nick(args[0]);
             if (!current)
                 _messages.push(err::err_nosuchnick(args[0], msg->get_fd()));

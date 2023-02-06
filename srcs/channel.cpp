@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 16:17:10 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:30:07 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ const int			&irc::channel::get_nb_max(void) const { return _nb_max_users; }
 //SETTERS
 
 void				irc::channel::set_topic(const str &topic){ _topic = topic; }
+
+void 				irc::channel::set_password(const str &password){ _password = password;}
 
  //CHECKING
 bool			irc::channel::is_empty( void ){

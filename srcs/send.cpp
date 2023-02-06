@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 17:08:49 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:48:14 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ namespace irc{
         irc::message * err_unknownmode(const str &nickname, const str &c, int to)				    { return (new irc::message(SERVER_NAME, SSTR(ERR_UNKNOWNMODE), 		nickname,       c + " is unknown mode char to me", to));}
         irc::message * err_inviteonlychan(const str &nickname, const str &channel, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_INVITEONLYCHAN), 	nickname + " " + channel, 		"Cannot join channel (+i)", to));}
         irc::message * err_bannedfromchan(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BANNEDFROMCHAN), 	channel, 		"Cannot join channel (+b)", to));}
-        irc::message * err_badchannelkey(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADCHANNELKEY),    channel, 		"Cannot join channel (+k)", to));}
+        irc::message * err_badchannelkey(const str &nickname, const str &channel, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_BADCHANNELKEY),    nickname + ' ' + channel, 		"Cannot join channel (+k)", to));}
         irc::message * err_noprivileges(int to)						    							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOPRIVILEGES),     "", 			"Permission Denied- You're not an IRC operator", to));}
         irc::message * err_chanoprivsneeded(const str &channel, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_CHANOPRIVSNEEDED), channel, 		"You're not channel operator", to));}
         irc::message * err_cantkillserver(int to) 						    						{ return (new irc::message(SERVER_NAME, SSTR(ERR_CANTKILLSERVER), 	"", 			"You can't kill a server", to));}

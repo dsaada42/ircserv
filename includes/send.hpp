@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 17:08:01 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/06 17:48:36 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ namespace irc{
         irc::message * err_unknownmode(const str &nickname, const str &c, int to);
         irc::message * err_inviteonlychan(const str &nickname, const str &channel, int to);
         irc::message * err_bannedfromchan(const str &channel, int to);
-        irc::message * err_badchannelkey(const str &channel, int to);
+        irc::message * err_badchannelkey(const str &nickname, const str &channel, int to);
         irc::message * err_noprivileges(int to);
         irc::message * err_chanoprivsneeded(const str &channel, int to);
         irc::message * err_cantkillserver(int to);
