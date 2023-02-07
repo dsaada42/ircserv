@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 11:31:40 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 12:21:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,7 +346,7 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("version", &irc::server::ft_version));                                  //OK
     _cmds.insert(std::make_pair("WHO", &irc::server::ft_who));                                          //EN COURS                               
     _cmds.insert(std::make_pair("WHOIS", &irc::server::ft_whois));                                      //EN COURS 
-    _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));                                    //EN COURS 
+    _cmds.insert(std::make_pair("WHOWAS", &irc::server::ft_whowas));                                    //OK 
     _cmds.insert(std::make_pair("SUMMON", &irc::server::ft_summon));                                    //OK
     _cmds.insert(std::make_pair("USERS", &irc::server::ft_users));                                      //OK
 }

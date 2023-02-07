@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 09:06:24 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 12:17:57 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ namespace irc{
         irc::message * err_nosuchchannel(const str &channelname, int to);
         irc::message * err_cannotsendtochan(const str &channelname, int to);
         irc::message * err_toomanychannels(const str &channelname, int to);
-        irc::message * err_wasnosuchnick(const str &nickname, int to);
+        irc::message * err_wasnosuchnick(const str &sender, const str &nickname, int to);
         irc::message * err_toomanytargets(const str &target, int to);
         irc::message * err_noorigin(int to);
         irc::message * err_norecipient(const str &command, int to);
@@ -182,15 +182,15 @@ namespace irc{
         irc::message * rpl_youreoper(const str &nickname, int to);
         irc::message * rpl_time(const str &srvname, int to);
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to);
-        irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to);
+        irc::message * rpl_whoisserver(const str &sender, const str &nick, const str &srvname, const str shortinfo, int to);
         irc::message * rpl_whoisoperator(const str &nick, int to);
         irc::message * rpl_whoisidle(const str &nick, size_t idle, int to);
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &chan, int to);
         irc::message * rpl_endofwhois(const str &nick, int to);
         irc::message * rpl_whoreply(const str &msg, int to);
         irc::message * rpl_endofwho(const str &nickname, const str &target, int to);
-        irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to);
-        irc::message * rpl_endofwhowas(const str &nick, int to);
+        irc::message * rpl_whowasuser(const str & sender, const str &nick, const str &user, const str &host, const str &realname, int to);
+        irc::message * rpl_endofwhowas(const str &sender, const str &nick, int to);
         irc::message * rpl_userhostreply(const str &msg, int to);
     }
 

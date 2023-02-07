@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 11:31:03 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 12:21:19 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -823,8 +823,32 @@
     }
 // ----- WHOIS -----
     void irc::server::ft_whois(irc::message * msg){(void)msg;}
-// ----- WHOWAS -----
-    void irc::server::ft_whowas(irc::message * msg){(void)msg;}
+// ----- WHOWAS -----   OK
+    void irc::server::ft_whowas(irc::message * msg){
+        irc::user *usr;
+        irc::user *sender;
+        int found;
+        std::map<int, irc::user*>::iterator itu;
+
+        if ((sender = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
+        if (msg->get_params().empty())
+            _messages.push(err::err_nonicknamegiven(msg->get_fd()));
+        else{
+            found = 0;
+            for (itu = _users.begin(); itu != _users.end(); itu++){
+                usr = itu->second;
+                if (usr->oldnick() == msg->get_params()){
+                    _messages.push(rpl::rpl_whowasuser(sender->nickname(), msg->get_params(), usr->username(), _server_name, usr->fullname(), msg->get_fd()));
+                    _messages.push(rpl::rpl_whoisserver(sender->nickname(), msg->get_params(), _server_name, "The one and only", msg->get_fd()));
+                    found++;
+                }
+            }
+            if (found == 0)
+                _messages.push(err::err_wasnosuchnick(sender->nickname(), msg->get_params(), msg->get_fd()));
+            _messages.push(rpl::rpl_endofwhowas(sender->nickname(), msg->get_params(), sender->fd()));
+        }
+    }
 // ----- USERS -----    OK
     void irc::server::ft_users(irc::message * msg){ _messages.push(err::err_usersdisabled(msg->get_fd())); }
 // ----- SUMMON -----   OK

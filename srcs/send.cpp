@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 09:54:08 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 12:19:26 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ namespace irc{
         irc::message * err_nosuchchannel(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_NOSUCHCHANNEL), 	channelname, 	"No such channel", to));} 
         irc::message * err_cannotsendtochan(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_CANNOTSENDTOCHAN), channelname, 	"Cannot send to channel", to));} 
         irc::message * err_toomanychannels(const str &channelname, int to)							{ return (new irc::message(SERVER_NAME, SSTR(ERR_TOOMANYCHANNELS), 	channelname, 	"You have joined too many channels", to));}
-        irc::message * err_wasnosuchnick(const str &nickname, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_WASNOSUCHNICK), 	nickname, 		"There was no such nickname", to));}
+        irc::message * err_wasnosuchnick(const str &sender, const str &nickname, int to)			{ return (new irc::message(SERVER_NAME, SSTR(ERR_WASNOSUCHNICK), 	sender + " " + nickname, 		"There was no such nickname", to));}
         irc::message * err_toomanytargets(const str &target, int to)								{ return (new irc::message(SERVER_NAME, SSTR(ERR_TOOMANYTARGETS), 	target, 		"Duplicate recipients. No message delivered", to));}
         irc::message * err_noorigin(int to)														    { return (new irc::message(SERVER_NAME, SSTR(ERR_NOORIGIN), 		"", 			"No origin specified", to));}
         irc::message * err_norecipient(const str &command, int to)									{ return (new irc::message(SERVER_NAME, SSTR(ERR_NORECIPIENT), 		"", 			"No recipient given " + command, to));}
@@ -94,8 +94,8 @@ namespace irc{
         irc::message * rpl_time(const str &srvname, int to)										    { return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			srvname, 	    ft_current_time(), to));} 
         irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISUSER), 		nick + " " + user + " " + host + " *", realname, to));}
-        irc::message * rpl_whoisserver(const str &nick, const str &srvname, const str shortinfo, int to)
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISSERVER), 		nick + " " + srvname, shortinfo, to));}
+        irc::message * rpl_whoisserver(const str &sender, const str &nick, const str &srvname, const str shortinfo, int to)
+                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISSERVER), 		sender + " " + nick + " " + srvname, shortinfo, to));}
         irc::message * rpl_whoisoperator(const str &nick, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISOPERATOR), 	nick, 			"is an IRC operator", to));}
         irc::message * rpl_whoisidle(const str &nick, size_t idle, int to)							{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISIDLE), 		nick + " " + SSTR(idle), "seconds idle", to));}
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &channel, int to)	
@@ -103,9 +103,9 @@ namespace irc{
         irc::message * rpl_endofwhois(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOIS), 		nick, 			"End of WHOIS list", to));}
         irc::message * rpl_whoreply(const str &msg, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOREPLY), 		msg, 			"", to));}
         irc::message * rpl_endofwho(const str &nickname, const str &target, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHO), 		nickname + " "  +  target, 		"End of /WHO list", to));}
-        irc::message * rpl_whowasuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOWASUSER), 		nick + " " + user + " " + host + " *", realname, to));}
-        irc::message * rpl_endofwhowas(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOWAS), 		nick, 			"End of WHOWAS", to));}
+        irc::message * rpl_whowasuser(const str &sender, const str &nick, const str &user, const str &host, const str &realname, int to)	
+                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOWASUSER), 		sender + " " + nick + " ~" + user + " " + host + " *", realname, to));}
+        irc::message * rpl_endofwhowas(const str &sender, const str &nick, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOWAS), 		sender + " " + nick, 			"End of WHOWAS", to));}
         irc::message * rpl_userhostreply(const str &msg, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_USERHOST), 		"", 			msg, to));}
     }
 
