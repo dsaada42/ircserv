@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 09:30:03 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 10:47:10 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,10 +147,20 @@ int         irc::server::handle_user_connection(irc::user *current){
             ft_pass(msg);
         }   
         else if (msg->get_cmd() == "NICK"){
-            ft_nick(msg);
+            if (current->pass())
+                ft_nick(msg);
+            else{
+                delete_user(current, "Error in connection procedure");
+                return(FAILURE);   
+            }
         }
         else if (msg->get_cmd() == "USER"){
-            ft_user(msg);
+            if (current->pass() && current->nickname().size() != 0)
+                ft_user(msg);
+            else{
+                delete_user(current, "Error in connection procedure");
+                return(FAILURE);   
+            }
         }
         else
             return (FAILURE);

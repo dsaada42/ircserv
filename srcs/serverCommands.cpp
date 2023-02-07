@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 10:34:09 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 10:36:28 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@
     }
 
     
-// ----- MODE ----- 
+// ----- MODE ----- OK
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
