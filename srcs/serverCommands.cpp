@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 12:21:19 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 16:24:12 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -802,23 +802,51 @@
         else
             _messages.push(err::err_nosuchserver(msg->get_params(), msg->get_fd()));
     }
-// ----- WHO ------     
+// ----- WHO ------     OK
     void irc::server::ft_who(irc::message * msg){
         std::vector<str> args;
         irc::user        *current;
+        irc::user        *sender;
+        irc::channel     *chan;
+        int              found;
+        std::map<str, channel*>::iterator itc;
         
+        found = 0;
+        if ((sender = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
         if (msg->get_params().empty())
             _messages.push(err::err_nonicknamegiven(msg->get_fd()));
         else if ((current = find_user_by_fd(msg->get_fd())) != NULL){
             args = ft_split(msg->get_params(), " ");
             if (args.size() == 1){
-                //search what is given as param
-                //priority to search for channels, if name given isn't channel , search for everything
+                if ((current = find_user_by_nick(args[0])) != NULL){
+                    if (!current->is_mode('i')){
+                        for (itc = _channels.begin(); itc != _channels.end(); itc++){
+                            chan = itc->second;
+                            if (chan->is_op(current)){
+                                found ++;
+                                _messages.push(rpl::rpl_whoreply(sender->nickname(), chan->get_name() + " ~" + current->username() + " " + _server_name + " " + _server_name + " " + current->nickname() + " H@", "0 " + current->fullname() , msg->get_fd())); 
+                            }
+                        }
+                        if (found == 0)
+                            _messages.push(rpl::rpl_whoreply(sender->nickname(), "* ~" + current->username() + " " + _server_name + " " + _server_name + " " + current->nickname() + " H", "0 " + current->fullname(), msg->get_fd() )); 
+                    }
+                }
+                else if ()
             }
             else if (args.size() == 2 && args[1] == "o"){
-                //search for param as operator
+                if ((current = find_user_by_nick(args[0])) != NULL){
+                    if (!current->is_mode('i')){    
+                        for (itc = _channels.begin(); itc != _channels.end(); itc++){
+                            chan = itc->second;
+                            if (chan->is_op(current)){
+                                _messages.push(rpl::rpl_whoreply(sender->nickname(), chan->get_name() + " ~" + current->username() + " " + _server_name + " " + _server_name + " " + current->nickname() + " H@", "0 " + current->fullname() , msg->get_fd())); 
+                            }
+                        }
+                    }
+                }
             }
-            _messages.push(rpl::rpl_endofwho(current->nickname(), args[0], msg->get_fd()));
+            _messages.push(rpl::rpl_endofwho(sender->nickname(), args[0], msg->get_fd()));
         }
     }
 // ----- WHOIS -----

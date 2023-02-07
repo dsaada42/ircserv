@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 12:19:26 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 16:01:19 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ namespace irc{
         irc::message * rpl_whoischannels(const str &nick, const str &status, const str &channel, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISCHANNELS), 	nick, 			status + channel, to));}
         irc::message * rpl_endofwhois(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOIS), 		nick, 			"End of WHOIS list", to));}
-        irc::message * rpl_whoreply(const str &msg, int to)											{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOREPLY), 		msg, 			"", to));}
+        irc::message * rpl_whoreply(const str &sender, const str &msg, const str &trailing, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOREPLY), 		sender + " " + msg, trailing , to));}
         irc::message * rpl_endofwho(const str &nickname, const str &target, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHO), 		nickname + " "  +  target, 		"End of /WHO list", to));}
         irc::message * rpl_whowasuser(const str &sender, const str &nick, const str &user, const str &host, const str &realname, int to)	
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOWASUSER), 		sender + " " + nick + " ~" + user + " " + host + " *", realname, to));}
