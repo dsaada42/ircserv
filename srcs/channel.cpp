@@ -6,14 +6,14 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:20:53 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 17:30:07 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:14:00 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "channel.hpp"
 
  //CONSTRUCTOR& DESTRUCTOR
- irc::channel::channel(str name, str pass, str topic, str modes): _name(name), _password(pass), _topic(topic), _modes(modes), _nb_max_users(0) {}
+ irc::channel::channel(str name, str pass, str topic, str modes): _name(name), _password(pass), _topic(topic), _modes(modes){}
 
  irc::channel::~channel(void) {}
 
@@ -33,8 +33,6 @@ const str			&irc::channel::get_password(void) const { return _password; }
 const str			&irc::channel::get_topic(void) const { return _topic; }
 
 const str			&irc::channel::get_modes(void) const { return _modes; }
-
-const int			&irc::channel::get_nb_max(void) const { return _nb_max_users; }
 
 //SETTERS
 
@@ -129,7 +127,6 @@ void 			irc::channel::remove_mode(str c)
     }
 }
 
-void			irc::channel::add_nb_max(int nb) { _nb_max_users = nb; }
 //REMOVING
 void			irc::channel::remove_user(user *obj)
 {

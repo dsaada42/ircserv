@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:20:13 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 17:30:24 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:14:05 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ namespace irc{
 		    str				_password;
 		    str				_topic;
 		    str				_modes;
-		    int				_nb_max_users;
 
 		 public:
 		    //CONSTRUCTOR & DESTRCUTOR
@@ -43,7 +42,6 @@ namespace irc{
 		    const str				&get_password(void) const;
 		    const str				&get_topic(void) const;
 		    const str				&get_modes(void) const;
-		    const int				&get_nb_max(void) const;
 			//SETTERS
 			void			set_topic(const str &topic);
 			void			set_password(const str &password);
@@ -60,7 +58,6 @@ namespace irc{
 		    void			add_invit(user *obj);
 		    void			add_ban(user *obj);
 		    void			add_mode(str c);
-		    void			add_nb_max(int nb);
 			void 			remove_mode(str c);
 
 		    //REMOVING
