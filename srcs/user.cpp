@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/01 07:31:52 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:04:21 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ irc::user::user( int fd , unsigned long timestamp )
     bzero(_buff, BUFF_SIZE);
     _creation_time = timestamp;
     _sent = 0;
+    _sentbytes = 0;
     _received = 0;
+    _receivedbytes = 0;
 }
 
 // ----- Copy Constructor -----

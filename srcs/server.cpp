@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 10:47:10 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:12:17 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ irc::server::server(int port, str password) :
         _server_name = SERVER_NAME;
         _creation_date = ft_current_time();
         _creation_time = get_time_ms();
+        
     }
 
 irc::server::~server( void ){
@@ -138,8 +139,10 @@ int         irc::server::handle_user_connection(irc::user *current){
     irc::message            *msg;
     
     while ((msg = current->extract_message("\r\n")) != NULL){
-        if (msg->parse_message() == FAILURE)
+        if (msg->parse_message() == FAILURE){
+            delete msg;
             return (FAILURE);
+        }
         if (msg->get_cmd() == "CAP"){
             ft_cap(msg);
         }
@@ -151,6 +154,7 @@ int         irc::server::handle_user_connection(irc::user *current){
                 ft_nick(msg);
             else{
                 delete_user(current, "Error in connection procedure");
+                delete msg;
                 return(FAILURE);   
             }
         }
@@ -158,12 +162,16 @@ int         irc::server::handle_user_connection(irc::user *current){
             if (current->pass() && current->nickname().size() != 0)
                 ft_user(msg);
             else{
+                delete msg;
                 delete_user(current, "Error in connection procedure");
                 return(FAILURE);   
             }
         }
-        else
+        else{
+            delete msg;   
             return (FAILURE);
+        }
+        delete msg;
     }
     if (current->pass() && current->nickname().size() > 0 && current->fullname().size() > 0 ){
         current->set_connected(true);
