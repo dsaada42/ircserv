@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 10:15:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 10:34:09 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,6 +254,7 @@
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
+        irc::user       *tmp;
         irc::user       *target;
         std::vector<str> args;
         str		m;
@@ -268,9 +269,9 @@
             _messages.push(rpl::rpl_channelmodeis(current->nickname(), channel->get_name(), channel->get_modes(), msg->get_fd()));
             return;
         }
-        else if ((current = find_user_by_nick(msg->get_params())) != NULL){
-            if (current == find_user_by_fd(msg->get_fd()))
-                _messages.push(rpl::rpl_umodeis(current->nickname(), current->mode(), current->fd()));
+        else if ((tmp = find_user_by_nick(msg->get_params())) != NULL){
+            if (tmp == find_user_by_fd(msg->get_fd()))
+                _messages.push(rpl::rpl_umodeis(tmp->nickname(), tmp->mode(), tmp->fd()));
             else 
                 _messages.push(err::err_usersdontmatch(msg->get_fd()));
             return;
@@ -280,6 +281,8 @@
             _messages.push(err::err_needmoreparams(msg->get_cmd(), msg->get_fd()));
         else if (check_channel_rules(args[0])){
             if ((channel = find_channel_by_name(args[0]))){
+                if (args[1] == "b")
+                    return;
                 if (!channel->is_op(find_user_by_fd(msg->get_fd())) && !(find_user_by_fd(msg->get_fd()))->is_mode('o'))
                     _messages.push(err::err_chanoprivsneeded(args[0], msg->get_fd()));
                 else if (args.size() == 2 && args[1].size() == 2){
@@ -325,13 +328,17 @@
                                 if (args[1].at(0) == '-'){
                                     if (channel->is_op(target)){
                                         channel->remove_op(target);
-                                        //notify all users that target is not chanop anymore
+                                        chan_users = channel->get_users();
+                                        for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                            _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "+o " + target->nickname(), (*itu)->fd()));
                                     }
                                 }
                                 else if (args[1].at(0) == '+'){
                                     if (!channel->is_op(target)){
                                         channel->add_op(target);
-                                        //notify all users that target is now chanop
+                                        chan_users = channel->get_users();
+                                        for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                                            _messages.push(cmd::cmd_mode_channel(user_prefix(current), channel->get_name(), "+o " + target->nickname(), (*itu)->fd()));
                                     }
                                 }
                             }
