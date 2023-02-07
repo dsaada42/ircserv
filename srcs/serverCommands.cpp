@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 10:36:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:31:03 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,13 +212,14 @@
             delete_user(to_kill,"");
         }   
     }
-// ----- LIST -----
+// ----- LIST -----     OK
     void irc::server::ft_list( irc::message * msg ){
         irc::channel *chan;
         irc::user   *usr;
         std::map<str, channel*>::iterator itc;
         std::vector<str>  args;
         std::vector<str>  chans;
+        std::vector<str>::iterator it;
         
         args = ft_split(msg->get_params(), " ");
         if (msg->get_params().empty()){
@@ -245,12 +246,29 @@
             }
         }
         else{//cas ou channels are listed, split args[0] sur ',' and get info for each (only display topic if not private) if args[1] is channel
-            
+            if (args[1] != _server_name)
+                _messages.push(err::err_nosuchserver(args[0], msg->get_fd()));
+            else {        
+                chans = ft_split(args[0], ",");
+                
+                _messages.push(rpl::rpl_liststart(msg->get_fd()));
+                for (it = chans.begin(); it != chans.end(); it++){
+                    if ((chan = find_channel_by_name(*it)) != NULL){
+                        if (chan->is_mode("p") && !chan->is_user(usr)){
+                            _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), "Prv", msg->get_fd()));
+                        }
+                        else{
+                            _messages.push(rpl::rpl_list(usr->nickname(), chan->get_name(), chan->get_topic(), msg->get_fd()));
+                        }
+                    }
+                }
+                _messages.push(rpl::rpl_listend(msg->get_fd()));
+            }
         }
     }
 
     
-// ----- MODE ----- OK
+// ----- MODE -----     OK
     void irc::server::ft_mode(irc::message * msg){
         irc::channel	*channel;
         irc::user   	*current;
@@ -400,7 +418,7 @@
             }
         }
     }
-// ----- NAMES -----
+// ----- NAMES -----    OK
     void irc::server::ft_names(irc::message * msg){
         std::vector<str>	args;
         std::vector<str>	chans;

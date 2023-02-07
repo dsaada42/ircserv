@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 14:11:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 11:12:17 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:31:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void        irc::server::say_welcome(irc::user *new_user){
     _messages.push(msg);
     msg = rpl::rpl_created(new_user->nickname(), _creation_date, new_user->fd());
     _messages.push(msg);
-    msg = rpl::rpl_myinfo(new_user->nickname(), _server_name, SERVER_VERSION, UMODES, "", new_user->fd()); // remplacer le champ vide par les modes channels disponibles
+    msg = rpl::rpl_myinfo(new_user->nickname(), _server_name, SERVER_VERSION, UMODES, CMODES, new_user->fd()); // remplacer le champ vide par les modes channels disponibles
     _messages.push(msg);
     msg = rpl::rpl_bounce(new_user->nickname(), _server_name, SSTR(_port), new_user->fd());
     _messages.push(msg);
@@ -325,11 +325,11 @@ void       irc::server::init_cmd_map(){
     _cmds.insert(std::make_pair("info", &irc::server::ft_info));                                        //OK
     _cmds.insert(std::make_pair("INVITE", &irc::server::ft_invite));                                    //OK
     _cmds.insert(std::make_pair("JOIN", &irc::server::ft_join));                                        //OK
-    _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));                                        
+    _cmds.insert(std::make_pair("KICK", &irc::server::ft_kick));                                        //OK
     _cmds.insert(std::make_pair("kill", &irc::server::ft_kill));                                        //OK
-    _cmds.insert(std::make_pair("LIST", &irc::server::ft_list));                                        //A COMPLETER ET TESTER
-    _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));                                        //OK FOR USERS
-    _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));
+    _cmds.insert(std::make_pair("LIST", &irc::server::ft_list));                                        //OK
+    _cmds.insert(std::make_pair("MODE", &irc::server::ft_mode));                                        //OK 
+    _cmds.insert(std::make_pair("NAMES", &irc::server::ft_names));                                      //OK
     _cmds.insert(std::make_pair("NICK", &irc::server::ft_nick));                                        //OK
     _cmds.insert(std::make_pair("NOTICE", &irc::server::ft_notice));                                    //OK
     _cmds.insert(std::make_pair("OPER", &irc::server::ft_oper));                                        //OK

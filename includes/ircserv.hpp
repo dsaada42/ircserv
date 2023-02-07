@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 09:06:55 by dylan             #+#    #+#             */
-/*   Updated: 2023/01/31 16:01:33 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 11:31:00 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #define SERVER_NAME "shittyIRC"
 #define SERVER_VERSION "V1.0"
 #define UMODES "ios"
+#define CMODES "ptiok"
 #define OPER_PASSWORD "Metsmoioperwesh!"
 #define TCP 0
 #define BACKLOG 10
