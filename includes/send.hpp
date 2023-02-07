@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 16:01:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 17:31:40 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,12 +181,12 @@ namespace irc{
         irc::message * rpl_endofinfo(int to);
         irc::message * rpl_youreoper(const str &nickname, int to);
         irc::message * rpl_time(const str &srvname, int to);
-        irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to);
+        irc::message * rpl_whoisuser(const str &sender, const str &nickname, const str &username, const str &host, const str &fullname, int to);
         irc::message * rpl_whoisserver(const str &sender, const str &nick, const str &srvname, const str shortinfo, int to);
         irc::message * rpl_whoisoperator(const str &nick, int to);
-        irc::message * rpl_whoisidle(const str &nick, size_t idle, int to);
-        irc::message * rpl_whoischannels(const str &nick, const str &status, const str &chan, int to);
-        irc::message * rpl_endofwhois(const str &nick, int to);
+        irc::message * rpl_whoisidle(const str &sender, const str &nickname, const str &idle, const str &timestamp, int to);
+        irc::message * rpl_whoischannels(const str &sender, const str &nickname, const str &chans, int to);
+        irc::message * rpl_endofwhois(const str &sender, const str &nicks, int to);
         irc::message * rpl_whoreply(const str &sender, const str &msg, const str &trailing, int to);
         irc::message * rpl_endofwho(const str &nickname, const str &target, int to);
         irc::message * rpl_whowasuser(const str & sender, const str &nick, const str &user, const str &host, const str &realname, int to);

@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 10:54:59 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 11:04:21 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 17:04:29 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ const bool  & irc::user::connected  ( void ) const  { return(_connected);}
 const bool  & irc::user::ping       ( void ) const  { return(_ping);}
 const bool  & irc::user::pass       ( void ) const  { return(_pass);}
 const str   & irc::user::mode       ( void ) const  { return(_mode);}
-const str   & irc::user::oldnick    ( void ) const  { return(_oldnick);} 
+const str   & irc::user::oldnick    ( void ) const  { return(_oldnick);}
+const unsigned long & irc::user::creation_time ( void ) const { return(_creation_time);}
 // ----- Setters -----
 void irc::user::set_username(const str & username)  { _username = username; }
 void irc::user::set_fullname(const str & fullname)  { _fullname = fullname; }

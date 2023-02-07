@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/07 16:24:12 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 17:41:56 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -832,7 +832,6 @@
                             _messages.push(rpl::rpl_whoreply(sender->nickname(), "* ~" + current->username() + " " + _server_name + " " + _server_name + " " + current->nickname() + " H", "0 " + current->fullname(), msg->get_fd() )); 
                     }
                 }
-                else if ()
             }
             else if (args.size() == 2 && args[1] == "o"){
                 if ((current = find_user_by_nick(args[0])) != NULL){
@@ -849,8 +848,75 @@
             _messages.push(rpl::rpl_endofwho(sender->nickname(), args[0], msg->get_fd()));
         }
     }
-// ----- WHOIS -----
-    void irc::server::ft_whois(irc::message * msg){(void)msg;}
+// ----- WHOIS -----    OK
+    int irc::server::who_one_nick(irc::user *sender, str nick){
+        irc::user *target;
+        std::map<str, channel*>::iterator it;
+        str chans;
+        irc::channel    *chan;
+        int  found = 0;
+        
+        chans = "";
+        if (!(target = find_user_by_nick(nick)))//USER NOT FOUND
+            return (FAILURE);
+        _messages.push(rpl::rpl_whoisuser(sender->nickname(), target->nickname(), target->username(), _server_name, target->fullname(), sender->fd()));
+        for (it = _channels.begin(); it != _channels.end(); it++){
+            chan = it->second;
+            if (chan->is_op(target)){
+                found++;
+                if (chans.size() != 0)
+                    chans += " ";
+                chans += "@" + chan->get_name();
+            }
+            else if (chan->is_user(target)){
+                found++;
+                if (chans.size() != 0)
+                    chans += " ";
+                chans += chan->get_name();
+            }
+        }
+        if (found != 0)
+            _messages.push(rpl::rpl_whoischannels(sender->nickname(), target->nickname(), chans, sender->fd() ));
+        _messages.push(rpl::rpl_whoisserver(sender->nickname(), target->nickname(), _server_name, "The one and only", sender->fd()));
+        _messages.push(rpl::rpl_whoisidle(sender->nickname(), target->nickname(), SSTR((get_time_ms() - target->creation_time())/1000), SSTR(target->creation_time()), sender->fd()));
+        return (SUCCESS);
+    }
+    void irc::server::ft_whois(irc::message * msg)
+    {
+        irc::user               *sender;
+        std::vector<str>        args;
+        std::vector<str>        nicks;
+        std::vector<str>::iterator itn;
+        
+
+        if (msg->get_params().empty())
+            _messages.push(err::err_nonicknamegiven(msg->get_fd()));
+        if ((sender = find_user_by_fd(msg->get_fd())) == NULL)
+            return;
+        args = ft_split(msg->get_params(), " ");
+        if (args.size() == 1)//ONE ARG
+        {
+            nicks = ft_split(args[0], ",");
+            for (itn = nicks.begin(); itn != nicks.end(); itn++){ // parcourir tous les users et les traiter un par un
+                if (who_one_nick(sender, (*itn)) == FAILURE)
+                    _messages.push(err::err_nosuchnick((*itn), msg->get_fd()));            
+            }
+            _messages.push(rpl::rpl_endofwhois(sender->nickname(), args[0], sender->fd()));
+        }
+        else if (args.size() == 2)//TWO OR MORE ARGS
+        {
+            if (args[0] != _server_name)
+                _messages.push(err::err_nosuchserver(args[0], msg->get_fd()));
+            else{
+                nicks = ft_split(args[1], ",");
+                for (itn = nicks.begin(); itn != nicks.end(); itn++){ // parcourir tous les users et les traiter un par un
+                    if (who_one_nick(sender, (*itn)) == FAILURE)
+                        _messages.push(err::err_nosuchnick((*itn), msg->get_fd()));            
+                }
+                _messages.push(rpl::rpl_endofwhois(sender->nickname(), args[1], sender->fd()));
+            }
+        }
+    }
 // ----- WHOWAS -----   OK
     void irc::server::ft_whowas(irc::message * msg){
         irc::user *usr;

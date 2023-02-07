@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 16:01:19 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 17:28:03 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,15 +92,15 @@ namespace irc{
         irc::message * rpl_endofinfo(int to)														{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFINFO), 		"", 			"End of INFO list", to));}
         irc::message * rpl_youreoper(const str &nickname, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_YOUREOPER), 		nickname, 		"You are now an IRC operator", to));}
         irc::message * rpl_time(const str &srvname, int to)										    { return (new irc::message(SERVER_NAME, SSTR(RPL_TIME), 			srvname, 	    ft_current_time(), to));} 
-        irc::message * rpl_whoisuser(const str &nick, const str &user, const str &host, const str &realname, int to)	
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISUSER), 		nick + " " + user + " " + host + " *", realname, to));}
+        irc::message * rpl_whoisuser(const str &sender, const str &nickname, const str &username, const str &host, const str &fullname, int to)	
+                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISUSER), 		sender + " " + nickname + " ~" + username + " " + host + " *", fullname, to));}
         irc::message * rpl_whoisserver(const str &sender, const str &nick, const str &srvname, const str shortinfo, int to)
                                                                                                     { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISSERVER), 		sender + " " + nick + " " + srvname, shortinfo, to));}
         irc::message * rpl_whoisoperator(const str &nick, int to)									{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISOPERATOR), 	nick, 			"is an IRC operator", to));}
-        irc::message * rpl_whoisidle(const str &nick, size_t idle, int to)							{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISIDLE), 		nick + " " + SSTR(idle), "seconds idle", to));}
-        irc::message * rpl_whoischannels(const str &nick, const str &status, const str &channel, int to)	
-                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISCHANNELS), 	nick, 			status + channel, to));}
-        irc::message * rpl_endofwhois(const str &nick, int to)										{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOIS), 		nick, 			"End of WHOIS list", to));}
+        irc::message * rpl_whoisidle(const str &sender, const str &nickname, const str &idle, const str &timestamp, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISIDLE), 		sender + " " + nickname + " " + idle + " " + timestamp, "seconds idle, singon time", to));}
+        irc::message * rpl_whoischannels(const str &sender, const str &nickname, const str &chans, int to)
+                                                                                                    { return (new irc::message(SERVER_NAME, SSTR(RPL_WHOISCHANNELS), 	sender + " " + nickname, chans, to));}
+        irc::message * rpl_endofwhois(const str &sender, const str &nicks, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHOIS), 		sender + " " + nicks, "End of /WHOIS list", to));}
         irc::message * rpl_whoreply(const str &sender, const str &msg, const str &trailing, int to)	{ return (new irc::message(SERVER_NAME, SSTR(RPL_WHOREPLY), 		sender + " " + msg, trailing , to));}
         irc::message * rpl_endofwho(const str &nickname, const str &target, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFWHO), 		nickname + " "  +  target, 		"End of /WHO list", to));}
         irc::message * rpl_whowasuser(const str &sender, const str &nick, const str &user, const str &host, const str &realname, int to)	

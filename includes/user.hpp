@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:19:34 by dsaada            #+#    #+#             */
-/*   Updated: 2023/01/31 17:57:28 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 17:04:47 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ namespace irc{
             const bool  & pass( void ) const;
             const str   & mode( void ) const;
             const str   & oldnick( void ) const;
+            const unsigned long & creation_time( void ) const;
 
         // ----- Setters -----
             void set_username( const str & username );

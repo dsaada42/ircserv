@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dylan <dylan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 09:50:40 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/05 17:50:40 by dylan            ###   ########.fr       */
+/*   Updated: 2023/02/07 17:30:13 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ namespace irc{
             void        ft_user(irc::message *);
             void        ft_version(irc::message *);
             void        ft_who(irc::message *);
+            int         who_one_nick(irc::user *sender, str nick);
             void        ft_whois(irc::message *);
             void        ft_whowas(irc::message *);
             //disabled
