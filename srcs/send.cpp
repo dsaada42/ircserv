@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:07:50 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/07 09:06:57 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 09:54:08 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ namespace irc{
         irc::message * rpl_statslinkinfo(const str &nickname, const str &stats, int to)             { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSLINKINFO),    nickname, stats, to));}
         irc::message * rpl_statscommands(const str &nickname, const str &command, int to)           { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSCOMMANDS),    nickname, command, to));}
         irc::message * rpl_endofstats(const str &nickname, const str &letter, int to)				{ return (new irc::message(SERVER_NAME, SSTR(RPL_ENDOFSTATS), 		nickname + " " + letter, 		"End of STATS report", to));}
-        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		    nickname,	'+' + modes, to));}
+        irc::message * rpl_umodeis(const str &nickname, const str &modes, int to)					{ return (new irc::message(SERVER_NAME, SSTR(RPL_UMODEIS), 		    nickname, modes, to));}
         irc::message * rpl_statsuptime(const str &nickname, const str &stats, int to)               { return (new irc::message(SERVER_NAME, SSTR(RPL_STATSUPTIME),      nickname,       "Server up for " + stats, to));}
         irc::message * rpl_liststart(int to)                                                        { return (new irc::message(SERVER_NAME, SSTR(RPL_LISTSTART), "", "List START", to));}
         irc::message * rpl_list(const str &nick, const str &channel, const str &topic, int to)		{ return (new irc::message(SERVER_NAME, SSTR(RPL_LIST), 			nick + " " +  channel + ' ' + topic, "",  to));} // because SSTR not working here
