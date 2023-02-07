@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 20:03:20 by dylan             #+#    #+#             */
-/*   Updated: 2023/02/06 20:31:07 by mlaouedj         ###   ########.fr       */
+/*   Updated: 2023/02/07 09:25:34 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,29 +391,38 @@
 	std::vector<str>	chans;
 	std::vector<user*> 	chan_users;
 	irc::channel		*chan;
-	irc::user		*usr;
-
+	irc::user		    *usr;
+    str                 users;
 	std::map<str, channel*>::iterator itc;
 	std::vector<irc::user*>::iterator itu;
 
 	args = ft_split(msg->get_params(), " ");
-	std::cout << args.size() << std::endl;
 	if((usr = find_user_by_fd(msg->get_fd())) == NULL)
 		return;
 	else if (args.empty())//List all visibles channels & users
 	{
 		for(itc = _channels.begin(); itc != _channels.end(); itc++)
 		{
+            users = "";
 			chan = itc->second;
-			if (!chan->is_mode("i") || (chan->is_mode("i") && chan->is_user(usr)))
-			{
-				chan_users = chan->get_users();
-				for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
-				{
-					if (!(*itu)->is_mode('i'))//ATTENTION AU CAS OU OPER
-						_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), (*itu)->nickname(), msg->get_fd()));
-				}
-			}
+			if (!chan->is_mode("p") || (chan->is_mode("p") && chan->is_user(usr)))
+            {
+                chan_users = chan->get_users();	
+                for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                {
+                    if (!(*itu)->is_mode('i') || chan->is_op(usr) || usr->is_mode('o')){ //if usr asking is op, can see invisble other users
+                        if (users.size() != 0)
+                            users += " ";
+                        if (chan->is_op(*itu))
+                            users += "@" + (*itu)->nickname();      
+                        else
+                            users += (*itu)->nickname();
+                    }
+                }
+                if (users.size() != 0)
+                    _messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), users, msg->get_fd()));
+            _messages.push(rpl::rpl_endofnames(find_user_by_fd(msg->get_fd())->nickname(), chan->get_name(), msg->get_fd()));
+            }
 		}
 	}
 	else if (args.size() == 1)//List users by channel in args
@@ -427,24 +436,32 @@
 			std::vector<str>::iterator it;
 			for (it = chans.begin(); it != chans.end(); it++)
 			{
+                users = "";
 				if ((chan = find_channel_by_name(*it)))
 				{
-					chan_users = chan->get_users();	
-					for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
-					{
-						if (!(*itu)->is_mode('i')){
-							if (chan->is_op(*itu))
-								_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), "@" + (*itu)->nickname(), msg->get_fd()));
-							else
-								_messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), (*itu)->nickname(), msg->get_fd()));
-						}
-					}
+                    if (!chan->is_mode("p") || (chan->is_mode("p") && chan->is_user(usr)))
+			        {
+                        chan_users = chan->get_users();	
+                        for (itu = chan_users.begin(); itu != chan_users.end(); itu++)
+                        {
+                            if (!(*itu)->is_mode('i') || chan->is_op(usr) || usr->is_mode('o')){
+                                if (users.size() != 0)
+                                    users += " ";
+                                if (chan->is_op(*itu))
+                                    users += "@" + (*itu)->nickname();      
+                                else
+                                    users += (*itu)->nickname();
+                            }
+                        }
+                        if (users.size() != 0)
+                            _messages.push(rpl::rpl_namreply(usr->nickname(), chan->get_name(), users, msg->get_fd()));
+                    _messages.push(rpl::rpl_endofnames(find_user_by_fd(msg->get_fd())->nickname(), chan->get_name(), msg->get_fd()));
+                    }
 				}
 			}
 		}
 	}
-	_messages.push(rpl::rpl_endofnames(find_user_by_fd(msg->get_fd())->nickname(), msg->get_fd()));
-    }
+}
 // ----- NICK -----     OK
     void irc::server::ft_nick(irc::message * msg){
         irc::user       *current;

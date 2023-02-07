@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 08:21:42 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/02 08:09:13 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 09:03:38 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,9 @@ int irc::message::parse_message( void ){
 str irc::message::create_message( void ){
     if (_prefix.size() > 0)
         _message = ":" + _prefix + " ";
-    _message += _cmd + " " + _params;
+    _message += _cmd;
+    if (_params.size() > 0)
+        _message += " " + _params;
     if (_trailing.size() > 0)
         _message += " :" + _trailing;
     _message += "\r\n";

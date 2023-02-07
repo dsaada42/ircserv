@@ -6,7 +6,7 @@
 /*   By: dsaada <dsaada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 17:06:15 by dsaada            #+#    #+#             */
-/*   Updated: 2023/02/06 17:48:36 by dsaada           ###   ########.fr       */
+/*   Updated: 2023/02/07 09:06:24 by dsaada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ namespace irc{
         irc::message * rpl_inviting(const str &channel, const str &nickname, const str &target, int to);
         irc::message * rpl_version(const str &nickname, const str &version, const str debuglevel, const str &server, const str &comments, int to);
         irc::message * rpl_namreply(const str &nickname, const str &channel_name, const str &names, int to);
-        irc::message * rpl_endofnames(const str &name, int to);
+        irc::message * rpl_endofnames(const str &name, const str &channel_name, int to);
         irc::message * rpl_banlist(const str &channel, const str &banmask, int to);
         irc::message * rpl_endofbanlist(const str &channel, int to);
         irc::message * rpl_motd(const str &text, int to);

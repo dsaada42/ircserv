@@ -1,0 +1,26 @@
+JOIN #bonjour
+
+=============== read 150 bytes from SERVER (5) ===================
+:dylan!~testeur@my.server.name JOIN :#bonjour
+:my.server.name 353 dylan = #bonjour :@dylan
+:my.server.name 366 dylan #bonjour :End of /NAMES list.
+
+=============== read 15 bytes from CLIENT (4) ==================
+MODE #bonjour
+
+=============== read 87 bytes from SERVER (5) ===================
+:my.server.name 324 dylan #bonjour +nt
+:my.server.name 329 dylan #bonjour 1675756463
+
+=============== read 14 bytes from CLIENT (4) ==================
+WHO #bonjour
+
+=============== read 154 bytes from SERVER (5) ===================
+:my.server.name 352 dylan #bonjour ~testeur my.server.name my.server.name dylan H@ :0 dylan saada
+:my.server.name 315 dylan #bonjour :End of /WHO list.
+
+=============== read 17 bytes from CLIENT (4) ==================
+MODE #bonjour b
+
+=============== read 61 bytes from SERVER (5) ===================
+:my.server.name 368 dylan #bonjour :End of channel ban list
